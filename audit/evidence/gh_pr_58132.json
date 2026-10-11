@@ -1,0 +1,18 @@
+{
+ "number": 58132,
+ "title": "[Model] Decoder-side SWA bounded replay for DeepSeek-V4.1",
+ "state": "MERGED",
+ "createdAt": "2026-09-22T10:07:47Z",
+ "mergedAt": "2026-09-29T08:25:47Z",
+ "url": "https://github.com/vllm-project/vllm/pull/58132",
+ "headRefOid": "e0f1dc431dd09a70d5179a65e2e678f4be3b8d55",
+ "author": "ivanium",
+ "mergeCommit": "4b2e1cfa7b8094f1a9547aee41c39e05d2ce5c97",
+ "commit_authors": [
+  "claude",
+  "codex",
+  "ivanium"
+ ],
+ "n_commits": 5,
+ "last_commit_date": "2026-09-29T07:31:46Z"
+}

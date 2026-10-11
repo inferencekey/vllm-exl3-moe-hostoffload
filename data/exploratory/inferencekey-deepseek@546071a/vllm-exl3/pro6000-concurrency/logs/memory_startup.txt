@@ -1,0 +1,138 @@
+== startup lines from serve.log
+(APIServer pid=10799) INFO 10-06 11:15:41 [api_utils.py:286] non-default args: {'model_tag': '/root/models/DeepSeek-V4.1-Flash-EXL3-3bpw', 'enable_auto_tool_choice': True, 'tool_call_parser': 'deepseek_v41', 'enable_prompt_tokens_details': True, 'host': '0.0.0.0', 'api_key': '***', 'model': '/root/models/DeepSeek-V4.1-Flash-EXL3-3bpw', 'tokenizer_mode': 'deepseek_v41', 'trust_remote_code': True, '
+(APIServer pid=10799) INFO 10-06 11:15:41 [cache.py:365] Using fp8 data type to store kv cache. It reduces the GPU memory footprint and boosts the performance. Meanwhile, it may cause accuracy drop without a proper scaling factor
+(APIServer pid=10799) INFO 10-06 11:15:42 [vllm.py:1403] Resolved Engram configuration: EngramConfig(cpu_offload=True, embedding_across_dp=False, dp_shared_memory=False, use_thp=False)
+(EngineCore pid=11216) INFO 10-06 11:15:49 [core.py:129] Initializing a V1 LLM engine (v0.30.1rc1.dev312+g36768d1bf) with config: model='/root/models/DeepSeek-V4.1-Flash-EXL3-3bpw', speculative_config=SpeculativeConfig(method='dspark', model='/root/models/DeepSeek-V4.1-Flash-EXL3-3bpw', num_spec_tokens=5), tokenizer='/root/models/DeepSeek-V4.1-Flash-EXL3-3bpw', skip_tokenizer_init=False, tokenizer
+(Worker_TP1 pid=12177) INFO 10-06 11:15:59 [exl3.py:2451] EXL3 host experts: language_model.model.layers.0.ffn.experts keeps 65/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:15:59 [exl3.py:2451] EXL3 host experts: language_model.model.layers.0.ffn.experts keeps 65/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:06 [engram.py:308] Engram table offloaded to pinned host memory: 192004428 rows x 256, 25.75 GiB per rank
+(Worker_TP1 pid=12177) INFO 10-06 11:16:06 [exl3.py:2451] EXL3 host experts: language_model.model.layers.1.ffn.experts keeps 68/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:06 [exl3.py:2451] EXL3 host experts: language_model.model.layers.2.ffn.experts keeps 113/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:06 [exl3.py:2451] EXL3 host experts: language_model.model.layers.3.ffn.experts keeps 117/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:06 [exl3.py:2451] EXL3 host experts: language_model.model.layers.4.ffn.experts keeps 111/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:06 [exl3.py:2451] EXL3 host experts: language_model.model.layers.5.ffn.experts keeps 112/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:06 [exl3.py:2451] EXL3 host experts: language_model.model.layers.6.ffn.experts keeps 140/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:06 [exl3.py:2451] EXL3 host experts: language_model.model.layers.7.ffn.experts keeps 120/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:06 [engram.py:308] Engram table offloaded to pinned host memory: 192001740 rows x 256, 25.75 GiB per rank
+(Worker_TP1 pid=12177) INFO 10-06 11:16:06 [exl3.py:2451] EXL3 host experts: language_model.model.layers.8.ffn.experts keeps 118/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:06 [exl3.py:2451] EXL3 host experts: language_model.model.layers.1.ffn.experts keeps 68/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:06 [exl3.py:2451] EXL3 host experts: language_model.model.layers.9.ffn.experts keeps 128/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:07 [exl3.py:2451] EXL3 host experts: language_model.model.layers.2.ffn.experts keeps 113/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:07 [exl3.py:2451] EXL3 host experts: language_model.model.layers.10.ffn.experts keeps 130/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:07 [exl3.py:2451] EXL3 host experts: language_model.model.layers.3.ffn.experts keeps 117/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:07 [exl3.py:2451] EXL3 host experts: language_model.model.layers.11.ffn.experts keeps 121/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:07 [exl3.py:2451] EXL3 host experts: language_model.model.layers.4.ffn.experts keeps 111/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:07 [exl3.py:2451] EXL3 host experts: language_model.model.layers.12.ffn.experts keeps 111/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:07 [exl3.py:2451] EXL3 host experts: language_model.model.layers.5.ffn.experts keeps 112/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:07 [exl3.py:2451] EXL3 host experts: language_model.model.layers.13.ffn.experts keeps 86/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:07 [exl3.py:2451] EXL3 host experts: language_model.model.layers.6.ffn.experts keeps 140/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:07 [exl3.py:2451] EXL3 host experts: language_model.model.layers.7.ffn.experts keeps 120/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:07 [exl3.py:2451] EXL3 host experts: language_model.model.layers.8.ffn.experts keeps 118/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:07 [exl3.py:2451] EXL3 host experts: language_model.model.layers.9.ffn.experts keeps 128/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:07 [exl3.py:2451] EXL3 host experts: language_model.model.layers.10.ffn.experts keeps 130/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:07 [exl3.py:2451] EXL3 host experts: language_model.model.layers.11.ffn.experts keeps 121/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:08 [exl3.py:2451] EXL3 host experts: language_model.model.layers.12.ffn.experts keeps 111/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:08 [exl3.py:2451] EXL3 host experts: language_model.model.layers.13.ffn.experts keeps 86/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:14 [engram.py:308] Engram table offloaded to pinned host memory: 192007016 rows x 256, 25.75 GiB per rank
+(Worker_TP0 pid=12176) INFO 10-06 11:16:14 [exl3.py:2451] EXL3 host experts: language_model.model.layers.14.ffn.experts keeps 127/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:14 [exl3.py:2451] EXL3 host experts: language_model.model.layers.15.ffn.experts keeps 97/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:14 [exl3.py:2451] EXL3 host experts: language_model.model.layers.16.ffn.experts keeps 138/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:14 [exl3.py:2451] EXL3 host experts: language_model.model.layers.17.ffn.experts keeps 111/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:14 [exl3.py:2451] EXL3 host experts: language_model.model.layers.18.ffn.experts keeps 116/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:15 [exl3.py:2451] EXL3 host experts: language_model.model.layers.19.ffn.experts keeps 69/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:15 [exl3.py:2451] EXL3 host experts: language_model.model.layers.20.ffn.experts keeps 139/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:15 [exl3.py:2451] EXL3 host experts: language_model.model.layers.21.ffn.experts keeps 128/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:15 [exl3.py:2451] EXL3 host experts: language_model.model.layers.22.ffn.experts keeps 133/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:15 [exl3.py:2451] EXL3 host experts: language_model.model.layers.23.ffn.experts keeps 97/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:16 [exl3.py:2451] EXL3 host experts: language_model.model.layers.24.ffn.experts keeps 135/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:16 [exl3.py:2451] EXL3 host experts: language_model.model.layers.25.ffn.experts keeps 145/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:16 [exl3.py:2451] EXL3 host experts: language_model.model.layers.26.ffn.experts keeps 135/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:16 [exl3.py:2451] EXL3 host experts: language_model.model.layers.27.ffn.experts keeps 113/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:16 [exl3.py:2451] EXL3 host experts: language_model.model.layers.28.ffn.experts keeps 141/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:16 [exl3.py:2451] EXL3 host experts: language_model.model.layers.29.ffn.experts keeps 129/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:16 [exl3.py:2451] EXL3 host experts: language_model.model.layers.30.ffn.experts keeps 125/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:16 [exl3.py:2451] EXL3 host experts: language_model.model.layers.31.ffn.experts keeps 131/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:16 [exl3.py:2451] EXL3 host experts: language_model.model.layers.32.ffn.experts keeps 140/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:16 [exl3.py:2451] EXL3 host experts: language_model.model.layers.33.ffn.experts keeps 115/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:17 [exl3.py:2451] EXL3 host experts: language_model.model.layers.34.ffn.experts keeps 108/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:17 [exl3.py:2451] EXL3 host experts: language_model.model.layers.35.ffn.experts keeps 105/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:17 [engram.py:308] Engram table offloaded to pinned host memory: 192009666 rows x 256, 25.75 GiB per rank
+(Worker_TP0 pid=12176) INFO 10-06 11:16:17 [exl3.py:2451] EXL3 host experts: language_model.model.layers.36.ffn.experts keeps 101/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:17 [exl3.py:2451] EXL3 host experts: language_model.model.layers.37.ffn.experts keeps 87/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:17 [exl3.py:2451] EXL3 host experts: language_model.model.layers.14.ffn.experts keeps 127/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:17 [exl3.py:2451] EXL3 host experts: language_model.model.layers.38.ffn.experts keeps 106/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:17 [exl3.py:2451] EXL3 host experts: language_model.model.layers.15.ffn.experts keeps 97/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:16:17 [exl3.py:2451] EXL3 host experts: language_model.model.layers.39.ffn.experts keeps 97/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:17 [exl3.py:2451] EXL3 host experts: language_model.model.layers.16.ffn.experts keeps 138/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:17 [exl3.py:2451] EXL3 host experts: language_model.model.layers.17.ffn.experts keeps 111/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:18 [exl3.py:2451] EXL3 host experts: language_model.model.layers.18.ffn.experts keeps 116/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:18 [exl3.py:2451] EXL3 host experts: language_model.model.layers.19.ffn.experts keeps 69/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:18 [exl3.py:2451] EXL3 host experts: language_model.model.layers.20.ffn.experts keeps 139/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:18 [exl3.py:2451] EXL3 host experts: language_model.model.layers.21.ffn.experts keeps 128/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:18 [exl3.py:2451] EXL3 host experts: language_model.model.layers.22.ffn.experts keeps 133/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:18 [exl3.py:2451] EXL3 host experts: language_model.model.layers.23.ffn.experts keeps 97/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:18 [exl3.py:2451] EXL3 host experts: language_model.model.layers.24.ffn.experts keeps 135/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:19 [exl3.py:2451] EXL3 host experts: language_model.model.layers.25.ffn.experts keeps 145/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:19 [exl3.py:2451] EXL3 host experts: language_model.model.layers.26.ffn.experts keeps 135/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:19 [exl3.py:2451] EXL3 host experts: language_model.model.layers.27.ffn.experts keeps 113/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:19 [exl3.py:2451] EXL3 host experts: language_model.model.layers.28.ffn.experts keeps 141/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:19 [exl3.py:2451] EXL3 host experts: language_model.model.layers.29.ffn.experts keeps 129/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:20 [exl3.py:2451] EXL3 host experts: language_model.model.layers.30.ffn.experts keeps 125/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:20 [exl3.py:2451] EXL3 host experts: language_model.model.layers.31.ffn.experts keeps 131/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:20 [exl3.py:2451] EXL3 host experts: language_model.model.layers.32.ffn.experts keeps 140/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:20 [exl3.py:2451] EXL3 host experts: language_model.model.layers.33.ffn.experts keeps 115/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:20 [exl3.py:2451] EXL3 host experts: language_model.model.layers.34.ffn.experts keeps 108/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:20 [exl3.py:2451] EXL3 host experts: language_model.model.layers.35.ffn.experts keeps 105/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:21 [exl3.py:2451] EXL3 host experts: language_model.model.layers.36.ffn.experts keeps 101/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:21 [exl3.py:2451] EXL3 host experts: language_model.model.layers.37.ffn.experts keeps 87/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:21 [exl3.py:2451] EXL3 host experts: language_model.model.layers.38.ffn.experts keeps 106/384 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:16:21 [exl3.py:2451] EXL3 host experts: language_model.model.layers.39.ffn.experts keeps 97/384 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:17:48 [default_loader.py:484] Loading weights took 89.64 seconds
+(Worker_TP0 pid=12176) INFO 10-06 11:17:50 [vllm.py:1403] Resolved Engram configuration: EngramConfig(cpu_offload=True, embedding_across_dp=False, dp_shared_memory=False, use_thp=False)
+(Worker_TP0 pid=12176) INFO 10-06 11:17:50 [exl3.py:2451] EXL3 host experts: model.layers.40.ffn.experts keeps 32/128 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:17:50 [exl3.py:2451] EXL3 host experts: model.layers.41.ffn.experts keeps 64/128 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:17:50 [exl3.py:2451] EXL3 host experts: model.layers.42.ffn.experts keeps 80/128 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:17:52 [exl3.py:2451] EXL3 host experts: model.layers.40.ffn.experts keeps 32/128 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:17:52 [exl3.py:2451] EXL3 host experts: model.layers.41.ffn.experts keeps 64/128 experts in pinned host RAM
+(Worker_TP1 pid=12177) INFO 10-06 11:17:52 [exl3.py:2451] EXL3 host experts: model.layers.42.ffn.experts keeps 80/128 experts in pinned host RAM
+(Worker_TP0 pid=12176) INFO 10-06 11:17:58 [default_loader.py:484] Loading weights took 7.26 seconds
+(Worker_TP0 pid=12176) INFO 10-06 11:17:59 [model_runner.py:404] Model loading took 76.78 GiB memory and 120.574031 seconds
+(Worker_TP1 pid=12177) INFO 10-06 11:17:59 [model_runner.py:404] Model loading took 76.78 GiB memory and 120.543906 seconds
+(Worker_TP0 pid=12176) WARNING 10-06 11:17:59 [cpu_resource_utils.py:148] Cgroup memory preflight for shared-memory allocation: 240 MiB required, 359415 MiB current usage, 120 MiB available under 359535 MiB limit, -120 MiB remaining after allocation based on current usage; current headroom is below the requested allocation; allocation will still be attempted because cgroup usage may be reclaimable
+(Worker_TP1 pid=12177) WARNING 10-06 11:17:59 [cpu_resource_utils.py:148] Cgroup memory preflight for shared-memory allocation: 240 MiB required, 359418 MiB current usage, 117 MiB available under 359535 MiB limit, -123 MiB remaining after allocation based on current usage; current headroom is below the requested allocation; allocation will still be attempted because cgroup usage may be reclaimable
+(Worker_TP0 pid=12176) INFO 10-06 11:18:01 [exl3.py:1619] EXL3 host-expert overlap ACTIVE (cold launch on a side stream: decode 32 SMs, prefill 64 SMs of 188)
+(Worker_TP1 pid=12177) INFO 10-06 11:18:04 [gpu_worker.py:603] Initial free memory 93.93 GiB, reserved 4.25 GiB memory for KV Cache as specified by kv_cache_memory_bytes config and skipped memory profiling. This does not respect the gpu_memory_utilization config. Only use kv_cache_memory_bytes config when you want manual control of KV cache memory size. If OOM'ed, check the difference of initial f
+(Worker_TP0 pid=12176) INFO 10-06 11:18:04 [gpu_worker.py:603] Initial free memory 93.93 GiB, reserved 4.25 GiB memory for KV Cache as specified by kv_cache_memory_bytes config and skipped memory profiling. This does not respect the gpu_memory_utilization config. Only use kv_cache_memory_bytes config when you want manual control of KV cache memory size. If OOM'ed, check the difference of initial f
+(EngineCore pid=11216) INFO 10-06 11:18:04 [kv_cache_utils.py:2408] GPU KV cache size: 623,891 tokens, Maximum concurrency for 262,144 tokens per request: 2.38x
+[sitecustomize] THOR_EMBED_HOST: 1 embedding table(s) -> pinned host UVA, freed 0.62 GiB
+[sitecustomize] THOR_EMBED_HOST: 1 embedding table(s) -> pinned host UVA, freed 0.62 GiB
+(Worker_TP1 pid=12177) INFO 10-06 11:19:03 [model_runner.py:1092] Graph capturing finished in 57 secs, took 0.82 GiB
+(Worker_TP0 pid=12176) INFO 10-06 11:19:03 [model_runner.py:1092] Graph capturing finished in 57 secs, took 0.82 GiB
+(EngineCore pid=11216) INFO 10-06 11:19:04 [core.py:380] init engine (profile, create kv cache, warmup model) took 65.06 s
+(EngineCore pid=11216) INFO 10-06 11:19:05 [vllm.py:1403] Resolved Engram configuration: EngramConfig(cpu_offload=True, embedding_across_dp=False, dp_shared_memory=False, use_thp=False)
+INFO:     Application startup complete.
+== nvidia-smi
+index, name, memory.used [MiB], memory.total [MiB]
+0, NVIDIA RTX PRO 6000 Blackwell Server Edition, 91345 MiB, 97887 MiB
+1, NVIDIA RTX PRO 6000 Blackwell Server Edition, 91345 MiB, 97887 MiB
+== cgroup
+376999997440
+376250155008
+376999997440
+anon 76332212224
+file 298841927680
+kernel 1058025472
+sock 4096
+shmem 154938843136
+file_mapped 155536429056
+inactive_anon 110959435776
+active_anon 120311324672
+inactive_file 3522162688
+active_file 140380921856
+unevictable 114688
+== free
+               total        used        free      shared  buff/cache   available
+Mem:            1511         344         390         157         944        1166
+Swap:              0           0           0
+== ulimit -l
+8192

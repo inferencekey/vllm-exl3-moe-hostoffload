@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this artifact, please cite it as below. Cite the third-party components it measures as well (THIRD_PARTY.md)."
+title: "Serving a 763B Mixture-of-Experts Model on Workstation GPUs: A Measurement Study of Expert Offload in vLLM"
+version: "0.1.0"
+type: software
+authors:
+  - family-names: "Abrego"
+    given-names: "Javier"
+    affiliation: "Inferencekey"
+license: Apache-2.0
+keywords:
+  - vLLM
+  - mixture of experts
+  - EXL3
+  - quantization
+  - host memory offload
+  - LLM serving
+  - benchmarking
+  - reproducibility
+repository-code: "https://github.com/inferencekey/vllm-exl3-moe-hostoffload"
+abstract: >-
+  A measurement study of serving DeepSeek-V4.1-Flash (763B parameters, 3-bit EXL3 experts) with vLLM, the vllm-exl3
+  plugin and Diffbot's host-memory expert offload recipe on two 96 GB RTX PRO 6000 GPUs: attribution audit, static
+  byte accounting, controlled experiments on fit, speed, long context, quality and coding-agent concurrency, and the
+  LaTeX paper, with every number generated from its data file. Code Apache-2.0; text and data CC-BY-4.0.
+# date-released and doi are added at release time (RELEASE_CHECKLIST.md)

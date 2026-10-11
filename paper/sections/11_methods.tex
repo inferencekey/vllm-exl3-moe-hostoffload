@@ -1,0 +1,179 @@
+\section{Methodology}\label{sec:method}
+
+The protocol was written to answer the paper's question in full, and our measurement campaign ran part of it. This
+section gives both, the design and what actually ran, item by item, so that a reader can tell a measured result from a
+designed one and can run the rest with the same tools.
+
+\subsection{Six questions}
+\begin{description}
+\item[RQ1 (feasibility).] On two 96\,GB GPUs, which configurations of the model serve at all without host offload, and
+with which exact failure do the others stop?
+\item[RQ2 (cost of offload).] How do reading, writing, TTFT, TPOT and throughput change with the share of experts in
+host memory, and how much of that is PCIe traffic?
+\item[RQ3 (what the refinement adds).] At equal host bytes, how does Diffbot's per-expert split of hot and cold experts
+compare with upstream vLLM's own selective zero-copy offload, and how much depends on the placement policy and its
+match to the traffic?
+\item[RQ4 (frontier).] What is the cost per token and per concurrent request under pre-registered service-level
+objectives, from 1 to 64 users, and how does it compare with a reference that holds everything in GPU memory?
+\item[RQ5 (quality).] How much accuracy does the \dv{cfg.exl3_bits}-bit stack lose against the original checkpoint on
+reasoning, code, instruction following and long context?
+\item[RQ6 (coding agents).] How many simultaneous coding-agent streams keep at least 40 output tokens/s each, and how
+many intermittently active developers can share one pod under an observed usage profile (Section~\ref{sec:agent})?
+\end{description}
+
+\subsection{An ablation ladder}
+To separate what each layer contributes, the protocol climbs a ladder in which each rung adds one layer on the same
+hardware and with the same serving settings (\datafile{stack/variants/}, \datafile{experiments/experiments.yaml}).
+\begin{enumerate}
+\item[(a)] \textbf{upstream}: vLLM at the pinned commit, unpatched, with DeepSeek's original checkpoint. It is expected
+to fail at load on two 96\,GB GPUs (Section~\ref{sec:system}), and E2 records the error. \textbf{upstream-uva} is the
+same with upstream vLLM's selective zero-copy offload of the expert parameters, the closest upstream baseline that
+may fit.
+\item[(b)] \textbf{exl3-min} adds the five vLLM patches the pack needs on sm\_120, the unpatched vllm-exl3 plugin and
+stock ExLlamaV3 kernels, with every expert in GPU memory. It is expected to fail at load, and E2 records it.
+\item[(c0)] \textbf{exl3-uva} is (b) plus upstream vLLM's selective zero-copy offload of the EXL3 expert parameters,
+sized to the same host bytes as a plan (\texttt{hostoffload.weights.plan bytes}).
+\item[(c)] \textbf{exl3-offload} adds Diffbot's patch, kernels and hooks. Its factors are the plan (host shares from
+25 to 60\%, chosen from routing counts of a calibration workload on a disjoint corpus half, the recipe's three plans,
+and a seeded random plan with the same sizes per layer), the format of the Engram tables (int4, or FP8 if host memory
+allows) and the number of SMs given to the host-expert stream.
+\item[(d)] \textbf{DSpark on or off} on top of (c).
+\end{enumerate}
+A reference rung, \textbf{upstream on 2x B300}, serves the original checkpoint entirely in GPU memory (E9, E11). It is
+the baseline of speed and quality that the offload has to be judged against, on different and more expensive
+hardware.
+
+\paragraph{The rungs that ran.} Our three pod sessions ran rung (b) and the offload build with an empty plan, both only
+to the load failure (E2), rung (c0), which boots or fails but never serves (Section~\ref{sec:results-controlled}), and
+rung (c) with DSpark on and two plans: the recipe's \texttt{gen30} plan and the union of its \texttt{gen30} and
+\texttt{agent30} cold sets. Rung (a) and its upstream-uva variant (both with the original checkpoint), the calibrated,
+random and FP8-Engram plans, the sweep of SM budgets, rung (d) and the B300 reference did not run
+(Section~\ref{sec:not-run}).
+
+\subsection{The benchmark protocol}
+The harness (\datafile{src/hostoffload/harness/}) replaces the exploratory load generator and fixes the weaknesses
+listed in Table~\ref{tab:fixes}. The protocol below is the full design (\datafile{experiments/workloads/main.yaml}),
+and each item ends with what our runs used (\datafile{experiments/workloads/lean_main.yaml}, \datafile{experiments/workloads/lean_probes.yaml},
+\datafile{experiments/workloads/lean_subset.yaml}, \datafile{experiments/workloads/long_context.yaml} and
+\datafile{experiments/workloads/agent.yaml}, run by \datafile{experiments/runs/lean.sh},
+\datafile{experiments/runs/long.sh} and \datafile{experiments/runs/agent.sh}).
+\begin{itemize}
+\item \textbf{Prompts} are cut to exact token counts with the server's own tokenizer endpoints, from pinned corpora:
+the vLLM sources at the pinned commit for code, and four public-domain books for prose, both pinned by the sha256 of
+the assembled text (\datafile{experiments/corpora.yaml}). Every prompt of a run is unique except deliberately shared
+prefixes, and benchmark and calibration workloads use disjoint halves of the corpus. \emph{In our runs} it was as
+designed, but every measured prompt came from the code corpus and the calibration workload did not run.
+\item \textbf{Scenarios.} A sends independent 4K-token code prompts, A-Poisson the same as an open-loop Poisson stream
+at five rates, B a 16K-token shared prefix (cached after one warm request) plus a question, P a 1K-token prose
+continuation, where speculation is expected to accept fewer tokens, and L fresh 128K-token prompts. All use 256 output
+tokens, temperature 0.6, top-p 0.95, a seed per request and thinking off. \emph{In our runs} only A and B ran in E8,
+and neither A-Poisson nor P ran. Long prompts were measured by the separate experiment E12 (fresh prompts up to
+260,000 tokens, decode after 128K and 256K-token prompts, and shared prefixes of 128K and 256K tokens), and E13 used
+400-token replies (Section~\ref{sec:agent}).
+\item \textbf{Arrivals.} Closed loops with $N\in\{1,2,4,8,16,32,64\}$ users whose starts are staggered over 10\,s, so
+that there is no synchronized first wave, and Poisson open loops. A sweep stops when TTFT p95 exceeds 120\,s or more
+than 5\% of requests fail, and the saturation point is recorded. \emph{In our runs} only closed loops ran. Starts were
+staggered over 5\,s in the scenarios with independent short prompts or a shared prefix (E8, E3, the prefix scenarios
+of E12 and regimes A and B of E13), but not in the decode scenarios after long prompts of E12 or in regimes C and D
+of E13. In E8 and E3 scenario A each user sent two requests and each level had at least eight, and in the decode
+probes one per user and at least four. The minimum of two errors in the error rule applies to E12 and E13 only (the
+second session's rerun of E3 kept the first session's rule to match its baseline), and the long-context and agent
+sweeps stop at a TTFT p95 of 900\,s.
+\item \textbf{Reading and writing measured apart.} Prefill probes send unique prompts of 1K to 64K tokens with one
+output token, one at a time, so that TTFT is reading plus an empty queue. Decode probes send 128-token prompts with
+512 forced output tokens at each $N$, so that TPOT is writing under batching. Server-side histograms of queue, prefill
+and decode time per request are differenced around every level. \emph{In our runs} the prefill probes used 4K, 16K and
+64K tokens (three requests each), and the decode probes $N\in\{1,8,32\}$, with one repetition.
+\item \textbf{Repetitions.} Three per load point within a boot, with fresh prompts and seeds each time, and three cold
+boots at $N\in\{1,8,32\}$ for the component that varies between boots. Every request of every repetition is stored
+raw. \emph{In our runs} there were no cold-boot repetitions, and each experiment's measurements come from a single
+boot. The \texttt{gen30} configuration was booted on three pods, but no measurement was repeated across boots. E8 has
+two repetitions per level in B and, after an early stop (Section~\ref{sec:results-controlled}), in A only at $N=1$.
+E3, E12 and E13 have one. Every request is stored raw.
+\end{itemize}
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{p{4.1cm}p{5.6cm}p{4.5cm}}
+\toprule
+weakness of the exploratory runs & fix in the controlled protocol & in our runs \\
+\midrule
+single run per configuration & 3 repetitions per point plus 3 cold boots, cluster bootstrap over repetitions, variance components & partly: 1 or 2 repetitions inside one boot, no cold boots \\
+usable bars chosen after seeing the data & SLOs registered in \datafile{experiments/sla.yaml} before any controlled run & yes \\
+all $N$ requests sent at once (burst) & staggered closed-loop starts, plus open-loop Poisson arrivals & staggered starts (5\,s), no Poisson \\
+speculation makes decode content-dependent & separate code and prose scenarios, DSpark on and off (E7), acceptance length recorded & partly: code only, DSpark always on, acceptance length recorded (Table~\ref{tab:spec-acceptance}) \\
+quality never evaluated & E10 and E11 with lm-evaluation-harness against the original checkpoint & partly: three task subsets, DeepSeek's API as reference \\
+per-chunk timing, several tokens per chunk & cumulative token counts on every chunk, per-token latency weighted by tokens & yes \\
+corpus from the installed package, chars-per-token guess & pinned corpora, exact token counts via the server tokenizer & yes \\
+5\,s sampler, no PCIe, no per-process memory & 0.5\,s sampler with NVML PCIe RX/TX, cgroup and per-process memory by kind, mapping dump & sampler yes, PCIe per level reported (Table~\ref{tab:pcie-per-token}), no Nsight capture, mappings not analyzed \\
+plan of the sweep not recorded & plan path and sha256 in every run's configuration log & yes \\
+aggregate rate includes ramp and drain & windowed aggregate rate (first send plus warm-up to last send) & yes \\
+\bottomrule
+\end{tabular}
+\caption{Known weaknesses of the exploratory measurements, how the controlled protocol addresses them, and which fixes
+our three pod sessions applied.}
+\label{tab:fixes}
+\end{table}
+
+\subsection{What we compute}
+TTFT is the arrival of the first streamed token minus the send time. TPOT is the time from the first to the last token
+divided by the number of tokens after the first, and the per-request rate is its inverse. Per-token latency weights
+each chunk's inter-arrival time by the tokens it carried. E2E is the end of the stream minus the send time. Aggregate
+output throughput counts the tokens of requests that finished inside a window from the first send (plus a warm-up) to
+the last send, so that ramp-up and drain do not dilute it. We report p50, p95 and p99 with linear interpolation, always
+with $n$, and with fewer than 20 requests a p95 is close to the maximum. Requests of one repetition share server state,
+so uncertainty comes from a bootstrap that resamples whole repetitions~\citep{efron1994bootstrap} and from the
+coefficient of variation across repetitions, and a one-way variance decomposition separates the variance between and
+within repetitions (\datafile{src/hostoffload/analysis/stats.py}).
+
+\subsection{Following the bytes}
+Zero-copy reads never show up as copies, so finding them takes several instruments. For every run we record the memory
+of each GPU over time (NVML), the cgroup's anonymous, shared and file memory, each process's resident, anonymous,
+shared, locked and pinned memory, the largest mappings of each server process at start, and the placement the server
+logs at load (host experts per layer, Engram bytes per rank, weight, KV and graph memory). The static split
+(Table~\ref{tab:static-placement}) gives file bytes per tensor class in GPU and host memory, and the runtime records
+give allocations. PCIe receive and transmit rates per GPU come from NVML every 0.5\,s and from
+\texttt{nvidia-smi dmon}, to be cross-checked by one Nsight Systems capture with GPU metrics and calibrated by a script
+that drives a known volume of copy and zero-copy traffic and compares it with the counters
+(\datafile{experiments/tools/pcie_calibrate.py}). The analysis correlates the PCIe receive rate with the decode rate
+across load points and plans, with Pearson and Spearman coefficients and bootstrap intervals. \emph{In our runs} the
+sampler and \texttt{nvidia-smi dmon} ran in every session and the calibration script once, in the first, where its
+zero-copy test on the second GPU is invalid. We report PCIe receive traffic per level and per output token
+(Section~\ref{sec:bytes}), but the Nsight capture, the attribution of allocations from the mappings and the
+correlation analysis were not done.
+
+\subsection{Cost and service-level objectives}
+Cost per hour is the pod's quoted price in USD, converted to EUR at the ECB reference rate of \dv{price.fx.date}
+(\dv{price.fx.usd_per_eur} USD per EUR, \datafile{experiments/pricing.yaml}). Cost per million output tokens divides
+it by the sustained output rate. Splitting cost between input and output tokens is a modelling choice, so the model
+offers three rules: all cost to output, a dedicated split (input cost from the prefill probe at saturation, output cost
+from the decode probe), and a fixed price ratio solved at a mixed load point. Cost per concurrent request is the hourly
+price divided by $N$, and cost per request is the level's pod time divided by its requests. Cost under an objective
+uses the highest-throughput load point that meets it in every repetition. The three objectives are interactive (TTFT
+p95 up to 2\,s and TPOT p95 up to 50\,ms), relaxed (10\,s and 100\,ms) and long context (5\,s and 66.7\,ms). They
+were registered on 2026-10-06 before any controlled run, but after we had seen the exploratory data
+(\datafile{experiments/sla.yaml}).
+
+\subsection{Quality}
+E10 and E11 run lm-evaluation-harness~\citep{sutawika2023lmeval} 0.4.13 (task names validated locally,
+\datafile{quality/tasks.yaml}) against the measured stack and the reference. The design covers GSM8K~\citep{cobbe2021gsm8k}
+and MATH-500~\citep{hendrycks2021math} for reasoning, HumanEval~\citep{chen2021humaneval} and MBPP~\citep{austin2021mbpp}
+for code, IFEval~\citep{zhou2023ifeval} for instruction following, and subsets of RULER~\citep{hsieh2024ruler} and
+LongBench~\citep{bai2024longbench} for long context. Both systems get identical prompts, greedy decoding, thinking off
+and fixed seeds, with logs per item, so that differences are tested item by item with a paired bootstrap. Quantization
+can change behaviour that averages hide~\citep{dutta2024accuracy}, so we also report the share of items whose outcome
+flips. As designed, the reference is DeepSeek's original checkpoint on upstream vLLM on the B300 pod (E11). \emph{In
+our runs} only fixed-seed subsets of GSM8K, IFEval and HumanEval were evaluated
+(\datafile{quality/subsets_lean2h_seed20261006.json}), and the reference is the official DeepSeek API with thinking
+disabled, reached through a local proxy that logs token usage (\datafile{quality/api_proxy.py}), reported separately
+because its serving precision and implementation cannot be verified. MATH-500, MBPP, RULER and LongBench did not run.
+
+\subsection{Designed but not run}\label{sec:not-run}
+Six experiments of the protocol were designed and implemented but did not run in our campaign. Their full
+specifications, workloads and runners are in \datafile{experiments/experiments.yaml} and \datafile{experiments/runs/},
+and none of their numbers appears in this paper. E9 would serve the original checkpoint entirely in GPU memory on two
+B300 GPUs, the reference against which the cost of the offload would be measured. E7 would turn DSpark off to separate
+its effect, on code and on prose. E4 would compare placement policies at a fixed host share, including a random plan
+and one fitted to our own routing counts. E5 would compare int4 and FP8 Engram tables in host memory. E6 would vary the
+number of SMs given to the stream that computes host experts. E1 would rebuild every variant from scratch on a CPU
+machine and record image digests.

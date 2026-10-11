@@ -1,0 +1,161 @@
+{
+ "workload_file": "/root/hob/experiments/workloads/long_context.yaml",
+ "workload": {
+  "seed": 20261012,
+  "repetitions": 1,
+  "stop_ttft_p95_s": 900,
+  "stop_error_rate": 0.05,
+  "stop_min_errors": 2,
+  "scenarios": [
+   {
+    "name": "prefill-long",
+    "kind": "prefill",
+    "prompt": {
+     "corpus": "code",
+     "template": "raw",
+     "region": [
+      0.0,
+      0.5
+     ]
+    },
+    "lengths": [
+     32768,
+     65536,
+     131072,
+     260000
+    ],
+    "requests": 3
+   },
+   {
+    "name": "decode-128k",
+    "kind": "decode",
+    "prompt": {
+     "corpus": "code",
+     "template": "continue_prose",
+     "region": [
+      0.0,
+      0.5
+     ]
+    },
+    "prompt_tokens": 131072,
+    "output_tokens": 512,
+    "sampling": {
+     "temperature": 0.6,
+     "top_p": 0.95
+    },
+    "arrivals": {
+     "mode": "closed",
+     "levels": [
+      1,
+      2,
+      4
+     ],
+     "requests_per_user": 1,
+     "min_requests": 2
+    }
+   },
+   {
+    "name": "decode-256k",
+    "kind": "decode",
+    "prompt": {
+     "corpus": "code",
+     "template": "continue_prose",
+     "region": [
+      0.0,
+      0.5
+     ]
+    },
+    "prompt_tokens": 258000,
+    "output_tokens": 512,
+    "sampling": {
+     "temperature": 0.6,
+     "top_p": 0.95
+    },
+    "arrivals": {
+     "mode": "closed",
+     "levels": [
+      1,
+      2
+     ],
+     "requests_per_user": 1,
+     "min_requests": 2
+    }
+   },
+   {
+    "name": "B-prefix-128k",
+    "kind": "chat",
+    "prompt": {
+     "corpus": "code",
+     "tokens": 131200,
+     "shared_prefix_tokens": 131072,
+     "template": "qa_prefix",
+     "region": [
+      0.0,
+      0.5
+     ]
+    },
+    "output": {
+     "max_tokens": 256
+    },
+    "sampling": {
+     "temperature": 0.6,
+     "top_p": 0.95
+    },
+    "arrivals": {
+     "mode": "closed",
+     "levels": [
+      1,
+      2,
+      4,
+      8
+     ],
+     "requests_per_user": 2,
+     "min_requests": 4,
+     "stagger_s": 5
+    }
+   },
+   {
+    "name": "B-prefix-256k",
+    "kind": "chat",
+    "prompt": {
+     "corpus": "code",
+     "tokens": 258128,
+     "shared_prefix_tokens": 258000,
+     "template": "qa_prefix",
+     "region": [
+      0.0,
+      0.5
+     ]
+    },
+    "output": {
+     "max_tokens": 256
+    },
+    "sampling": {
+     "temperature": 0.6,
+     "top_p": 0.95
+    },
+    "arrivals": {
+     "mode": "closed",
+     "levels": [
+      1,
+      2,
+      4
+     ],
+     "requests_per_user": 2,
+     "min_requests": 4,
+     "stagger_s": 5
+    }
+   }
+  ]
+ },
+ "base_seed": 20261012,
+ "repetitions": 1,
+ "harness_git": "9882c943aa729729cf4df91759e2a36d7dbf122f",
+ "started_utc": "2026-10-07T06:21:47Z",
+ "status": "complete",
+ "server": {
+  "base_url": "http://127.0.0.1:8000",
+  "model": "deepseek-v4.1-flash"
+ },
+ "finished_utc": "2026-10-07T06:36:46Z"
+}

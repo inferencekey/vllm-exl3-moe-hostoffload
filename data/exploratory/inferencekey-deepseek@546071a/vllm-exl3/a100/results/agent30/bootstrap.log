@@ -1,0 +1,158 @@
+bash: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)
+++ date +%s
++ t0=1791282042
++ VP=/usr/local/lib/python3.12/dist-packages
++ export MAX_JOBS=48
++ MAX_JOBS=48
++ DEBIAN_FRONTEND=noninteractive
++ apt-get install -y --no-install-recommends git patch libcusparse-dev-13-0 libcusolver-dev-13-0
+Reading package lists...
+Building dependency tree...
+Reading state information...
+patch is already the newest version (2.7.6-7build3).
+patch set to manually installed.
+The following additional packages will be installed:
+  git-man libcusolver-13-0 libcusparse-13-0 liberror-perl
+Suggested packages:
+  gettext-base git-daemon-run | git-daemon-sysvinit git-doc git-email git-gui
+  gitk gitweb git-cvs git-mediawiki git-svn
+Recommended packages:
+  less
+The following NEW packages will be installed:
+  git git-man libcusolver-13-0 libcusolver-dev-13-0 libcusparse-13-0
+  libcusparse-dev-13-0 liberror-perl
+0 upgraded, 7 newly installed, 0 to remove and 37 not upgraded.
+Need to get 550 MB of archives.
+After this operation, 825 MB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu noble/main amd64 liberror-perl all 0.17029-2 [25.6 kB]
+Get:2 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64  libcusolver-13-0 12.0.4.66-1 [163 MB]
+Get:3 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 git-man all 1:2.43.0-1ubuntu7.3 [1100 kB]
+Get:4 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 git amd64 1:2.43.0-1ubuntu7.3 [3680 kB]
+Get:5 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64  libcusolver-dev-13-0 12.0.4.66-1 [104 MB]
+Get:6 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64  libcusparse-13-0 12.6.3.3-1 [138 MB]
+Get:7 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64  libcusparse-dev-13-0 12.6.3.3-1 [141 MB]
+perl: warning: Setting locale failed.
+perl: warning: Please check that your locale settings:
+	LANGUAGE = (unset),
+	LC_ALL = "en_US.UTF-8",
+	LANG = "C.UTF-8"
+    are supported and installed on your system.
+perl: warning: Falling back to a fallback locale ("C.UTF-8").
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 550 MB in 6s (86.4 MB/s)
+Selecting previously unselected package liberror-perl.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 24763 files and directories currently installed.)
+Preparing to unpack .../0-liberror-perl_0.17029-2_all.deb ...
+Unpacking liberror-perl (0.17029-2) ...
+Selecting previously unselected package git-man.
+Preparing to unpack .../1-git-man_1%3a2.43.0-1ubuntu7.3_all.deb ...
+Unpacking git-man (1:2.43.0-1ubuntu7.3) ...
+Selecting previously unselected package git.
+Preparing to unpack .../2-git_1%3a2.43.0-1ubuntu7.3_amd64.deb ...
+Unpacking git (1:2.43.0-1ubuntu7.3) ...
+Selecting previously unselected package libcusolver-13-0.
+Preparing to unpack .../3-libcusolver-13-0_12.0.4.66-1_amd64.deb ...
+Unpacking libcusolver-13-0 (12.0.4.66-1) ...
+Selecting previously unselected package libcusolver-dev-13-0.
+Preparing to unpack .../4-libcusolver-dev-13-0_12.0.4.66-1_amd64.deb ...
+Unpacking libcusolver-dev-13-0 (12.0.4.66-1) ...
+Selecting previously unselected package libcusparse-13-0.
+Preparing to unpack .../5-libcusparse-13-0_12.6.3.3-1_amd64.deb ...
+Unpacking libcusparse-13-0 (12.6.3.3-1) ...
+Selecting previously unselected package libcusparse-dev-13-0.
+Preparing to unpack .../6-libcusparse-dev-13-0_12.6.3.3-1_amd64.deb ...
+Unpacking libcusparse-dev-13-0 (12.6.3.3-1) ...
+Setting up libcusolver-13-0 (12.0.4.66-1) ...
+Setting up liberror-perl (0.17029-2) ...
+Setting up libcusparse-13-0 (12.6.3.3-1) ...
+Setting up git-man (1:2.43.0-1ubuntu7.3) ...
+Setting up libcusparse-dev-13-0 (12.6.3.3-1) ...
+Setting up libcusolver-dev-13-0 (12.0.4.66-1) ...
+Setting up git (1:2.43.0-1ubuntu7.3) ...
++ python3 -m pip install -q ninja
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
++ cd /usr/local/lib/python3.12/dist-packages
++ for p in pr58132-decoder-swa-replay sm120-thor-fixes pr59585-dsml-finite-args pr59894-decoder-replay-cut-trim pr58560-compressor-null-block
++ patch -p1 --forward
+patching file vllm/config/cache.py
+patching file vllm/models/deepseek_v41/decoder_replay_layers.py
+patching file vllm/models/deepseek_v41/nvidia/model.py
+patching file vllm/models/deepseek_v41/nvidia/model_state.py
+patching file vllm/models/deepseek_v41/nvidia/vl_model.py
++ for p in pr58132-decoder-swa-replay sm120-thor-fixes pr59585-dsml-finite-args pr59894-decoder-replay-cut-trim pr58560-compressor-null-block
++ patch -p1 --forward
+patching file vllm/model_executor/kernels/linear/mxfp8/flashinfer.py
+patching file vllm/model_executor/layers/quantization/utils/mxfp8_utils.py
+patching file vllm/models/deepseek_v41/attention.py
+patching file vllm/models/deepseek_v41/common/engram.py
+patching file vllm/models/deepseek_v41/nvidia/engram.py
+patching file vllm/models/deepseek_v41/nvidia/flashinfer_sparse.py
+patching file vllm/utils/multi_stream_utils.py
++ for p in pr58132-decoder-swa-replay sm120-thor-fixes pr59585-dsml-finite-args pr59894-decoder-replay-cut-trim pr58560-compressor-null-block
++ patch -p1 --forward
+patching file vllm/parser/deepseek_v4.py
++ for p in pr58132-decoder-swa-replay sm120-thor-fixes pr59585-dsml-finite-args pr59894-decoder-replay-cut-trim pr58560-compressor-null-block
++ patch -p1 --forward
+patching file vllm/models/deepseek_v41/attention.py
+patching file vllm/models/deepseek_v41/decoder_replay_layers.py
+patching file vllm/models/deepseek_v41/nvidia/model.py
+patching file vllm/models/deepseek_v41/nvidia/model_state.py
++ for p in pr58132-decoder-swa-replay sm120-thor-fixes pr59585-dsml-finite-args pr59894-decoder-replay-cut-trim pr58560-compressor-null-block
++ patch -p1 --forward
+patching file vllm/models/deepseek_v41/compressor.py
++ find /usr/local/lib/python3.12/dist-packages/vllm -name __pycache__ -path '*deepseek_v41*' -prune -exec rm -rf '{}' +
++ python3 -c 'import vllm.models.deepseek_v41.decoder_replay_layers, vllm.models.deepseek_v41.attention, vllm.models.deepseek_v41.nvidia.flashinfer_sparse, vllm.parser.deepseek_v4; print('\''vllm patches ok'\'')'
+vllm patches ok
++ git clone -q https://github.com/vcruz305/vllm-exl3.git /opt/vllm-exl3
++ git -C /opt/vllm-exl3 checkout -q d3cfd394920360d69f820d2dc96f8292a9e10283
++ cd /opt/vllm-exl3
++ patch -p1
+patching file src/vllm_exl3/exl3.py
++ python3 /opt/dsv41-patch/fix_vllm_exl3_setup.py /opt/vllm-exl3/setup.py
+patched /opt/vllm-exl3/setup.py
++ VLLM_EXL3_NO_CUDA=1
++ python3 -m pip install --no-build-isolation --no-deps /opt/vllm-exl3
+Processing ./.
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: vllm-exl3
+  Building wheel for vllm-exl3 (pyproject.toml): started
+  Building wheel for vllm-exl3 (pyproject.toml): finished with status 'done'
+  Created wheel for vllm-exl3: filename=vllm_exl3-0.4.2-py3-none-any.whl size=73308 sha256=8baff91d9834fd009605f8d3b98000599c3776e568f971abd6835d91d6cf9047
+  Stored in directory: /tmp/pip-ephem-wheel-cache-mwo8tw9f/wheels/2c/23/97/261c957ec2b335d5405f2e9ff7e5f99a3b21aef9f54e133d06
+Successfully built vllm-exl3
+Installing collected packages: vllm-exl3
+Successfully installed vllm-exl3-0.4.2
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
++ python3 -c 'import vllm_exl3; print('\''vllm_exl3 ok'\'')'
+vllm_exl3 ok
++ git clone -q https://github.com/turboderp-org/exllamav3.git /opt/exllamav3
++ git -C /opt/exllamav3 checkout -q 5be886578ec80324c2c715269387be2058724b6e
++ TORCH_CUDA_ARCH_LIST=12.0a
++ python3 -m pip install --no-build-isolation --no-deps /opt/exllamav3
+Processing /opt/exllamav3
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: exllamav3
+  Building wheel for exllamav3 (pyproject.toml): started
+  Building wheel for exllamav3 (pyproject.toml): still running...
+  Building wheel for exllamav3 (pyproject.toml): finished with status 'done'
+  Created wheel for exllamav3: filename=exllamav3-1.4.9-cp312-cp312-linux_x86_64.whl size=91774095 sha256=5d7a57a18e294e08f471666754f847b8513404dd43b5f134d69da01a45e3bbab
+  Stored in directory: /tmp/pip-ephem-wheel-cache-4h5ejaxm/wheels/66/31/22/52c7f1731161c8b0d5fd515bdafc549cddbaf9d4f6b0057a0f
+Successfully built exllamav3
+Installing collected packages: exllamav3
+Successfully installed exllamav3-1.4.9
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
++ python3 -c 'import torch, exllamav3, exllamav3_ext; assert hasattr(exllamav3_ext, '\''exl3_moe'\''); print('\''exllamav3 ok'\'')'
+exllamav3 ok
++ cd /opt/recipe/kernels
++ TORCH_CUDA_ARCH_LIST=12.0a
++ python3 build_xmoe.py xmoe xmoe
+built xmoe in 14s -> /opt/recipe/kernels/build/xmoe/xmoe.so
++ TORCH_CUDA_ARCH_LIST=12.0a
++ python3 build_xmoe_do.py
+built xmoe_do in 37s -> /opt/recipe/kernels/build/xmoe_do/xmoe_do.so
++ cp /opt/recipe/patches/vllm/sitecustomize.py /usr/lib/python3.12/sitecustomize.py
+++ date +%s
++ echo 'BOOTSTRAP DONE in 217s'
+BOOTSTRAP DONE in 217s

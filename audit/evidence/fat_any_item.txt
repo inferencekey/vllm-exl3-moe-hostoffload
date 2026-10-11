@@ -1,0 +1,22 @@
+# The capture-size-384 failure: fat.any().item() in the fat-expert path, reached when tokens > VLLM_EXL3_FAT_THRESHOLD (256)
+## vllm-exl3 d3cfd394 as published (src/vllm_exl3/exl3.py):
+  exl3.py:108:    FAT_EXPERT_THRESHOLD = max(0, int(os.environ.get("VLLM_EXL3_FAT_THRESHOLD", "256")))
+  exl3.py:1156:def apply_exl3_fused_moe(
+  exl3.py:1238:    fat_possible = tokens > FAT_EXPERT_THRESHOLD
+  exl3.py:1240:    if fat_possible and bool(fat.any().item()):
+  exl3.py:1296:    if fat_possible and bool(fat.any().item()):
+## vllm-exl3 d3cfd394 + recipe exl3-thor.patch (what bootstrap.sh installs):
+  exl3.py:246:    FAT_EXPERT_THRESHOLD = max(0, int(os.environ.get("VLLM_EXL3_FAT_THRESHOLD", "256")))
+  exl3.py:1404:def apply_exl3_fused_moe(
+  exl3.py:1497:    fat_possible = tokens > FAT_EXPERT_THRESHOLD
+  exl3.py:1535:        elif fat_possible and bool(fat.any().item()):
+  exl3.py:1732:    if fat_possible and fat is not None and bool(fat.any().item()):
+  exl3.py:1780:def apply_exl3_experts(
+  exl3.py:1837: out = apply_exl3_fused_moe(x2d, ids, weights, layer, inners, expert_map, limit)
+  exl3.py:2753: return apply_exl3_experts(
+## traceback in inferencekey's log (pro6000-concurrency/logs/serve_attempt1_capture384.log):
+  cudaErrorStreamCaptureUnsupported
+  elif fat_possible and bool(fat.any().item()):
+  exl3.py", line 1535, in apply_exl3_fused_moe
+  exl3.py", line 1837, in apply_exl3_experts
+  exl3.py", line 2753, in apply

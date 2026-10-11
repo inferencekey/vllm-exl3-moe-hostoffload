@@ -1,0 +1,108 @@
+{
+  "source_repo": "https://github.com/inferencekey/inferencekey-deepseek",
+  "source_commit": "546071a76de290b47a43149924c95866f5b8ebf0",
+  "dest_root": "inferencekey-deepseek@546071a",
+  "note": "Files are read from git objects at source_commit (git show), never from the working tree. 'verbatim' files are byte-identical. 'redacted' files drop or rewrite the listed lines (1-based line numbers of the original) to remove content about an out-of-scope runtime; every edit leaves a visible [redacted] marker. 'excerpt' files keep only the listed line ranges.",
+  "verbatim_prefixes": [
+    "vllm-exl3/a100/",
+    "vllm-exl3/pro6000-concurrency/",
+    "vllm-exl3/b300/"
+  ],
+  "exclude_paths": [
+    "vllm-exl3/a100/README.md"
+  ],
+  "redacted": [
+    {
+      "path": "vllm-exl3/a100/README.md",
+      "reason": "Lines 18-19, 79-80 and 83 compare against a different runtime that is out of scope for this artifact.",
+      "drop_lines": [
+        18,
+        19,
+        79,
+        80
+      ],
+      "replace_lines": {
+        "18": "[redacted: two lines about an out-of-scope runtime]",
+        "79": "| [redacted: two table rows about an out-of-scope runtime] | | | | |",
+        "83": "[redacted: one sentence comparing with an out-of-scope runtime]"
+      }
+    },
+    {
+      "path": "vllm-exl3/b300/logs/created.txt",
+      "reason": "Account identifiers removed before public release: the RunPod consumerUserId and the PUBLIC_KEY environment value (an SSH public key with a personal e-mail address) are replaced in place by [redacted] markers. No other byte changes.",
+      "replace_values": {
+        "consumerUserId": "[redacted]",
+        "PUBLIC_KEY": "[redacted ssh public key]"
+      }
+    },
+    {
+      "path": "vllm-exl3/b300/logs/created_attempt1_stuck.txt",
+      "reason": "Account identifiers removed before public release: the RunPod consumerUserId and the PUBLIC_KEY environment value (an SSH public key with a personal e-mail address) are replaced in place by [redacted] markers. No other byte changes.",
+      "replace_values": {
+        "consumerUserId": "[redacted]",
+        "PUBLIC_KEY": "[redacted ssh public key]"
+      }
+    },
+    {
+      "path": "vllm-exl3/b300/logs/created_attempt2_stuck.txt",
+      "reason": "Account identifiers removed before public release: the RunPod consumerUserId and the PUBLIC_KEY environment value (an SSH public key with a personal e-mail address) are replaced in place by [redacted] markers. No other byte changes.",
+      "replace_values": {
+        "consumerUserId": "[redacted]",
+        "PUBLIC_KEY": "[redacted ssh public key]"
+      }
+    }
+  ],
+  "excerpts": [
+    {
+      "path": "docs/REPORT.md",
+      "dest_name": "docs/REPORT_vllm_excerpt.md",
+      "reason": "Only the vLLM sections are in scope: header, cost method and the S10/S11/S12 cost rows, metric definitions 4.2 to 4.4, test sheets S10, S11, S12, the vLLM parts of the threats to validity and of the model-quality note. Sections S1 to S9 and S13 concern other runtimes and are not imported.",
+      "keep_ranges": [
+        [
+          1,
+          7
+        ],
+        [
+          22,
+          44
+        ],
+        [
+          54,
+          56
+        ],
+        [
+          98,
+          132
+        ],
+        [
+          311,
+          486
+        ],
+        [
+          540,
+          543
+        ],
+        [
+          549,
+          553
+        ],
+        [
+          555,
+          555
+        ],
+        [
+          558,
+          567
+        ]
+      ],
+      "replace_lines": {
+        "542": "- **Single runs.** Each configuration was measured once, with no repeats. Small differences ([redacted: out-of-scope run], the",
+        "549": "- **Synthetic prompts.** [redacted: out-of-scope run] vllm-exl3 used vLLM source slices and fixed question",
+        "552": "- **Speculative decoding.** DSpark makes vllm-exl3 decode content-dependent (5.12). [redacted: out-of-scope comparison]",
+        "553": "- **Prefix cache.** A had 0 hits and B 99.3%, both by design. S10's second-turn TTFT is a cache hit. [redacted: out-of-scope comparison]",
+        "562": "**Not evaluated**: no perplexity, no KL against the reference, no eval suite. [redacted: out-of-scope quantization] EXL3",
+        "566": "- [redacted: anecdotal check on an out-of-scope run]"
+      }
+    }
+  ]
+}

@@ -1,0 +1,964 @@
+bash: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)
+WARN: cannot raise memlock (8192)
+[sitecustomize] THOR_ROUTER_SPLITK: GateLinear <=64 rows -> Triton split-K
+[sitecustomize] THOR_MHC_SPLITS=80: mHC prenorm GEMM split cap raised from 16
+[sitecustomize] THOR_DENSE_GEMV: Marlin MXFP8 -> thor dense (GEMV decode / dequant+cuBLAS prefill)
+[sitecustomize] THOR_FP8_LMHEAD: enabled
+[sitecustomize] THOR_INDEXER_BUF_MULT=8: indexer prefill K-gather workspace = max_model_len x 8 (3 sites)
+(APIServer pid=5863) INFO 10-06 11:11:06 [api_utils.py:347] 
+(APIServer pid=5863) INFO 10-06 11:11:06 [api_utils.py:347]        █     █     █▄   ▄█
+(APIServer pid=5863) INFO 10-06 11:11:06 [api_utils.py:347]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.30.1rc1.dev312+g36768d1bf
+(APIServer pid=5863) INFO 10-06 11:11:06 [api_utils.py:347]   █▄█▀ █     █     █     █  model   /root/models/DeepSeek-V4.1-Flash-EXL3-3bpw
+(APIServer pid=5863) INFO 10-06 11:11:06 [api_utils.py:347]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀
+(APIServer pid=5863) INFO 10-06 11:11:06 [api_utils.py:347] 
+(APIServer pid=5863) INFO 10-06 11:11:06 [api_utils.py:286] non-default args: {'model_tag': '/root/models/DeepSeek-V4.1-Flash-EXL3-3bpw', 'enable_auto_tool_choice': True, 'tool_call_parser': 'deepseek_v41', 'enable_prompt_tokens_details': True, 'host': '0.0.0.0', 'api_key': '***', 'model': '/root/models/DeepSeek-V4.1-Flash-EXL3-3bpw', 'tokenizer_mode': 'deepseek_v41', 'trust_remote_code': True, 'max_model_len': 262144, 'quantization': 'exl3', 'served_model_name': ['deepseek-v4.1-flash'], 'reasoning_parser': 'deepseek_v41', 'tensor_parallel_size': 2, 'disable_custom_all_reduce': True, 'block_size': 64, 'kv_cache_memory_bytes': 4563402752, 'kv_cache_dtype': 'fp8', 'language_model_only': True, 'max_num_batched_tokens': 16384, 'max_num_seqs': 64, 'cudagraph_capture_sizes': [1, 2, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 256, 384], 'linear_backend': 'marlin', 'speculative_config': {'method': 'dspark', 'num_speculative_tokens': 5, 'draft_sample_method': 'probabilistic'}, 'compilation_config': {'mode': None, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['all'], 'ir_enable_torch_wrap': None, 'splitting_ops': None, 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'compile_sizes': None, 'compile_ranges_endpoints': None, 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.FULL_DECODE_ONLY: (2, 0)>, 'cudagraph_num_of_warmups': 0, 'cudagraph_capture_sizes': None, 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': None, 'pass_config': {}, 'max_cudagraph_capture_size': None, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': None, 'static_all_moe_layers': []}, 'kernel_config': KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=[], fused_add_rms_norm=[], gelu_and_mul_sparse=[]), enable_flashinfer_autotune=False, enable_cutedsl_warmup=True, enable_jit_warmup=False, moe_backend='auto', sparse_indexer_topk_backend='auto', linear_backend='auto', linear_backend_per_quant=None)}
+(APIServer pid=5863) INFO 10-06 11:11:15 [model.py:699] Resolved architecture: DeepseekV41ForCausalLM
+(APIServer pid=5863) INFO 10-06 11:11:15 [model.py:2109] Using max model len 262144
+(APIServer pid=5863) INFO 10-06 11:11:16 [model.py:917] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(APIServer pid=5863) INFO 10-06 11:11:16 [model.py:974] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+(APIServer pid=5863) INFO 10-06 11:11:16 [cache.py:365] Using fp8 data type to store kv cache. It reduces the GPU memory footprint and boosts the performance. Meanwhile, it may cause accuracy drop without a proper scaling factor
+(APIServer pid=5863) INFO 10-06 11:11:16 [model.py:699] Resolved architecture: DeepseekV41ForCausalLM
+(APIServer pid=5863) INFO 10-06 11:11:16 [model.py:2109] Using max model len 1048576
+(APIServer pid=5863) INFO 10-06 11:11:26 [speculative.py:1663] Overriding draft model max model len from 1048576 to 262144
+(APIServer pid=5863) INFO 10-06 11:11:26 [scheduler.py:308] Chunked prefill is enabled with max_num_batched_tokens=16384.
+(APIServer pid=5863) INFO 10-06 11:11:26 [vllm.py:1403] Resolved Engram configuration: EngramConfig(cpu_offload=True, embedding_across_dp=False, dp_shared_memory=False, use_thp=False)
+(APIServer pid=5863) INFO 10-06 11:11:26 [vllm.py:843] Auto-enabling VLLM_USE_BREAKABLE_CUDAGRAPH=1. Set VLLM_USE_BREAKABLE_CUDAGRAPH=0 to opt out.
+(APIServer pid=5863) INFO 10-06 11:11:26 [kernel.py:408] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'], gelu_and_mul_sparse=['triton', 'native'])
+(APIServer pid=5863) INFO 10-06 11:11:26 [compilation.py:331] Enabled custom fusions: norm_quant, act_quant
+[sitecustomize] THOR_ROUTER_SPLITK: GateLinear <=64 rows -> Triton split-K
+[sitecustomize] THOR_ROUTER_SPLITK: GateLinear <=64 rows -> Triton split-K
+[sitecustomize] THOR_MHC_SPLITS=80: mHC prenorm GEMM split cap raised from 16
+[sitecustomize] THOR_DENSE_GEMV: Marlin MXFP8 -> thor dense (GEMV decode / dequant+cuBLAS prefill)
+[sitecustomize] THOR_FP8_LMHEAD: enabled
+[sitecustomize] THOR_INDEXER_BUF_MULT=8: indexer prefill K-gather workspace = max_model_len x 8 (3 sites)
+[sitecustomize] THOR_MHC_SPLITS=80: mHC prenorm GEMM split cap raised from 16
+[sitecustomize] THOR_DENSE_GEMV: Marlin MXFP8 -> thor dense (GEMV decode / dequant+cuBLAS prefill)
+[sitecustomize] THOR_FP8_LMHEAD: enabled
+[sitecustomize] THOR_INDEXER_BUF_MULT=8: indexer prefill K-gather workspace = max_model_len x 8 (3 sites)
+(EngineCore pid=7495) INFO 10-06 11:11:34 [core.py:129] Initializing a V1 LLM engine (v0.30.1rc1.dev312+g36768d1bf) with config: model='/root/models/DeepSeek-V4.1-Flash-EXL3-3bpw', speculative_config=SpeculativeConfig(method='dspark', model='/root/models/DeepSeek-V4.1-Flash-EXL3-3bpw', num_spec_tokens=5), tokenizer='/root/models/DeepSeek-V4.1-Flash-EXL3-3bpw', skip_tokenizer_init=False, tokenizer_mode=deepseek_v41, revision=None, tokenizer_revision=None, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=262144, download_dir=None, load_format=auto, tensor_parallel_size=2, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=True, quantization=exl3, quantization_config=None, enforce_eager=False, aux_output_config=AuxOutputConfig(enable_return_routed_experts=False, max_bytes=None), kv_cache_dtype=fp8, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='deepseek_v41', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, per_request_spec_decode_metrics='none', kv_cache_metrics=False, kv_cache_metrics_sample=0.01, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False, jit_monitor_mode='warn', jit_monitor_verbose=False), seed=0, served_model_name=deepseek-v4.1-flash, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.NONE: 0>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['all', '+quant_fp8', '+quant_fp8'], 'ir_enable_torch_wrap': False, 'splitting_ops': [], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'compile_sizes': [], 'compile_ranges_endpoints': [16384], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.FULL_DECODE_ONLY: (2, 0)>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [1, 2, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 256, 384], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': True, 'fuse_act_quant': True, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': False, 'enable_qk_norm_rope_fusion': False, 'fuse_rope_kvcache_cat_mla': False, 'fuse_act_padding': False, 'fuse_qk_norm_rope_kvcache': False}, 'max_cudagraph_capture_size': 384, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'], gelu_and_mul_sparse=['triton', 'native']), enable_flashinfer_autotune=False, enable_cutedsl_warmup=True, enable_jit_warmup=False, moe_backend='auto', sparse_indexer_topk_backend='auto', linear_backend='marlin', linear_backend_per_quant=None)
+(EngineCore pid=7495) INFO 10-06 11:11:34 [multiproc_executor.py:153] DP group leader: node_rank=0, node_rank_within_dp=0, master_addr=127.0.0.1, mq_connect_ip=172.24.0.2 (local), world_size=2, local_world_size=2
+[sitecustomize] THOR_ROUTER_SPLITK: GateLinear <=64 rows -> Triton split-K
+[sitecustomize] THOR_ROUTER_SPLITK: GateLinear <=64 rows -> Triton split-K
+[sitecustomize] THOR_MHC_SPLITS=80: mHC prenorm GEMM split cap raised from 16
+[sitecustomize] THOR_DENSE_GEMV: Marlin MXFP8 -> thor dense (GEMV decode / dequant+cuBLAS prefill)
+[sitecustomize] THOR_FP8_LMHEAD: enabled
+[sitecustomize] THOR_INDEXER_BUF_MULT=8: indexer prefill K-gather workspace = max_model_len x 8 (3 sites)
+(Worker pid=8455) INFO 10-06 11:11:41 [parallel_state.py:1825] world_size=2 rank=0 local_rank=0 distributed_init_method=file:///tmp/vllm_dist_ada83aa07bb64d2bbd543093b142d139 backend=nccl
+[sitecustomize] THOR_MHC_SPLITS=80: mHC prenorm GEMM split cap raised from 16
+[sitecustomize] THOR_DENSE_GEMV: Marlin MXFP8 -> thor dense (GEMV decode / dequant+cuBLAS prefill)
+[sitecustomize] THOR_FP8_LMHEAD: enabled
+[sitecustomize] THOR_INDEXER_BUF_MULT=8: indexer prefill K-gather workspace = max_model_len x 8 (3 sites)
+(Worker pid=8456) INFO 10-06 11:11:41 [parallel_state.py:1825] world_size=2 rank=1 local_rank=1 distributed_init_method=file:///tmp/vllm_dist_ada83aa07bb64d2bbd543093b142d139 backend=nccl
+(Worker pid=8455) INFO 10-06 11:11:43 [pynccl.py:148] vLLM is using nccl==2.30.7
+(Worker pid=8455) WARNING 10-06 11:11:44 [symm_mem.py:67] SymmMemCommunicator: Device capability 12.0 not supported, communicator is not available.
+(Worker pid=8456) WARNING 10-06 11:11:44 [symm_mem.py:67] SymmMemCommunicator: Device capability 12.0 not supported, communicator is not available.
+(Worker pid=8455) WARNING 10-06 11:11:44 [flashinfer_all_reduce.py:394] FlashInfer All Reduce is disabled because it is not supported for world_size=2.
+(Worker pid=8455) INFO 10-06 11:11:44 [cuda_communicator.py:326] Using ['PYNCCL'] all-reduce backends (in dispatch order) for group 'tp:0' out of potential backends: ['FLASHINFER_PCIE_IPC', 'FLASHINFER', 'NCCL_SYMM_MEM', 'QUICK_REDUCE', 'AITER_CUSTOM', 'CUSTOM', 'SYMM_MEM', 'PYNCCL'].
+(Worker pid=8456) WARNING 10-06 11:11:44 [flashinfer_all_reduce.py:394] FlashInfer All Reduce is disabled because it is not supported for world_size=2.
+(Worker pid=8455) INFO 10-06 11:11:44 [cuda_communicator.py:326] Using ['PYNCCL'] all-reduce backends (in dispatch order) for group 'ep:0' out of potential backends: ['FLASHINFER_PCIE_IPC', 'FLASHINFER', 'NCCL_SYMM_MEM', 'QUICK_REDUCE', 'AITER_CUSTOM', 'CUSTOM', 'SYMM_MEM', 'PYNCCL'].
+(Worker pid=8455) INFO 10-06 11:11:44 [parallel_state.py:2269] rank 0 in world size 2 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, ETP rank 0, EP rank 0, EPLB rank N/A
+(Worker pid=8455) INFO 10-06 11:11:44 [gpu_worker.py:479] Using V2 Model Runner
+(Worker_TP0 pid=8455) INFO 10-06 11:11:45 [model_runner.py:372] Loading model from scratch...
+(Worker_TP0 pid=8455) INFO 10-06 11:11:45 [cuda.py:585] Using backend AttentionBackendEnum.FLASH_ATTN for vit attention
+(Worker_TP0 pid=8455) INFO 10-06 11:11:45 [mm_encoder_attention.py:372] Using AttentionBackendEnum.FLASH_ATTN for MMEncoderAttention.
+(Worker_TP0 pid=8455) INFO 10-06 11:11:45 [quant_config.py:79] DeepSeek V4 expert_dtype resolved to 'fp4'
+(Worker_TP0 pid=8455) INFO 10-06 11:11:45 [__init__.py:929] Using MarlinMxfp8LinearKernel for MXFP8 GEMM
+[sitecustomize] THOR_ROPE_CAP: DeepseekV4ScalingRotaryEmbedding cos/sin cache 1048576 -> 270336 positions
+[sitecustomize] THOR_ROPE_CAP: DeepseekV4ScalingRotaryEmbedding cos/sin cache 1048576 -> 270336 positions
+(Worker_TP0 pid=8455) INFO 10-06 11:11:45 [attention.py:158] Using DeepSeek's fp8_ds_mla KV cache format.
+(Worker_TP1 pid=8456) INFO 10-06 11:11:45 [exl3.py:2451] EXL3 host experts: language_model.model.layers.0.ffn.experts keeps 65/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:11:45 [exl3.py:2451] EXL3 host experts: language_model.model.layers.0.ffn.experts keeps 65/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:11:52 [engram.py:308] Engram table offloaded to pinned host memory: 192004428 rows x 256, 25.75 GiB per rank
+(Worker_TP0 pid=8455) INFO 10-06 11:11:52 [engram.py:308] Engram table offloaded to pinned host memory: 192001740 rows x 256, 25.75 GiB per rank
+(Worker_TP1 pid=8456) INFO 10-06 11:11:52 [exl3.py:2451] EXL3 host experts: language_model.model.layers.1.ffn.experts keeps 68/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:11:52 [exl3.py:2451] EXL3 host experts: language_model.model.layers.1.ffn.experts keeps 68/384 experts in pinned host RAM
+[sitecustomize] THOR_ROPE_CAP: DeepseekV4ScalingRotaryEmbedding cos/sin cache 1048576 -> 270336 positions
+[sitecustomize] THOR_ROPE_CAP: DeepseekV4ScalingRotaryEmbedding cos/sin cache 1048576 -> 270336 positions
+(Worker_TP0 pid=8455) INFO 10-06 11:11:52 [attention.py:1338] Using FP8 indexer cache for Lightning Indexer.
+(Worker_TP1 pid=8456) INFO 10-06 11:11:52 [exl3.py:2451] EXL3 host experts: language_model.model.layers.2.ffn.experts keeps 113/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:11:52 [exl3.py:2451] EXL3 host experts: language_model.model.layers.2.ffn.experts keeps 113/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:11:52 [exl3.py:2451] EXL3 host experts: language_model.model.layers.3.ffn.experts keeps 117/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:11:52 [exl3.py:2451] EXL3 host experts: language_model.model.layers.3.ffn.experts keeps 117/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:11:52 [exl3.py:2451] EXL3 host experts: language_model.model.layers.4.ffn.experts keeps 111/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:11:52 [exl3.py:2451] EXL3 host experts: language_model.model.layers.4.ffn.experts keeps 111/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:11:52 [exl3.py:2451] EXL3 host experts: language_model.model.layers.5.ffn.experts keeps 112/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:11:52 [exl3.py:2451] EXL3 host experts: language_model.model.layers.5.ffn.experts keeps 112/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:11:52 [exl3.py:2451] EXL3 host experts: language_model.model.layers.6.ffn.experts keeps 140/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:11:52 [exl3.py:2451] EXL3 host experts: language_model.model.layers.6.ffn.experts keeps 140/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:11:53 [exl3.py:2451] EXL3 host experts: language_model.model.layers.7.ffn.experts keeps 120/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:11:53 [exl3.py:2451] EXL3 host experts: language_model.model.layers.7.ffn.experts keeps 120/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:11:53 [exl3.py:2451] EXL3 host experts: language_model.model.layers.8.ffn.experts keeps 118/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:11:53 [exl3.py:2451] EXL3 host experts: language_model.model.layers.8.ffn.experts keeps 118/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:11:53 [exl3.py:2451] EXL3 host experts: language_model.model.layers.9.ffn.experts keeps 128/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:11:53 [exl3.py:2451] EXL3 host experts: language_model.model.layers.9.ffn.experts keeps 128/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:11:53 [exl3.py:2451] EXL3 host experts: language_model.model.layers.10.ffn.experts keeps 130/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:11:53 [exl3.py:2451] EXL3 host experts: language_model.model.layers.10.ffn.experts keeps 130/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:11:53 [exl3.py:2451] EXL3 host experts: language_model.model.layers.11.ffn.experts keeps 121/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:11:53 [exl3.py:2451] EXL3 host experts: language_model.model.layers.11.ffn.experts keeps 121/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:11:53 [exl3.py:2451] EXL3 host experts: language_model.model.layers.12.ffn.experts keeps 111/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:11:53 [exl3.py:2451] EXL3 host experts: language_model.model.layers.12.ffn.experts keeps 111/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:11:53 [exl3.py:2451] EXL3 host experts: language_model.model.layers.13.ffn.experts keeps 86/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:11:53 [exl3.py:2451] EXL3 host experts: language_model.model.layers.13.ffn.experts keeps 86/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:01 [engram.py:308] Engram table offloaded to pinned host memory: 192007016 rows x 256, 25.75 GiB per rank
+(Worker_TP1 pid=8456) INFO 10-06 11:12:01 [engram.py:308] Engram table offloaded to pinned host memory: 192009666 rows x 256, 25.75 GiB per rank
+(Worker_TP1 pid=8456) INFO 10-06 11:12:01 [exl3.py:2451] EXL3 host experts: language_model.model.layers.14.ffn.experts keeps 127/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:01 [exl3.py:2451] EXL3 host experts: language_model.model.layers.14.ffn.experts keeps 127/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:02 [exl3.py:2451] EXL3 host experts: language_model.model.layers.15.ffn.experts keeps 97/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:02 [exl3.py:2451] EXL3 host experts: language_model.model.layers.15.ffn.experts keeps 97/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:02 [exl3.py:2451] EXL3 host experts: language_model.model.layers.16.ffn.experts keeps 138/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:02 [exl3.py:2451] EXL3 host experts: language_model.model.layers.16.ffn.experts keeps 138/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:02 [exl3.py:2451] EXL3 host experts: language_model.model.layers.17.ffn.experts keeps 111/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:02 [exl3.py:2451] EXL3 host experts: language_model.model.layers.17.ffn.experts keeps 111/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:02 [exl3.py:2451] EXL3 host experts: language_model.model.layers.18.ffn.experts keeps 116/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:02 [exl3.py:2451] EXL3 host experts: language_model.model.layers.18.ffn.experts keeps 116/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:02 [exl3.py:2451] EXL3 host experts: language_model.model.layers.19.ffn.experts keeps 69/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:02 [exl3.py:2451] EXL3 host experts: language_model.model.layers.19.ffn.experts keeps 69/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:02 [exl3.py:2451] EXL3 host experts: language_model.model.layers.20.ffn.experts keeps 139/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:02 [exl3.py:2451] EXL3 host experts: language_model.model.layers.20.ffn.experts keeps 139/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:02 [exl3.py:2451] EXL3 host experts: language_model.model.layers.21.ffn.experts keeps 128/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:02 [exl3.py:2451] EXL3 host experts: language_model.model.layers.21.ffn.experts keeps 128/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:03 [exl3.py:2451] EXL3 host experts: language_model.model.layers.22.ffn.experts keeps 133/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:03 [exl3.py:2451] EXL3 host experts: language_model.model.layers.22.ffn.experts keeps 133/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:03 [exl3.py:2451] EXL3 host experts: language_model.model.layers.23.ffn.experts keeps 97/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:03 [exl3.py:2451] EXL3 host experts: language_model.model.layers.23.ffn.experts keeps 97/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:03 [exl3.py:2451] EXL3 host experts: language_model.model.layers.24.ffn.experts keeps 135/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:03 [exl3.py:2451] EXL3 host experts: language_model.model.layers.24.ffn.experts keeps 135/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:03 [exl3.py:2451] EXL3 host experts: language_model.model.layers.25.ffn.experts keeps 145/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:03 [exl3.py:2451] EXL3 host experts: language_model.model.layers.25.ffn.experts keeps 145/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:03 [exl3.py:2451] EXL3 host experts: language_model.model.layers.26.ffn.experts keeps 135/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:03 [exl3.py:2451] EXL3 host experts: language_model.model.layers.26.ffn.experts keeps 135/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:03 [exl3.py:2451] EXL3 host experts: language_model.model.layers.27.ffn.experts keeps 113/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:03 [exl3.py:2451] EXL3 host experts: language_model.model.layers.27.ffn.experts keeps 113/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:03 [exl3.py:2451] EXL3 host experts: language_model.model.layers.28.ffn.experts keeps 141/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:03 [exl3.py:2451] EXL3 host experts: language_model.model.layers.28.ffn.experts keeps 141/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:04 [exl3.py:2451] EXL3 host experts: language_model.model.layers.29.ffn.experts keeps 129/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:04 [exl3.py:2451] EXL3 host experts: language_model.model.layers.29.ffn.experts keeps 129/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:04 [exl3.py:2451] EXL3 host experts: language_model.model.layers.30.ffn.experts keeps 125/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:04 [exl3.py:2451] EXL3 host experts: language_model.model.layers.30.ffn.experts keeps 125/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:04 [exl3.py:2451] EXL3 host experts: language_model.model.layers.31.ffn.experts keeps 131/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:04 [exl3.py:2451] EXL3 host experts: language_model.model.layers.31.ffn.experts keeps 131/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:04 [exl3.py:2451] EXL3 host experts: language_model.model.layers.32.ffn.experts keeps 140/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:04 [exl3.py:2451] EXL3 host experts: language_model.model.layers.32.ffn.experts keeps 140/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:04 [exl3.py:2451] EXL3 host experts: language_model.model.layers.33.ffn.experts keeps 115/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:04 [exl3.py:2451] EXL3 host experts: language_model.model.layers.33.ffn.experts keeps 115/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:04 [exl3.py:2451] EXL3 host experts: language_model.model.layers.34.ffn.experts keeps 108/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:04 [exl3.py:2451] EXL3 host experts: language_model.model.layers.34.ffn.experts keeps 108/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:04 [exl3.py:2451] EXL3 host experts: language_model.model.layers.35.ffn.experts keeps 105/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:04 [exl3.py:2451] EXL3 host experts: language_model.model.layers.35.ffn.experts keeps 105/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:05 [exl3.py:2451] EXL3 host experts: language_model.model.layers.36.ffn.experts keeps 101/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:05 [exl3.py:2451] EXL3 host experts: language_model.model.layers.36.ffn.experts keeps 101/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:05 [exl3.py:2451] EXL3 host experts: language_model.model.layers.37.ffn.experts keeps 87/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:05 [exl3.py:2451] EXL3 host experts: language_model.model.layers.37.ffn.experts keeps 87/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:05 [exl3.py:2451] EXL3 host experts: language_model.model.layers.38.ffn.experts keeps 106/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:05 [exl3.py:2451] EXL3 host experts: language_model.model.layers.38.ffn.experts keeps 106/384 experts in pinned host RAM
+(Worker_TP1 pid=8456) INFO 10-06 11:12:05 [exl3.py:2451] EXL3 host experts: language_model.model.layers.39.ffn.experts keeps 97/384 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:12:05 [exl3.py:2451] EXL3 host experts: language_model.model.layers.39.ffn.experts keeps 97/384 experts in pinned host RAM
+[transformers] You are using a model of type `deepseek_v41` to instantiate a model of type ``. This may be expected if you are loading a checkpoint that shares a subset of the architecture (e.g., loading a `sam2_video` checkpoint into `Sam2Model`), but is otherwise not supported and can yield errors. Please verify that the checkpoint is compatible with the model you are instantiating.
+(Worker_TP0 pid=8455) INFO 10-06 11:12:05 [model.py:826] Decoder SWA bounded replay: in eager prefill steps, layer 20 writes its KV for every token and runs the rest of itself and layers 21-39 on each request's last 128 tokens only.
+[transformers] You are using a model of type `deepseek_v41` to instantiate a model of type ``. This may be expected if you are loading a checkpoint that shares a subset of the architecture (e.g., loading a `sam2_video` checkpoint into `Sam2Model`), but is otherwise not supported and can yield errors. Please verify that the checkpoint is compatible with the model you are instantiating.
+(Worker_TP0 pid=8455) INFO 10-06 11:12:06 [engram.py:432] Built engram token map (129280 -> 99092 ids) for layers (1, 14)
+(Worker_TP1 pid=8456) INFO 10-06 11:12:06 [engram.py:432] Built engram token map (129280 -> 99092 ids) for layers (1, 14)
+(Worker_TP0 pid=8455) WARNING 10-06 11:12:06 [compilation.py:1350] Op 'quant_fp8' not present in model, enabling with '+quant_fp8' has no effect
+(Worker_TP0 pid=8455) INFO 10-06 11:12:06 [weight_utils.py:1063] Filesystem type for checkpoints: OVERLAY. Checkpoint size: 309.29 GiB. Available RAM: 56.46 GiB.
+(Worker_TP0 pid=8455) INFO 10-06 11:12:06 [weight_utils.py:1093] Auto-prefetch is disabled because the filesystem (OVERLAY) is not a recognized network FS (NFS/Lustre) and the checkpoint size (309.29 GiB) exceeds 90% of available RAM (56.46 GiB).
+Loading safetensors checkpoint shards:   0% Completed | 0/56 [00:00<?, ?it/s]
+Loading safetensors checkpoint shards:   4% Completed | 2/56 [00:00<00:07,  7.63it/s]
+Loading safetensors checkpoint shards:   5% Completed | 3/56 [00:00<00:08,  6.20it/s]
+Loading safetensors checkpoint shards:   7% Completed | 4/56 [00:00<00:09,  5.75it/s]
+Loading safetensors checkpoint shards:   9% Completed | 5/56 [00:00<00:09,  5.49it/s]
+Loading safetensors checkpoint shards:  11% Completed | 6/56 [00:01<00:09,  5.35it/s]
+Loading safetensors checkpoint shards:  12% Completed | 7/56 [00:01<00:09,  5.30it/s]
+Loading safetensors checkpoint shards:  14% Completed | 8/56 [00:01<00:09,  5.17it/s]
+Loading safetensors checkpoint shards:  16% Completed | 9/56 [00:01<00:08,  5.23it/s]
+Loading safetensors checkpoint shards:  18% Completed | 10/56 [00:01<00:08,  5.19it/s]
+Loading safetensors checkpoint shards:  20% Completed | 11/56 [00:02<00:08,  5.18it/s]
+Loading safetensors checkpoint shards:  21% Completed | 12/56 [00:02<00:08,  5.12it/s]
+Loading safetensors checkpoint shards:  23% Completed | 13/56 [00:02<00:08,  5.08it/s]
+Loading safetensors checkpoint shards:  25% Completed | 14/56 [00:03<00:15,  2.66it/s]
+Loading safetensors checkpoint shards:  27% Completed | 15/56 [00:03<00:13,  3.11it/s]
+Loading safetensors checkpoint shards:  29% Completed | 16/56 [00:03<00:11,  3.54it/s]
+Loading safetensors checkpoint shards:  30% Completed | 17/56 [00:03<00:09,  3.90it/s]
+Loading safetensors checkpoint shards:  32% Completed | 18/56 [00:03<00:09,  4.20it/s]
+Loading safetensors checkpoint shards:  34% Completed | 19/56 [00:04<00:08,  4.39it/s]
+Loading safetensors checkpoint shards:  36% Completed | 20/56 [00:04<00:07,  4.56it/s]
+Loading safetensors checkpoint shards:  38% Completed | 21/56 [00:04<00:07,  4.73it/s]
+Loading safetensors checkpoint shards:  39% Completed | 22/56 [00:04<00:07,  4.85it/s]
+Loading safetensors checkpoint shards:  41% Completed | 23/56 [00:04<00:06,  4.95it/s]
+Loading safetensors checkpoint shards:  43% Completed | 24/56 [00:05<00:06,  4.98it/s]
+Loading safetensors checkpoint shards:  45% Completed | 25/56 [00:05<00:06,  5.06it/s]
+Loading safetensors checkpoint shards:  46% Completed | 26/56 [00:05<00:05,  5.10it/s]
+Loading safetensors checkpoint shards:  48% Completed | 27/56 [00:05<00:05,  5.16it/s]
+Loading safetensors checkpoint shards:  50% Completed | 28/56 [00:05<00:05,  5.28it/s]
+Loading safetensors checkpoint shards:  52% Completed | 29/56 [00:06<00:05,  5.34it/s]
+Loading safetensors checkpoint shards:  54% Completed | 30/56 [00:06<00:04,  5.22it/s]
+Loading safetensors checkpoint shards:  55% Completed | 31/56 [00:06<00:04,  5.19it/s]
+Loading safetensors checkpoint shards:  57% Completed | 32/56 [00:06<00:04,  5.20it/s]
+Loading safetensors checkpoint shards:  59% Completed | 33/56 [00:06<00:04,  5.22it/s]
+Loading safetensors checkpoint shards:  61% Completed | 34/56 [00:07<00:08,  2.55it/s]
+Loading safetensors checkpoint shards:  62% Completed | 35/56 [00:07<00:06,  3.00it/s]
+Loading safetensors checkpoint shards:  64% Completed | 36/56 [00:08<00:05,  3.44it/s]
+Loading safetensors checkpoint shards:  66% Completed | 37/56 [00:08<00:04,  3.81it/s]
+Loading safetensors checkpoint shards:  68% Completed | 38/56 [00:08<00:04,  4.15it/s]
+Loading safetensors checkpoint shards:  70% Completed | 39/56 [00:08<00:03,  4.40it/s]
+Loading safetensors checkpoint shards:  71% Completed | 40/56 [00:08<00:03,  4.57it/s]
+Loading safetensors checkpoint shards:  73% Completed | 41/56 [00:09<00:03,  4.76it/s]
+Loading safetensors checkpoint shards:  75% Completed | 42/56 [00:09<00:02,  4.89it/s]
+Loading safetensors checkpoint shards:  77% Completed | 43/56 [00:09<00:02,  4.98it/s]
+Loading safetensors checkpoint shards:  79% Completed | 44/56 [00:09<00:02,  5.06it/s]
+Loading safetensors checkpoint shards:  80% Completed | 45/56 [00:09<00:02,  5.06it/s]
+Loading safetensors checkpoint shards:  82% Completed | 46/56 [00:10<00:01,  5.11it/s]
+Loading safetensors checkpoint shards:  84% Completed | 47/56 [00:10<00:01,  5.14it/s]
+Loading safetensors checkpoint shards:  86% Completed | 48/56 [00:10<00:01,  5.61it/s]
+Loading safetensors checkpoint shards:  88% Completed | 49/56 [00:10<00:01,  5.69it/s]
+Loading safetensors checkpoint shards:  89% Completed | 50/56 [00:10<00:01,  5.87it/s]
+Loading safetensors checkpoint shards:  95% Completed | 53/56 [00:10<00:00,  9.42it/s]
+Loading safetensors checkpoint shards: 100% Completed | 56/56 [00:10<00:00,  5.10it/s]
+
+[sitecustomize] THOR_DENSE_GEMV: 0 layers thor dense, 1 one-copy (thor+FlashInfer), 0 Marlin
+(Worker_TP1 pid=8456) INFO 10-06 11:13:34 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:34 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:34 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:35 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:35 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:35 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:35 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:35 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:35 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+[sitecustomize] THOR_DENSE_GEMV: 11 layers thor dense, 39 one-copy (thor+FlashInfer), 0 Marlin
+(Worker_TP1 pid=8456) INFO 10-06 11:13:35 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:35 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:35 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:35 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:35 [default_loader.py:484] Loading weights took 88.81 seconds
+[sitecustomize] THOR_DENSE_GEMV: 0 layers thor dense, 1 one-copy (thor+FlashInfer), 0 Marlin
+(Worker_TP0 pid=8455) WARNING 10-06 11:13:35 [__init__.py:365] --linear-backend=marlin has no kernel for this linear layer type; using automatic selection for that layer type.
+(Worker_TP0 pid=8455) INFO 10-06 11:13:35 [__init__.py:929] Using EmulationMxfp8LinearKernel for MXFP8 GEMM
+(Worker_TP1 pid=8456) INFO 10-06 11:13:35 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:35 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:35 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:35 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:35 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:35 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:35 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:35 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:35 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+[sitecustomize] THOR_DENSE_GEMV: 11 layers thor dense, 39 one-copy (thor+FlashInfer), 0 Marlin
+(Worker_TP0 pid=8455) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+[sitecustomize] THOR_DENSE_GEMV: 22 layers thor dense, 78 one-copy (thor+FlashInfer), 0 Marlin
+(Worker_TP0 pid=8455) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+[sitecustomize] THOR_DENSE_GEMV: 33 layers thor dense, 117 one-copy (thor+FlashInfer), 0 Marlin
+(Worker_TP1 pid=8456) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+[sitecustomize] THOR_DENSE_GEMV: 22 layers thor dense, 78 one-copy (thor+FlashInfer), 0 Marlin
+(Worker_TP1 pid=8456) INFO 10-06 11:13:36 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+[sitecustomize] THOR_DENSE_GEMV: 46 layers thor dense, 154 one-copy (thor+FlashInfer), 0 Marlin
+(Worker_TP0 pid=8455) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:37 [eagle3_utils.py:27] Using Eagle3 auxiliary layers from config: (37, 38, 39)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:37 [kernel.py:408] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'], gelu_and_mul_sparse=['triton', 'native'])
+(Worker_TP0 pid=8455) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:37 [exl3.py:2451] EXL3 host experts: model.layers.40.ffn.experts keeps 32/128 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+[sitecustomize] THOR_DENSE_GEMV: 33 layers thor dense, 117 one-copy (thor+FlashInfer), 0 Marlin
+(Worker_TP1 pid=8456) INFO 10-06 11:13:37 [exl3.py:2451] EXL3 host experts: model.layers.41.ffn.experts keeps 64/128 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:37 [exl3.py:2451] EXL3 host experts: model.layers.42.ffn.experts keeps 80/128 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+[sitecustomize] THOR_DENSE_GEMV: 46 layers thor dense, 154 one-copy (thor+FlashInfer), 0 Marlin
+(Worker_TP0 pid=8455) INFO 10-06 11:13:37 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:38 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:38 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=384 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:38 [eagle3_utils.py:27] Using Eagle3 auxiliary layers from config: (37, 38, 39)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:38 [vllm.py:1403] Resolved Engram configuration: EngramConfig(cpu_offload=True, embedding_across_dp=False, dp_shared_memory=False, use_thp=False)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:38 [kernel.py:408] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'], gelu_and_mul_sparse=['triton', 'native'])
+(Worker_TP0 pid=8455) INFO 10-06 11:13:38 [compilation.py:331] Enabled custom fusions: norm_quant, act_quant
+(Worker_TP0 pid=8455) INFO 10-06 11:13:38 [exl3.py:2451] EXL3 host experts: model.layers.40.ffn.experts keeps 32/128 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:13:38 [exl3.py:2451] EXL3 host experts: model.layers.41.ffn.experts keeps 64/128 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:13:38 [exl3.py:2451] EXL3 host experts: model.layers.42.ffn.experts keeps 80/128 experts in pinned host RAM
+(Worker_TP0 pid=8455) INFO 10-06 11:13:38 [weight_utils.py:1063] Filesystem type for checkpoints: OVERLAY. Checkpoint size: 309.29 GiB. Available RAM: 0.01 GiB.
+(Worker_TP0 pid=8455) INFO 10-06 11:13:38 [weight_utils.py:1093] Auto-prefetch is disabled because the filesystem (OVERLAY) is not a recognized network FS (NFS/Lustre) and the checkpoint size (309.29 GiB) exceeds 90% of available RAM (0.01 GiB).
+Loading safetensors checkpoint shards:   0% Completed | 0/56 [00:00<?, ?it/s]
+Loading safetensors checkpoint shards:   7% Completed | 4/56 [00:00<00:01, 31.39it/s]
+Loading safetensors checkpoint shards:  14% Completed | 8/56 [00:00<00:05,  8.27it/s]
+Loading safetensors checkpoint shards:  18% Completed | 10/56 [00:01<00:05,  8.64it/s]
+Loading safetensors checkpoint shards:  21% Completed | 12/56 [00:01<00:04,  9.20it/s]
+Loading safetensors checkpoint shards:  25% Completed | 14/56 [00:01<00:04,  9.57it/s]
+Loading safetensors checkpoint shards:  29% Completed | 16/56 [00:01<00:03, 10.30it/s]
+Loading safetensors checkpoint shards:  34% Completed | 19/56 [00:01<00:02, 12.74it/s]
+Loading safetensors checkpoint shards:  38% Completed | 21/56 [00:01<00:02, 13.66it/s]
+Loading safetensors checkpoint shards:  41% Completed | 23/56 [00:01<00:02, 14.13it/s]
+Loading safetensors checkpoint shards:  45% Completed | 25/56 [00:02<00:02, 13.25it/s]
+Loading safetensors checkpoint shards:  48% Completed | 27/56 [00:02<00:02, 13.96it/s]
+Loading safetensors checkpoint shards:  54% Completed | 30/56 [00:02<00:01, 16.54it/s]
+Loading safetensors checkpoint shards:  59% Completed | 33/56 [00:02<00:01, 18.56it/s]
+Loading safetensors checkpoint shards:  64% Completed | 36/56 [00:02<00:00, 20.04it/s]
+Loading safetensors checkpoint shards:  70% Completed | 39/56 [00:02<00:00, 21.12it/s]
+Loading safetensors checkpoint shards:  75% Completed | 42/56 [00:02<00:00, 21.95it/s]
+Loading safetensors checkpoint shards:  80% Completed | 45/56 [00:03<00:00, 22.56it/s]
+Loading safetensors checkpoint shards:  86% Completed | 48/56 [00:03<00:00, 23.08it/s]
+Loading safetensors checkpoint shards:  93% Completed | 52/56 [00:03<00:00, 11.58it/s]
+Loading safetensors checkpoint shards:  96% Completed | 54/56 [00:05<00:00,  5.09it/s]
+Loading safetensors checkpoint shards: 100% Completed | 56/56 [00:05<00:00, 11.11it/s]
+
+(Worker_TP0 pid=8455) INFO 10-06 11:13:43 [dspark.py:494] DSpark draft model loaded: 109 params
+(Worker_TP1 pid=8456) INFO 10-06 11:13:43 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=128 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:43 [default_loader.py:484] Loading weights took 5.10 seconds
+(Worker_TP1 pid=8456) INFO 10-06 11:13:43 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=128 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:43 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=128 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP1 pid=8456) INFO 10-06 11:13:43 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=128 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:43 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=128 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:43 [exl3.py:2706] EXL3 MCG trellis engaged for routed experts: bits=3 experts_local=128 hidden=5120 intermediate_local=1152 fused_moe=exl3_moe concurrency=23 (no BF16 expert reconstruct at load)
+(Worker_TP0 pid=8455) INFO 10-06 11:13:44 [model_runner.py:404] Model loading took 76.78 GiB memory and 120.174394 seconds
+(Worker_TP1 pid=8456) INFO 10-06 11:13:44 [model_runner.py:404] Model loading took 76.78 GiB memory and 120.188450 seconds
+(Worker_TP0 pid=8455) INFO 10-06 11:13:44 [topk_topp_sampler.py:124] Using FlashInfer for top-p & top-k sampling.
+(Worker_TP0 pid=8455) INFO 10-06 11:13:44 [torch_utils.py:286] Reducing Torch threads from 27 to 1 for serving. Set OMP_NUM_THREADS in the external environment to override.
+(Worker_TP0 pid=8455) WARNING 10-06 11:13:44 [cpu_resource_utils.py:148] Cgroup memory preflight for shared-memory allocation: 240 MiB required, 359491 MiB current usage, 44 MiB available under 359535 MiB limit, -196 MiB remaining after allocation based on current usage; current headroom is below the requested allocation; allocation will still be attempted because cgroup usage may be reclaimable.
+(Worker_TP1 pid=8456) WARNING 10-06 11:13:44 [cpu_resource_utils.py:148] Cgroup memory preflight for shared-memory allocation: 240 MiB required, 359495 MiB current usage, 40 MiB available under 359535 MiB limit, -200 MiB remaining after allocation based on current usage; current headroom is below the requested allocation; allocation will still be attempted because cgroup usage may be reclaimable.
+(EngineCore pid=7495) INFO 10-06 11:13:44 [torch_utils.py:286] Reducing Torch threads from 27 to 1 for serving. Set OMP_NUM_THREADS in the external environment to override.
+(EngineCore pid=7495) INFO 10-06 11:13:44 [utils.py:340] Using BLHNC KV cache layout.
+(Worker_TP0 pid=8455) INFO 10-06 11:13:45 [deep_gemm.py:197] deep_gemm not found in site-packages, trying vendored vllm.third_party.deep_gemm
+(Worker_TP0 pid=8455) INFO 10-06 11:13:45 [deep_gemm.py:224] DeepGEMM PDL enabled on vllm.third_party.deep_gemm.
+[sitecustomize] THOR_OPROJ_DIAG: wo_a weight (4096, 4096) torch.bfloat16 scale [('weight_scale', (4096, 128), torch.uint8)] quant_method ModelOptLinearMethod o (16384, 32, 512) thor_fp8 False
+[sitecustomize] THOR_OPROJ_DIAG: wo_a weight (4096, 4096) torch.bfloat16 scale [('weight_scale', (4096, 128), torch.uint8)] quant_method ModelOptLinearMethod o (16384, 32, 512) thor_fp8 False
+NCCL version 2.30.7+cuda13.3
+[11:13:54] : Warning: T.vectorized loop over `i_hci` with extent 4 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+[11:13:54] : Warning: T.vectorized loop over `i_hci` with extent 4 is lowered as a serial loop because TileLang could not find a valid vectorization plan. Scalar accumulator updates inside the loop are a common cause; move reductions to T.unroll or T.serial if this is intended.
+[sitecustomize] THOR_ROUTER_SPLITK call: split-K=False x(16384, 5120) torch.bfloat16 w(384, 5120) torch.bfloat16 contig=True out=torch.float32 bias_none=True
+[sitecustomize] THOR_ROUTER_SPLITK call: split-K=False x(16384, 5120) torch.bfloat16 w(384, 5120) torch.bfloat16 contig=True out=torch.float32 bias_none=True
+[sitecustomize] THOR_DENSE_GEMV shape N,K=(5120, 1152) gemv=False one_copy=False
+[sitecustomize] THOR_DENSE_GEMV shape N,K=(5120, 1152) gemv=False one_copy=False
+2026-10-06 11:13:46  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+2026-10-06 11:13:52  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+2026-10-06 11:13:53  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_post_tilelang` with `out_idx=None`
+2026-10-06 11:13:54  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_post_tilelang`
+2026-10-06 11:13:56  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+2026-10-06 11:14:02  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+(Worker_TP1 pid=8456) INFO 10-06 11:14:02 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.0.ffn.experts: bits 3 cb 2, 319 experts via decode-once (65 host-resident)
+2026-10-06 11:13:46  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+2026-10-06 11:13:52  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+2026-10-06 11:13:53  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_post_tilelang` with `out_idx=None`
+2026-10-06 11:13:54  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_post_tilelang`
+2026-10-06 11:13:56  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+2026-10-06 11:14:02  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+(Worker_TP0 pid=8455) INFO 10-06 11:14:02 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.0.ffn.experts: bits 3 cb 2, 319 experts via decode-once (65 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:02 [exl3.py:1332] EXL3 decode-once prefill MoE ACTIVE (min tokens 257): /opt/recipe/kernels/build/xmoe_do/xmoe_do.so
+(Worker_TP0 pid=8455) INFO 10-06 11:14:02 [exl3.py:1619] EXL3 host-expert overlap ACTIVE (cold launch on a side stream: decode 32 SMs, prefill 64 SMs of 188)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:02 [exl3.py:1332] EXL3 decode-once prefill MoE ACTIVE (min tokens 257): /opt/recipe/kernels/build/xmoe_do/xmoe_do.so
+(Worker_TP1 pid=8456) INFO 10-06 11:14:02 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.1.ffn.experts: bits 3 cb 2, 316 experts via decode-once (68 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:02 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.1.ffn.experts: bits 3 cb 2, 316 experts via decode-once (68 host-resident)
+[sitecustomize] THOR_DENSE_GEMV shape N,K=(4096, 1280) gemv=False one_copy=False
+[sitecustomize] THOR_DENSE_GEMV shape N,K=(4096, 1280) gemv=False one_copy=False
+(Worker_TP1 pid=8456) INFO 10-06 11:14:03 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.2.ffn.experts: bits 3 cb 2, 271 experts via decode-once (113 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:03 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.2.ffn.experts: bits 3 cb 2, 271 experts via decode-once (113 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:03 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.3.ffn.experts: bits 3 cb 2, 267 experts via decode-once (117 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:03 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.3.ffn.experts: bits 3 cb 2, 267 experts via decode-once (117 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:03 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.4.ffn.experts: bits 3 cb 2, 273 experts via decode-once (111 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:03 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.4.ffn.experts: bits 3 cb 2, 273 experts via decode-once (111 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:03 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.5.ffn.experts: bits 3 cb 2, 272 experts via decode-once (112 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:03 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.5.ffn.experts: bits 3 cb 2, 272 experts via decode-once (112 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:03 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.6.ffn.experts: bits 3 cb 2, 244 experts via decode-once (140 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:03 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.6.ffn.experts: bits 3 cb 2, 244 experts via decode-once (140 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:03 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.7.ffn.experts: bits 3 cb 2, 264 experts via decode-once (120 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:03 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.7.ffn.experts: bits 3 cb 2, 264 experts via decode-once (120 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:03 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.8.ffn.experts: bits 3 cb 2, 266 experts via decode-once (118 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:03 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.8.ffn.experts: bits 3 cb 2, 266 experts via decode-once (118 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:03 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.9.ffn.experts: bits 3 cb 2, 256 experts via decode-once (128 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:03 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.9.ffn.experts: bits 3 cb 2, 256 experts via decode-once (128 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.10.ffn.experts: bits 3 cb 2, 254 experts via decode-once (130 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.10.ffn.experts: bits 3 cb 2, 254 experts via decode-once (130 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.11.ffn.experts: bits 3 cb 2, 263 experts via decode-once (121 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.11.ffn.experts: bits 3 cb 2, 263 experts via decode-once (121 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.12.ffn.experts: bits 3 cb 2, 273 experts via decode-once (111 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.12.ffn.experts: bits 3 cb 2, 273 experts via decode-once (111 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.13.ffn.experts: bits 3 cb 2, 298 experts via decode-once (86 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.13.ffn.experts: bits 3 cb 2, 298 experts via decode-once (86 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.14.ffn.experts: bits 3 cb 2, 257 experts via decode-once (127 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.14.ffn.experts: bits 3 cb 2, 257 experts via decode-once (127 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.15.ffn.experts: bits 3 cb 2, 287 experts via decode-once (97 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.15.ffn.experts: bits 3 cb 2, 287 experts via decode-once (97 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.16.ffn.experts: bits 3 cb 2, 246 experts via decode-once (138 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.16.ffn.experts: bits 3 cb 2, 246 experts via decode-once (138 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.17.ffn.experts: bits 3 cb 2, 273 experts via decode-once (111 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.17.ffn.experts: bits 3 cb 2, 273 experts via decode-once (111 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.18.ffn.experts: bits 3 cb 2, 268 experts via decode-once (116 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.18.ffn.experts: bits 3 cb 2, 268 experts via decode-once (116 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.19.ffn.experts: bits 3 cb 2, 315 experts via decode-once (69 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.19.ffn.experts: bits 3 cb 2, 315 experts via decode-once (69 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.20.ffn.experts: bits 3 cb 2, 245 experts via decode-once (139 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.20.ffn.experts: bits 3 cb 2, 245 experts via decode-once (139 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.21.ffn.experts: bits 3 cb 2, 256 experts via decode-once (128 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.21.ffn.experts: bits 3 cb 2, 256 experts via decode-once (128 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.22.ffn.experts: bits 3 cb 2, 251 experts via decode-once (133 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.22.ffn.experts: bits 3 cb 2, 251 experts via decode-once (133 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.23.ffn.experts: bits 3 cb 2, 287 experts via decode-once (97 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.23.ffn.experts: bits 3 cb 2, 287 experts via decode-once (97 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.24.ffn.experts: bits 3 cb 2, 249 experts via decode-once (135 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.24.ffn.experts: bits 3 cb 2, 249 experts via decode-once (135 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.25.ffn.experts: bits 3 cb 2, 239 experts via decode-once (145 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.25.ffn.experts: bits 3 cb 2, 239 experts via decode-once (145 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.26.ffn.experts: bits 3 cb 2, 249 experts via decode-once (135 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.26.ffn.experts: bits 3 cb 2, 249 experts via decode-once (135 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.27.ffn.experts: bits 3 cb 2, 271 experts via decode-once (113 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.27.ffn.experts: bits 3 cb 2, 271 experts via decode-once (113 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.28.ffn.experts: bits 3 cb 2, 243 experts via decode-once (141 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.28.ffn.experts: bits 3 cb 2, 243 experts via decode-once (141 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.29.ffn.experts: bits 3 cb 2, 255 experts via decode-once (129 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.29.ffn.experts: bits 3 cb 2, 255 experts via decode-once (129 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.30.ffn.experts: bits 3 cb 2, 259 experts via decode-once (125 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:04 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.30.ffn.experts: bits 3 cb 2, 259 experts via decode-once (125 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:05 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.31.ffn.experts: bits 3 cb 2, 253 experts via decode-once (131 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:05 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.31.ffn.experts: bits 3 cb 2, 253 experts via decode-once (131 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:05 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.32.ffn.experts: bits 3 cb 2, 244 experts via decode-once (140 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:05 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.32.ffn.experts: bits 3 cb 2, 244 experts via decode-once (140 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:05 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.33.ffn.experts: bits 3 cb 2, 269 experts via decode-once (115 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:05 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.33.ffn.experts: bits 3 cb 2, 269 experts via decode-once (115 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:05 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.34.ffn.experts: bits 3 cb 2, 276 experts via decode-once (108 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:05 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.34.ffn.experts: bits 3 cb 2, 276 experts via decode-once (108 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:05 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.35.ffn.experts: bits 3 cb 2, 279 experts via decode-once (105 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:05 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.35.ffn.experts: bits 3 cb 2, 279 experts via decode-once (105 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:05 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.36.ffn.experts: bits 3 cb 2, 283 experts via decode-once (101 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:05 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.36.ffn.experts: bits 3 cb 2, 283 experts via decode-once (101 host-resident)
+2026-10-06 11:14:05  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+2026-10-06 11:14:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+(Worker_TP1 pid=8456) INFO 10-06 11:14:12 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.37.ffn.experts: bits 3 cb 2, 297 experts via decode-once (87 host-resident)
+2026-10-06 11:14:05  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+2026-10-06 11:14:12  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+(Worker_TP0 pid=8455) INFO 10-06 11:14:12 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.37.ffn.experts: bits 3 cb 2, 297 experts via decode-once (87 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:12 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.38.ffn.experts: bits 3 cb 2, 278 experts via decode-once (106 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:12 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.38.ffn.experts: bits 3 cb 2, 278 experts via decode-once (106 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:12 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.39.ffn.experts: bits 3 cb 2, 287 experts via decode-once (97 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:12 [exl3.py:1356] EXL3 decode-once layer language_model.model.layers.39.ffn.experts: bits 3 cb 2, 287 experts via decode-once (97 host-resident)
+2026-10-06 11:14:14  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+2026-10-06 11:14:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+2026-10-06 11:14:20  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+2026-10-06 11:14:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+(Worker_TP1 pid=8456) INFO 10-06 11:14:27 [exl3.py:1356] EXL3 decode-once layer model.layers.40.ffn.experts: bits 3 cb 1, 96 experts via decode-once (32 host-resident)
+2026-10-06 11:14:14  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+2026-10-06 11:14:19  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+2026-10-06 11:14:20  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+2026-10-06 11:14:26  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+(Worker_TP0 pid=8455) INFO 10-06 11:14:27 [exl3.py:1356] EXL3 decode-once layer model.layers.40.ffn.experts: bits 3 cb 1, 96 experts via decode-once (32 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:27 [exl3.py:1356] EXL3 decode-once layer model.layers.41.ffn.experts: bits 3 cb 1, 64 experts via decode-once (64 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:27 [exl3.py:1356] EXL3 decode-once layer model.layers.41.ffn.experts: bits 3 cb 1, 64 experts via decode-once (64 host-resident)
+(Worker_TP1 pid=8456) INFO 10-06 11:14:27 [exl3.py:1356] EXL3 decode-once layer model.layers.42.ffn.experts: bits 3 cb 1, 48 experts via decode-once (80 host-resident)
+(Worker_TP0 pid=8455) INFO 10-06 11:14:27 [exl3.py:1356] EXL3 decode-once layer model.layers.42.ffn.experts: bits 3 cb 1, 48 experts via decode-once (80 host-resident)
+[sitecustomize] THOR_FP8_LMHEAD: lm_head (64640, 5120) -> fp8 e4m3 + e8m0/32
+[sitecustomize] THOR_FP8_LMHEAD: lm_head (64640, 5120) -> fp8 e4m3 + e8m0/32
+[sitecustomize] THOR_FP8_LMHEAD: lm_head (129280, 256) -> fp8 e4m3 + e8m0/32
+[sitecustomize] THOR_FP8_LMHEAD: lm_head (129280, 256) -> fp8 e4m3 + e8m0/32
+(Worker_TP0 pid=8455) INFO 10-06 11:14:28 [gpu_worker.py:603] Initial free memory 93.93 GiB, reserved 4.25 GiB memory for KV Cache as specified by kv_cache_memory_bytes config and skipped memory profiling. This does not respect the gpu_memory_utilization config. Only use kv_cache_memory_bytes config when you want manual control of KV cache memory size. If OOM'ed, check the difference of initial free memory between the current run and the previous run where kv_cache_memory_bytes is suggested and update it correspondingly.
+(Worker_TP1 pid=8456) INFO 10-06 11:14:28 [gpu_worker.py:603] Initial free memory 93.93 GiB, reserved 4.25 GiB memory for KV Cache as specified by kv_cache_memory_bytes config and skipped memory profiling. This does not respect the gpu_memory_utilization config. Only use kv_cache_memory_bytes config when you want manual control of KV cache memory size. If OOM'ed, check the difference of initial free memory between the current run and the previous run where kv_cache_memory_bytes is suggested and update it correspondingly.
+(EngineCore pid=7495) INFO 10-06 11:14:28 [kv_cache_utils.py:2408] GPU KV cache size: 623,891 tokens, Maximum concurrency for 262,144 tokens per request: 2.38x
+(Worker_TP0 pid=8455) INFO 10-06 11:14:28 [indexer.py:896] DSA indexer decode path: use_flattening=True supports_varlen=False (next_n=6, use_fp4_cache=False)
+[sitecustomize] THOR_INDEXER_EXPAND_CAP: expanded_block_table_buffer -> 768 rows (1 builders, freed 0.12 GiB)
+[sitecustomize] THOR_INDEXER_EXPAND_CAP: expanded_block_table_buffer -> 768 rows (1 builders, freed 0.12 GiB)
+[sitecustomize] THOR_INDEXER_EXPAND_CAP: expanded_block_table_buffer -> 768 rows (2 builders, freed 0.36 GiB)
+[sitecustomize] THOR_INDEXER_EXPAND_CAP: expanded_block_table_buffer -> 768 rows (2 builders, freed 0.36 GiB)
+/usr/lib/python3.12/sitecustomize.py:810: FutureWarning: `torch.distributed.reduce_op` is deprecated, please use `torch.distributed.ReduceOp` instead
+  if not isinstance(obj, _VE) or isinstance(obj, _PH):
+/usr/lib/python3.12/sitecustomize.py:810: FutureWarning: `torch.distributed.reduce_op` is deprecated, please use `torch.distributed.ReduceOp` instead
+  if not isinstance(obj, _VE) or isinstance(obj, _PH):
+[sitecustomize] THOR_EMBED_HOST: 1 embedding table(s) -> pinned host UVA, freed 0.62 GiB
+[sitecustomize] THOR_EMBED_HOST: 1 embedding table(s) -> pinned host UVA, freed 0.62 GiB
+/usr/lib/python3.12/sitecustomize.py:772: FutureWarning: `torch.distributed.reduce_op` is deprecated, please use `torch.distributed.ReduceOp` instead
+  if not isinstance(obj, _t.nn.Module) or not hasattr(obj, "wo_a") or not hasattr(obj, "n_local_groups"):
+/usr/lib/python3.12/sitecustomize.py:772: FutureWarning: `torch.distributed.reduce_op` is deprecated, please use `torch.distributed.ReduceOp` instead
+  if not isinstance(obj, _t.nn.Module) or not hasattr(obj, "wo_a") or not hasattr(obj, "n_local_groups"):
+[sitecustomize] THOR_WOA_FP8: 43/43 wo_a -> fp8 (exact), max err 0, freed 0.65 GiB
+[sitecustomize] THOR_WOA_FP8: 43/43 wo_a -> fp8 (exact), max err 0, freed 0.65 GiB
+/usr/lib/python3.12/sitecustomize.py:494: FutureWarning: `torch.distributed.reduce_op` is deprecated, please use `torch.distributed.ReduceOp` instead
+  if not isinstance(obj, _PH10):
+/usr/lib/python3.12/sitecustomize.py:494: FutureWarning: `torch.distributed.reduce_op` is deprecated, please use `torch.distributed.ReduceOp` instead
+  if not isinstance(obj, _PH10):
+Capturing CUDA graphs (FULL):   0%|          | 0/12 [00:00<?, ?it/s]                                                                    Capturing CUDA graphs (FULL):   0%|          | 0/12 [00:02<?, ?it/s]                                                                    Capturing CUDA graphs (FULL):   0%|          | 0/12 [00:08<?, ?it/s]                                                                    Capturing CUDA graphs (FULL):   0%|          | 0/12 [00:11<?, ?it/s]                                                                    Capturing CUDA graphs (FULL):   0%|          | 0/12 [00:18<?, ?it/s]Capturing CUDA graphs (FULL):   0%|          | 0/12 [00:18<?, ?it/s]
+2026-10-06 11:14:34  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+2026-10-06 11:14:40  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+2026-10-06 11:14:43  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+2026-10-06 11:14:50  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] WorkerProc hit an exception.
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] Traceback (most recent call last):
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/cudagraph_utils.py", line 494, in capture
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     forward_fn(CUDAGraphMode.NONE)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/cudagraph_utils.py", line 754, in forward_fn
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     model_output = model(**model_inputs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]                    ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return self._call_impl(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return forward_call(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/deepseek_v41/nvidia/vl_model.py", line 298, in forward
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return self.language_model(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return self._call_impl(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return forward_call(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/deepseek_v41/nvidia/model.py", line 1712, in forward
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     hidden_states = self.model(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]                     ^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return self._call_impl(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return forward_call(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/deepseek_v41/nvidia/model.py", line 1007, in forward
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     hidden_states, residual, post_mix, res_mix, pre_mix = self._run_layers(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]                                                           ^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/deepseek_v41/nvidia/model.py", line 1116, in _run_layers
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     self.layers[idx](
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return self._call_impl(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return forward_call(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/deepseek_v41/nvidia/model.py", line 503, in forward
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     x, residual, post_mix, res_mix, ffn_pre = self.forward_ffn(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]                                               ^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/deepseek_v41/nvidia/model.py", line 685, in forward_ffn
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     x = self.ffn(x, input_ids, mega_gate_metadata)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return self._call_impl(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return forward_call(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/deepseek_v4/nvidia/model.py", line 1052, in forward
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return self._forward_fused_moe(hidden_states, input_ids)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/deepseek_v4/nvidia/model.py", line 1133, in _forward_fused_moe
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     final_hidden_states = self.experts(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]                           ^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return self._call_impl(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return forward_call(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/fused_moe/runner/moe_runner.py", line 734, in forward
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     result = self._forward_entry(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]              ^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/_ops.py", line 1279, in __call__
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return self._op(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/fused_moe/runner/moe_runner.py", line 165, in _moe_forward_shared
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     layer._forward_impl(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/fused_moe/runner/moe_runner.py", line 921, in _forward_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     shared_output, hidden_states = self._apply_quant_method(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]                                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/fused_moe/runner/moe_runner.py", line 633, in _apply_quant_method
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     fused_out = self.routed_experts.forward_modular(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/fused_moe/routed_experts.py", line 1278, in forward_modular
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return self.quant_method.apply(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm_exl3/exl3.py", line 2753, in apply
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return apply_exl3_experts(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm_exl3/exl3.py", line 1837, in apply_exl3_experts
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     out = apply_exl3_fused_moe(x2d, ids, weights, layer, inners, expert_map, limit)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm_exl3/exl3.py", line 1535, in apply_exl3_fused_moe
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     elif fat_possible and bool(fat.any().item()):
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]                                ^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] torch.AcceleratorError: CUDA error: operation not permitted when stream is capturing
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] Search for `cudaErrorStreamCaptureUnsupported' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] For more detailed error information, run with CUDA_LOG_FILE=stderr
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] 
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] 
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] During handling of the above exception, another exception occurred:
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] 
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] Traceback (most recent call last):
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 1050, in _execute_worker_rpc
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     output = func(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]              ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return func(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 878, in compile_or_warm_up_model
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     cuda_graph_memory_bytes = self.model_runner.capture_model()
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/lib/python3.12/sitecustomize.py", line 831, in _thor_embed_then_capture
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return _cap20(self, *a, **k)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/lib/python3.12/sitecustomize.py", line 788, in _thor_woa_then_capture
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return _cap19(self, *a, **k)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/lib/python3.12/sitecustomize.py", line 575, in _thor_capture_then_zero
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     r = _cap14(self, *a, **k)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]         ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/lib/python3.12/sitecustomize.py", line 506, in _thor_lm_then_capture
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return _cap10(self, *a, **k)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return func(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/model_runner.py", line 1054, in capture_model
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     self.cudagraph_manager.capture(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/cudagraph_utils.py", line 765, in capture
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     super().capture(create_forward_fn, progress_bar_desc)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return func(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/cudagraph_utils.py", line 491, in capture
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     with torch.cuda.graph(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/cuda/graphs.py", line 477, in __exit__
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     self.cuda_graph.capture_end()
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/cuda/graphs.py", line 169, in capture_end
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     super().capture_end()
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] torch.AcceleratorError: CUDA error: operation failed due to a previous error during capture
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] Search for `cudaErrorStreamCaptureInvalidated' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] For more detailed error information, run with CUDA_LOG_FILE=stderr
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] 
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] Traceback (most recent call last):
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/cudagraph_utils.py", line 494, in capture
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     forward_fn(CUDAGraphMode.NONE)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/cudagraph_utils.py", line 754, in forward_fn
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     model_output = model(**model_inputs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]                    ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return self._call_impl(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return forward_call(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/deepseek_v41/nvidia/vl_model.py", line 298, in forward
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return self.language_model(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return self._call_impl(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return forward_call(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/deepseek_v41/nvidia/model.py", line 1712, in forward
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     hidden_states = self.model(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]                     ^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return self._call_impl(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return forward_call(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/deepseek_v41/nvidia/model.py", line 1007, in forward
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     hidden_states, residual, post_mix, res_mix, pre_mix = self._run_layers(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]                                                           ^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/deepseek_v41/nvidia/model.py", line 1116, in _run_layers
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     self.layers[idx](
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return self._call_impl(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return forward_call(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/deepseek_v41/nvidia/model.py", line 503, in forward
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     x, residual, post_mix, res_mix, ffn_pre = self.forward_ffn(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]                                               ^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/deepseek_v41/nvidia/model.py", line 685, in forward_ffn
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     x = self.ffn(x, input_ids, mega_gate_metadata)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return self._call_impl(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return forward_call(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/deepseek_v4/nvidia/model.py", line 1052, in forward
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return self._forward_fused_moe(hidden_states, input_ids)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/models/deepseek_v4/nvidia/model.py", line 1133, in _forward_fused_moe
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     final_hidden_states = self.experts(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]                           ^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1778, in _wrapped_call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return self._call_impl(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1789, in _call_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return forward_call(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/fused_moe/runner/moe_runner.py", line 734, in forward
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     result = self._forward_entry(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]              ^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/_ops.py", line 1279, in __call__
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return self._op(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/fused_moe/runner/moe_runner.py", line 165, in _moe_forward_shared
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     layer._forward_impl(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/fused_moe/runner/moe_runner.py", line 921, in _forward_impl
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     shared_output, hidden_states = self._apply_quant_method(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]                                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/fused_moe/runner/moe_runner.py", line 633, in _apply_quant_method
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     fused_out = self.routed_experts.forward_modular(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/fused_moe/routed_experts.py", line 1278, in forward_modular
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return self.quant_method.apply(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm_exl3/exl3.py", line 2753, in apply
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return apply_exl3_experts(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm_exl3/exl3.py", line 1837, in apply_exl3_experts
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     out = apply_exl3_fused_moe(x2d, ids, weights, layer, inners, expert_map, limit)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm_exl3/exl3.py", line 1535, in apply_exl3_fused_moe
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     elif fat_possible and bool(fat.any().item()):
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]                                ^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] torch.AcceleratorError: CUDA error: operation not permitted when stream is capturing
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] Search for `cudaErrorStreamCaptureUnsupported' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] For more detailed error information, run with CUDA_LOG_FILE=stderr
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] 
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] 
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] During handling of the above exception, another exception occurred:
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] 
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] Traceback (most recent call last):
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 1050, in _execute_worker_rpc
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     output = func(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]              ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return func(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu_worker.py", line 878, in compile_or_warm_up_model
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     cuda_graph_memory_bytes = self.model_runner.capture_model()
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/lib/python3.12/sitecustomize.py", line 831, in _thor_embed_then_capture
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return _cap20(self, *a, **k)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/lib/python3.12/sitecustomize.py", line 788, in _thor_woa_then_capture
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return _cap19(self, *a, **k)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/lib/python3.12/sitecustomize.py", line 575, in _thor_capture_then_zero
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     r = _cap14(self, *a, **k)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]         ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/lib/python3.12/sitecustomize.py", line 506, in _thor_lm_then_capture
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return _cap10(self, *a, **k)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return func(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/model_runner.py", line 1054, in capture_model
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     self.cudagraph_manager.capture(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/cudagraph_utils.py", line 765, in capture
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     super().capture(create_forward_fn, progress_bar_desc)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     return func(*args, **kwargs)
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/gpu/cudagraph_utils.py", line 491, in capture
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     with torch.cuda.graph(
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/cuda/graphs.py", line 477, in __exit__
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     self.cuda_graph.capture_end()
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]   File "/usr/local/lib/python3.12/dist-packages/torch/cuda/graphs.py", line 169, in capture_end
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058]     super().capture_end()
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] torch.AcceleratorError: CUDA error: operation failed due to a previous error during capture
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] Search for `cudaErrorStreamCaptureInvalidated' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] For more detailed error information, run with CUDA_LOG_FILE=stderr
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] 
+(Worker_TP0 pid=8455) ERROR 10-06 11:14:51 [multiproc_executor.py:1058] 
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433] EngineCore failed to start.
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433] Traceback (most recent call last):
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1395, in run_engine_core
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]     engine_core = EngineCoreProc(*args, engine_index=dp_rank, **kwargs)
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]     return func(*args, **kwargs)
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]            ^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1151, in __init__
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]     super().__init__(
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 151, in __init__
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]     kv_cache_config = self._initialize_kv_caches(vllm_config)
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]     return func(*args, **kwargs)
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]            ^^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 357, in _initialize_kv_caches
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]     self.model_executor.compile_or_warm_up_model()
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/abstract.py", line 128, in compile_or_warm_up_model
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]     compilation_times: list[CompilationTimes] = self.collective_rpc(
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]                                                 ^^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 450, in collective_rpc
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]     return future if non_block else future.result()
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]                                     ^^^^^^^^^^^^^^^
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 99, in result
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]     return super().result()
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]            ^^^^^^^^^^^^^^^^
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]   File "/usr/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]     return self.__get_result()
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]            ^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]   File "/usr/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]     raise self._exception
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 103, in _wait_for_response
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]     response = self.aggregate(self.get_response())
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]                               ^^^^^^^^^^^^^^^^^^^
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 439, in get_response
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433]     raise RuntimeError(
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433] RuntimeError: Worker failed with error 'CUDA error: operation failed due to a previous error during capture
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433] Search for `cudaErrorStreamCaptureInvalidated' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433] For more detailed error information, run with CUDA_LOG_FILE=stderr
+(EngineCore pid=7495) ERROR 10-06 11:14:51 [core.py:1433] ', please check the stack trace above for the root cause
+2026-10-06 11:14:34  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+2026-10-06 11:14:40  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+2026-10-06 11:14:43  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:129): TileLang begins to compile kernel `mhc_pre_big_fuse_with_norm_tilelang` with `out_idx=None`
+2026-10-06 11:14:50  [TileLang:tilelang.jit.kernel:INFO] (kernel.py:137): TileLang completes to compile kernel `mhc_pre_big_fuse_with_norm_tilelang`
+(EngineCore pid=7495) ERROR 10-06 11:14:55 [multiproc_executor.py:314] Worker proc VllmWorker-0 died unexpectedly (exit code: None), shutting down executor.
+(EngineCore pid=7495) INFO 10-06 11:14:55 [multiproc_executor.py:474] [shutdown] Executor: waiting for worker exit count=2
+(EngineCore pid=7495) WARNING 10-06 11:15:00 [multiproc_executor.py:486] [shutdown] Executor: workers still running after grace period; sending SIGTERM count=2
+(EngineCore pid=7495) WARNING 10-06 11:15:04 [multiproc_executor.py:496] [shutdown] Executor: workers still running after SIGTERM; sending SIGKILL count=1
+Process EngineCore:
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
+    self.run()
+  File "/usr/lib/python3.12/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1437, in run_engine_core
+    raise e
+  File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1395, in run_engine_core
+    engine_core = EngineCoreProc(*args, engine_index=dp_rank, **kwargs)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 1151, in __init__
+    super().__init__(
+  File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 151, in __init__
+    kv_cache_config = self._initialize_kv_caches(vllm_config)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core.py", line 357, in _initialize_kv_caches
+    self.model_executor.compile_or_warm_up_model()
+  File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/abstract.py", line 128, in compile_or_warm_up_model
+    compilation_times: list[CompilationTimes] = self.collective_rpc(
+                                                ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 450, in collective_rpc
+    return future if non_block else future.result()
+                                    ^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 99, in result
+    return super().result()
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 103, in _wait_for_response
+    response = self.aggregate(self.get_response())
+                              ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 439, in get_response
+    raise RuntimeError(
+RuntimeError: Worker failed with error 'CUDA error: operation failed due to a previous error during capture
+Search for `cudaErrorStreamCaptureInvalidated' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+For more detailed error information, run with CUDA_LOG_FILE=stderr
+', please check the stack trace above for the root cause
+(APIServer pid=5863) INFO 10-06 11:15:08 [utils.py:638] [shutdown] Process manager: send sigterm to process EngineCore
+Traceback (most recent call last):
+  File "/usr/local/bin/vllm", line 10, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/main.py", line 118, in main
+    args.dispatch_function(args)
+  File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/cli/serve.py", line 154, in cmd
+    uvloop.run(run_server(args))
+  File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 96, in run
+    return __asyncio.run(
+           ^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+  File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 48, in wrapper
+    return await main
+           ^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 172, in run_server
+    await run_server_worker(listen_address, sock, args, **uvicorn_kwargs)
+  File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 185, in run_server_worker
+    async with build_async_engine_client(
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 58, in build_async_engine_client
+    async with build_async_engine_client_from_engine_args(
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/launchers/api_server/entry.py", line 92, in build_async_engine_client_from_engine_args
+    async_llm = AsyncLLM.from_vllm_config(
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/async_llm.py", line 248, in from_vllm_config
+    return cls(
+           ^^^^
+  File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/async_llm.py", line 180, in __init__
+    self.engine_core = EngineCoreClient.make_async_mp_client(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 167, in make_async_mp_client
+    return AsyncMPClient(
+           ^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 175, in sync_wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 1100, in __init__
+    super().__init__(
+  File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 674, in __init__
+    with launch_core_engines(
+  File "/usr/lib/python3.12/contextlib.py", line 144, in __exit__
+    next(self.gen)
+  File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 1230, in launch_core_engines
+    wait_for_engine_startup(
+  File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 1310, in wait_for_engine_startup
+    raise RuntimeError(
+RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}
+/usr/lib/python3.12/multiprocessing/resource_tracker.py:254: UserWarning: resource_tracker: There appear to be 2 leaked shared_memory objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '

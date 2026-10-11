@@ -1,0 +1,17 @@
+{
+ "number": 59894,
+ "title": "[Perf][DSV4.1] Decoder replay: trim the cut layer's query side and FFN",
+ "state": "OPEN",
+ "createdAt": "2026-10-03T18:34:59Z",
+ "mergedAt": null,
+ "url": "https://github.com/vllm-project/vllm/pull/59894",
+ "headRefOid": "526f37fe178748332e77a2a959986337be93d247",
+ "author": "gcanlin",
+ "mergeCommit": null,
+ "commit_authors": [
+  "claude",
+  "gcanlin"
+ ],
+ "n_commits": 1,
+ "last_commit_date": "2026-10-03T18:34:33Z"
+}

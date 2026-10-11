@@ -1,0 +1,41 @@
+\section{Experimental Setup}\label{sec:setup}
+
+\paragraph{Hardware.}
+Every controlled measurement ran on RunPod pods with two NVIDIA RTX PRO 6000 Blackwell Server Edition GPUs (sm\_120,
+\dv{expl.gpu_total_mib}\,MiB reported per card), connected to the host over PCIe, at \dv{price.2xpro6000.usd_h}\,USD
+per pod-hour (\dv{price.2xpro6000.eur_h}\,EUR). The exploratory pod had a cgroup memory limit of
+\dv{expl.cgroup_max_gib}\,GiB. The designed reference (E9, not run) would use two B300 GPUs at
+\dv{price.2xb300.usd_h}\,USD per hour, twice the single-GPU quote of \dv{price.1xb300.usd_h}\,USD. A single 80\,GB
+A100 (\dv{price.1xa100.usd_h}\,USD per hour) is out of reach for two reasons: according to the exploratory notes the
+pinned vLLM has no Ampere path for this model's sparse attention (Ampere support is an open feature request,
+\datafile{audit/evidence/gh_issue_57144.json}), and neither checkpoint fits (Section~\ref{sec:system}). Every run
+records the GPU model, driver, PCIe link generation and width, NUMA topology, CPU and cgroup limits
+(\datafile{experiments/lib.sh}), and that record is what later explained part of the difference between hosts.
+
+\paragraph{Software.}
+All inputs are pinned in \datafile{stack/pins.env}: the vLLM nightly image by digest (vLLM \dv{expl.vllm_version}),
+vllm-exl3 \texttt{d3cfd394}, ExLlamaV3 \texttt{5be88657}, the sfxnz recipe \texttt{460ac89c} and Diffbot's recipe at Hub
+revision \texttt{a1cf1bd2}, verified file by file against \datafile{stack/recipe.lock.tsv}. Each variant is built
+inside the pinned image by \datafile{stack/build/bootstrap_pod.sh} (or the Dockerfile wrapping it), which records
+versions, git revisions, hashes of patched files and the full package list. Every variant shares the same serving
+settings: tensor parallelism across the two GPUs, a context limit of 262,144 tokens, an fp8 KV cache of 4.25\,GiB, up to
+64 sequences, 16,384 batched tokens per step, CUDA graphs for decode with capture sizes up to 256, prefix caching on,
+and text only (\datafile{stack/serve.sh}).
+
+\paragraph{Models.}
+The EXL3 pack is \texttt{diffbot/DeepSeek-V4.1-Flash-EXL3-3bpw-2x-RTX-PRO-6000} at revision \texttt{a1cf1bd2}
+(\dv{static.pack.total_gib}\,GiB), and the reference is \texttt{deepseek-ai/DeepSeek-V4.1-Flash} at \texttt{2cba9e42}
+(\dv{static.orig.total_gib}\,GiB). Both are under the \dv{hub.orig.license} license as declared on the Hub
+(\datafile{data/static/hub/}). Weights are downloaded on the pod at their pinned revisions and never redistributed.
+
+\paragraph{Three sessions, three hosts.}
+The campaign ran in three sessions on pods of this type, each on a different host. The first, on
+\dv{lean.session.date}, lasted \dv{lean.session.minutes} minutes and ran E2, E8, E10 and E3. The second, on
+\dv{lean.session2.date}, lasted \dv{lean.session2.minutes} minutes and ran E12, the E3 baseline again and the zero-copy
+rung. The third lasted \dv{lean.session3.minutes} minutes and ran E13. Table~\ref{tab:pod-hardware} gives each host's
+fingerprint. The GPUs, driver and PCIe link are the same, but the CPU model and the NUMA placement of the two GPUs are
+not. The third session's record notes the first host's public IP, but its CPU and GPU bus ids differ, so it is a
+different machine. The quality reference (E11) ran through DeepSeek's official API instead of on our own hardware.
+Appendix~\ref{app:plan} lists the status of every experiment and how each session went.
+
+\input{generated/pod_hardware}

@@ -1,0 +1,157 @@
+\section{How Fast the Offloaded Stack Runs}\label{sec:results}\label{sec:results-controlled}
+
+This section measures the speed of the offloaded stack: how long users wait, how fast replies are written, and how
+both change with load, prompt length, the share of experts on the host and the host itself. It cannot say how much
+of any slowdown the offload causes, because the reference with everything in GPU memory (E9) did not run. Only the two
+host shares of E3 isolate part of that cost (Section~\ref{sec:limits}).
+
+\paragraph{Reading and writing.}
+One distinction makes the rest of the section easy to follow. Serving a request has two phases. In the first the model
+\emph{reads} the prompt. It processes every prompt token in one pass, which is limited by compute and grows with the
+prompt's length. In the second it \emph{writes} the reply one token at a time, and each step must fetch the weights of
+the experts the router picks for that token, which is limited by memory traffic, including the reads from the back
+room. vLLM~\citep{kwon2023vllm} keeps the KV cache in pages, batches requests continuously and splits long prompts into
+chunks that share steps with ongoing replies~\citep{agrawal2024sarathi}. It also caches prompt prefixes, so a request
+that shares a prefix with an earlier one skips reading it~\citep{zheng2024sglang,vllm2026prefixcaching}. Two numbers
+follow from the two phases. The \emph{time to first token} (TTFT) is how long a user waits before anything appears,
+which is mostly reading. The \emph{time per output token} (TPOT) is the pace of writing, and its inverse, the rate per
+stream in tokens/s, is what a user perceives as speed. We report medians and tails: a TTFT p95 of 2\,s means that 95\%
+of requests waited less than two seconds, and p5 is the slow end of a rate.
+
+The measurements come from three sessions on rented pods with two RTX PRO 6000 GPUs each, on three different hosts
+(Table~\ref{tab:pod-hardware}). Each experiment ran on a single boot, so intervals cover repetitions inside a boot and
+never variation between boots. All runs used code prompts, DSpark speculative decoding and Diffbot's \texttt{gen30}
+plan unless stated. Section~\ref{sec:method} gives the protocol.
+
+\paragraph{One user, then many (E8).}
+Start with a single user sending independent 4K-token code prompts. The model writes at a median of
+\dv{ctl.E8.stream.A.N1.p50} tokens/s per stream (p5 \dv{ctl.E8.stream.A.N1.p5}, p95 \dv{ctl.E8.stream.A.N1.p95}).
+Now add users. At eight, each stream gets a median of \dv{ctl.E8.stream.A.N8.p50} tokens/s, and at 64 only
+\dv{ctl.E8.stream.A.N64.p50}. The server as a whole does more work as users arrive, but each user gets a smaller share
+of it. With a cached 16K-token prefix, which removes most of the reading, the trade is clearer. The total output grows
+from \dv{ctl.E8.main.B-prefix-16k.closed:1.agg_mean} tokens/s with one user to
+\dv{ctl.E8.main.B-prefix-16k.closed:32.agg_mean} at 32 and \dv{ctl.E8.main.B-prefix-16k.closed:64.agg_mean} at 64,
+while the rate of each stream falls from \dv{ctl.E8.stream.B.N1.p50} to \dv{ctl.E8.stream.B.N32.p50} and
+\dv{ctl.E8.stream.B.N64.p50}, and TTFT p95 stays at or below \dv{ctl.E8.main.B-prefix-16k.closed:64.ttft_p95}\,s at
+every level. Figure~\ref{fig:ctl-E8} shows both sides of the trade, and Tables~\ref{tab:ctl-E8}
+and~\ref{tab:ctl-E8-thr} give every level.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/generated/controlled_E8}
+\caption{Controlled E8 sweep (pod 1, \texttt{gen30} plan). Left: output rate per stream against the number of
+concurrent users $N$, median with a p5 to p95 band over the requests of each level (warm requests and errors excluded,
+repetitions pooled). Right: windowed aggregate output rate, mean over repetitions (two in B, and in A two only at
+$N=1$, where the mean includes a slow first repetition). A: independent 4K-token code prompts. B: 16K-token cached
+prefix.}
+\label{fig:ctl-E8}
+\end{figure}
+
+When every user brings a new prompt, reading competes with writing and the total stops growing earlier, at
+\dv{ctl.E8.main.A-code-4k.closed:8.agg_mean} tokens/s with eight users, \dv{ctl.E8.main.A-code-4k.closed:32.agg_mean}
+with 32 and \dv{ctl.E8.main.A-code-4k.closed:64.agg_mean} with 64, while TTFT p95 rises to
+\dv{ctl.E8.main.A-code-4k.closed:64.ttft_p95}\,s. Reading alone, one prompt at a time, takes
+\dv{ctl.E8.probes.prefill-4096.closed:1.ttft_p50}, \dv{ctl.E8.probes.prefill-16384.closed:1.ttft_p50} and
+\dv{ctl.E8.probes.prefill-65536.closed:1.ttft_p50}\,s for 4K, 16K and 64K tokens. Two caveats apply to this sweep. The
+cached-prefix scenario has two repetitions per level, but the unique-prompt scenario has two only for one user. In its
+second repetition a single client-side disconnect among eight requests tripped the pre-registered stop rule and ended
+the sweep, a rule we have since made less sensitive. That one-user level also pools a slow first repetition (TTFT p95
+\dv{ctl.E8.main.A-code-4k.closed:1.ttft_p95}\,s), so its aggregate is not a steady-state rate.
+
+\input{generated/controlled_E8}
+
+The same trade sets the cost of a token. At \dv{price.2xpro6000.usd_h}\,USD per pod-hour, with the whole hour charged
+to output tokens (an upper bound for output that says nothing about input), one million output tokens cost
+\dv{ctl.E8.main.B-prefix-16k.closed:1.usd_per_m_out}\,USD with one user on the cached prefix and
+\dv{ctl.E8.main.B-prefix-16k.closed:64.usd_per_m_out}\,USD with 64, and \dv{ctl.E8.main.A-code-4k.closed:8.usd_per_m_out}
+and \dv{ctl.E8.main.A-code-4k.closed:32.usd_per_m_out}\,USD at eight and 32 users with unique prompts, so the
+cheapest tokens are those written when each stream is slowest. We registered three service-level objectives before
+the controlled runs (Section~\ref{sec:method}). With the cached prefix the interactive one (TTFT p95 up to 2\,s and
+TPOT p95 up to 50\,ms) holds in every repetition up to eight users and the relaxed one up to 32. With unique prompts
+the interactive objective holds from two to four users and the relaxed one from two to 16, and the one-user level
+misses both because of its slow first repetition (SLO column of Table~\ref{tab:ctl-E8-thr}). For coding agents the useful unit is the number of streams that stay fast, which is the
+subject of Section~\ref{sec:agent}.\label{sec:cost}
+
+\paragraph{Long prompts cost reading (E12).}
+Coding agents work with long contexts, so we pushed the prompt to the context limit of
+\dv{ctl.kv.max_len} tokens on the second pod. Reading grows as expected. A fresh prompt of 128K tokens waits
+\dv{ctl.E12.long.prefill-long-131072.closed:1.ttft_p50}\,s for its first token, and one of 260,000 tokens
+\dv{ctl.E12.long.prefill-long-260000.closed:1.ttft_p50}\,s. Writing by a single request hardly notices the length. It
+takes \dv{ctl.E12.long.decode-128k.closed:1.tpot_p50_ms}\,ms per token after a 128K-token prompt and
+\dv{ctl.E12.long.decode-256k.closed:1.tpot_p50_ms}\,ms after a 256K-token one, against
+\dv{ctl.E3.gen30-session2.A-code-4k.closed:1.tpot_p50_ms}\,ms after a 4K-token prompt on the same pod. That changes
+when several long requests write at once, at \dv{ctl.E12.long.decode-128k.closed:4.tpot_p50_ms}\,ms per token with
+four 128K requests and \dv{ctl.E12.long.decode-256k.closed:2.tpot_p50_ms}\,ms with two of 256K.
+Figure~\ref{fig:read-write} puts the two phases side by side: reading climbs with the length of the prompt, and
+writing stays flat.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/generated/read_write_length.pdf}
+\caption{Reading against writing for one request on pod~2 (one repetition, median of 2 to 8 requests per point).
+Left: time to first token against prompt length, for fresh prompts and for prompts behind a cached prefix (log
+scales). Right: time per output token against prompt length. The 4K point is the E3 \texttt{gen30} run on the same
+pod, and the other points are E12. Values from Tables~\ref{tab:ctl-E12} and~\ref{tab:ctl-E3}, lengths from
+\datafile{experiments/workloads/long_context.yaml}.}
+\label{fig:read-write}
+\end{figure}
+
+When the long context is shared and cached, as for agents working on one large codebase, the reading is paid once.
+With a 128K-token cached prefix, TTFT p95 is \dv{ctl.E12.long.B-prefix-128k.closed:8.ttft_p95}\,s at eight users, and
+with 256K tokens it is \dv{ctl.E12.long.B-prefix-256k.closed:4.ttft_p95}\,s at four users with
+\dv{ctl.E12.long.B-prefix-256k.closed:4.tpot_p50_ms}\,ms per token. A long context therefore stays interactive once it
+has been read, and the expensive case is many users with different long prompts, where reading sets the limit. vLLM's
+estimate of how many full-length requests fit in the KV cache (\dv{ctl.kv.max_concurrency}) is why E12 ran distinct
+long prompts only up to four at 128K and two at 256K, and Section~\ref{sec:agent} shows that the estimate is
+conservative. Each point is one repetition, on the second pod, which was slower than the first, and without a quality
+check at these lengths (Tables~\ref{tab:ctl-E12} and~\ref{tab:ctl-E12-thr}).
+
+\input{generated/controlled_E12}
+
+\paragraph{The size of the back room (E3).}
+Putting more experts in the back room costs speed. Moving from the \texttt{gen30} plan to the union of its cold set
+and that of the recipe's \texttt{agent30} plan lowers the total output with unique code prompts from
+\dv{ctl.E3.gen30.A-code-4k.closed:1.agg_mean} to \dv{ctl.E3.union-gen30-agent30.A-code-4k.closed:1.agg_mean}
+tokens/s with one user, from \dv{ctl.E3.gen30.A-code-4k.closed:8.agg_mean} to
+\dv{ctl.E3.union-gen30-agent30.A-code-4k.closed:8.agg_mean} with eight and from
+\dv{ctl.E3.gen30.A-code-4k.closed:32.agg_mean} to \dv{ctl.E3.union-gen30-agent30.A-code-4k.closed:32.agg_mean} with 32
+(Table~\ref{tab:ctl-E3-thr}, one repetition per point, two boots). The decode scenario of the larger share is missing,
+because the load generator stopped on a client-side disconnect while the server kept serving.
+
+We also wanted to compare Diffbot's per-expert machinery with the zero-copy offload that upstream vLLM already ships,
+at the same host bytes. We could not compare speed, because upstream's offload does not serve this model on these
+pins. With the KV block size of 64 that the measured stack uses, it fails at initialization, since the FlashInfer
+sparse-attention backend for DeepSeek-V4.1 accepts only blocks of 128. With 128 the server boots, and the engine dies
+on the first request, because DeepGEMM's attention kernel asserts a block of 32 or 64
+(\datafile{data/controlled/E3-host-share/uva-equal-gen30/} and \datafile{data/controlled/E3-host-share/uva-equal-gen30-bs128/}). Two kernels on the
+same attention path accept different block sizes, and with the recipe's runtime hooks (sfxnz's, edited by Diffbot)
+the stack serves with blocks of 64. On this hardware and these pins the hooks are needed to serve at all, so whether
+the per-expert split is also faster than upstream's offload remains open.
+
+\input{generated/controlled_E3}
+
+\paragraph{The host matters (E3 on two pods).}
+The second session repeated the \texttt{gen30} subset of E3, with the same stack, plan and workload, on another host.
+It was slower at every point. The median time per token was \dv{ctl.pod.cross.A.N1.tpot_ratio} to
+\dv{ctl.pod.cross.A.N32.tpot_ratio} times pod~1's, and the total output \dv{ctl.pod.cross.decode.N32.agg_ratio} to
+\dv{ctl.pod.cross.decode.N1.agg_ratio} times, except for one user with unique prompts
+(\dv{ctl.pod.cross.A.N1.agg_ratio}), where a single request with a TTFT of \dv{ctl.pod.cross.A.N1.pod2.ttft_max}\,s
+explains most of the gap (Table~\ref{tab:cross-pod}). Both hosts have the same GPU model, driver and PCIe Gen5 x16
+links (Table~\ref{tab:pod-hardware}). One difference shows up in a single word of the topology table that
+\texttt{nvidia-smi topo -m} prints. Between the two GPUs, pod~1 reports \texttt{\dv{ctl.pod.s1.gpu_link}} and pod~2
+reports \texttt{\dv{ctl.pod.s2.gpu_link}}. On pod~1 both GPUs hang from the same CPU socket (NUMA node), while on
+pod~2 each sits on a different socket, so tensor-parallel traffic and reads from host memory cross the link between
+sockets. That is a plausible cause, but the CPUs also differ (\dv{ctl.pod.s1.cpu} against \dv{ctl.pod.s2.cpu}), both
+servers had served other workloads on the same boot before this subset, and one repetition per pod cannot separate
+these causes from each other or from variation between boots. What the data show is that the host a cloud pod lands
+on matters as much as most settings we varied, and that numbers from different pods are not directly comparable.
+
+\input{generated/cross_pod}
+
+\paragraph{Traffic on the bus and speculation.}
+The PCIe receive rate, summed over both GPUs, peaked at \dv{ctl.pcie.E8.B.N32.gbs}\,GB/s in E8, and DSpark, which
+proposes \dv{ctl.spec.k} draft tokens per step that the model then verifies, gained a request
+\dv{ctl.spec.E8.A.accept_len} tokens per verification step on unique code prompts. Section~\ref{sec:bytes} gives both
+in full, with the caveats on the PCIe counters and on speculation, which was always on and is therefore not separated
+from the offload in any number above. The protocol of every experiment in this section is in
+Section~\ref{sec:method}, and the hardware of the three pods in Section~\ref{sec:setup}.

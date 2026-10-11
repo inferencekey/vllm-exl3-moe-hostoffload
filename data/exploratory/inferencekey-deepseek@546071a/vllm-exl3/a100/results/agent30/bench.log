@@ -1,0 +1,16 @@
+warmup {"s": 41.6}
+smoke {"ttft_s": 1.85, "total_s": 1.993, "completion_tokens": 11, "prompt_tokens": 16, "cached_tokens": 0, "decode_tok_s": 69.56}
+decode_120 {"ttft_s": 0.219, "total_s": 4.265, "completion_tokens": 120, "prompt_tokens": 18, "cached_tokens": 0, "decode_tok_s": 29.42}
+decode_480_0 {"ttft_s": 0.171, "total_s": 15.513, "completion_tokens": 480, "prompt_tokens": 18, "cached_tokens": 0, "decode_tok_s": 31.22}
+decode_480_1 {"ttft_s": 0.146, "total_s": 8.315, "completion_tokens": 480, "prompt_tokens": 23, "cached_tokens": 0, "decode_tok_s": 58.64}
+decode_480_2 {"ttft_s": 0.186, "total_s": 11.24, "completion_tokens": 480, "prompt_tokens": 19, "cached_tokens": 0, "decode_tok_s": 43.33}
+ttft_4k {"ttft_s": 1.069, "total_s": 1.318, "completion_tokens": 32, "prompt_tokens": 3595, "cached_tokens": 0, "decode_tok_s": 124.45}
+ttft_16k {"ttft_s": 3.092, "total_s": 3.62, "completion_tokens": 32, "prompt_tokens": 14855, "cached_tokens": 0, "decode_tok_s": 58.65}
+ttft_16k_second_turn {"ttft_s": 0.834, "total_s": 1.148, "completion_tokens": 32, "prompt_tokens": 14901, "cached_tokens": 14848, "decode_tok_s": 98.9}
+prefix_metrics {"before": {"spec_decode_num_drafts": 1791283248.2057676, "spec_decode_num_draft_tokens": 1791285912.2057893, "spec_decode_num_accepted_tokens": 10747697565.234964, "prefix_cache_queries": 1791311881.2060196, "prefix_cache_hits": 1791294998.2060316}, "after_first": {"spec_decode_num_drafts": 1791283260.2057676, "spec_decode_num_draft_tokens": 1791285972.2057893, "spec_decode_num_accepted_tokens": 10747697607.234964, "prefix_cache_queries": 1791326736.2060196, "prefix_cache_hits": 1791294998.2060316}, "after_second": {"spec_decode_num_drafts": 1791283270.2057676, "spec_decode_num_draft_tokens":
+concurrent_4 {"wall_s": 18.25, "total_completion_tokens": 1024, "aggregate_tok_s": 56.1, "per_stream_decode": [14.68, 16.95, 16.95, 14.23], "ttft": [0.327, 0.327, 0.326, 0.326]}
+tool_call {"message": {"role": "assistant", "content": "I'll check the current weather in Reykjavik for you.\n\n", "refusal": null, "annotations": null, "audio": null, "function_call": null, "tool_calls": [{"id": "chatcmpl-tool-a85f0d1764b90621", "type": "function", "function": {"name": "get_weather", "arguments": "{\"city\": \"Reykjavik\"}"}}], "reasoning": null}, "finish": "tool_calls"}
+coding {"ttft_s": 0.27, "total_s": 36.295, "completion_tokens": 3569, "prompt_tokens": 89, "cached_tokens": 0, "decode_tok_s": 99.04}
+spec_metrics_end {"spec_decode_num_drafts": 1791284610.2057676, "spec_decode_num_draft_tokens": 1791292722.2057893, "spec_decode_num_accepted_tokens": 10747704267.234964, "prefix_cache_queries": 1791342118.2060196, "prefix_cache_hits": 1791309846.2060316}
+system {"nvidia_smi": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 90471 MiB, 97887 MiB\nNVIDIA RTX PRO 6000 Blackwell Server Edition, 90471 MiB, 97887 MiB\n", "cgroup_memory_max": "376999997440", "cgroup_memory_current": "375908675584", "cgroup_memory_peak": "376999997440"}
+BENCH DONE

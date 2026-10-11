@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hostoffload"
+version = "0.1.0"
+description = "Benchmark harness, analysis pipeline and cost model for serving a large EXL3-quantized MoE with vLLM using VRAM and host memory"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+authors = [{ name = "Javier Abrego" }]
+dependencies = [
+  "numpy>=1.26",
+  "matplotlib>=3.8",
+  "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+bench = ["aiohttp>=3.9", "nvidia-ml-py>=12.535"]
+weights = ["huggingface_hub>=0.25"]
+test = ["pytest>=8.0"]
+
+[project.scripts]
+hob-loadgen = "hostoffload.harness.loadgen:main"
+hob-sampler = "hostoffload.harness.sampler:main"
+hob-analyze = "hostoffload.analysis.pipeline:main"
+hob-cost = "hostoffload.cost.model:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

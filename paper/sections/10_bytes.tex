@@ -1,0 +1,31 @@
+\section{PCIe Traffic and Speculative Decoding}\label{sec:bytes}
+
+The samplers record each GPU's PCIe receive rate every half second (Table~\ref{tab:pcie-per-token}). Summed over both
+GPUs it peaks at \dv{ctl.pcie.E8.B.N32.gbs}\,GB/s in E8 and \dv{ctl.pcie.E13.A.N12.gbs}\,GB/s in the coding-agent
+experiment, against a line rate of \dv{ctl.pcie.calib.link_gbs}\,GB/s per GPU and direction for a PCIe Gen5 x16 link.
+In E8 the bytes received per output token fall as users are added, from \dv{ctl.pcie.E8.A.N1.mb_per_tok} to
+\dv{ctl.pcie.E8.A.N64.mb_per_tok}\,MB with unique prompts and from \dv{ctl.pcie.E8.B.N1.mb_per_tok} to
+\dv{ctl.pcie.E8.B.N64.mb_per_tok}\,MB with the cached prefix, which is what one expects if one read of a host expert
+serves several requests of a batch. In the coding-agent experiment they do not fall
+(\dv{ctl.pcie.E13.A.N1.mb_per_tok}\,MB at one stream, \dv{ctl.pcie.E13.A.N12.mb_per_tok}\,MB at twelve in its short-session
+regime), and we cannot explain the difference with these data. The two experiments differ in reply length (400 tokens
+against 256), host (pod~3 against pod~1) and how far past saturation their sweeps went, and the counter mixes prompt
+reading, drafter reads and expert reads, which we did not attribute. The counter itself is only partly validated. On
+pod~1 a calibration script found NVML reporting \dv{ctl.pcie.calib.gpu0.copy.ratio} and
+\dv{ctl.pcie.calib.gpu1.copy.ratio} times the true bytes for copies on GPU~0 and~1, and
+\dv{ctl.pcie.calib.gpu0.zerocopy.ratio} times for zero-copy reads on GPU~0. The zero-copy test on GPU~1 is invalid, and
+pods~2 and~3 have no calibration, so these values are raw and descriptive.
+
+DSpark~\citep{cheng2026dspark,leviathan2023speculative}, the model's drafter, proposes \dv{ctl.spec.k} draft tokens per
+step, and on code prompts a request gains on average \dv{ctl.spec.E8.A.accept_len} tokens per verification step with
+unique prompts and \dv{ctl.spec.E8.B.accept_len} with the cached prefix (\dv{ctl.spec.E8.A.accept_rate_pct}\% and
+\dv{ctl.spec.E8.B.accept_rate_pct}\% of proposed tokens accepted), almost independent of the number of users (in A
+\dv{ctl.spec.E8.A.N1.accept_len} with one user and \dv{ctl.spec.E8.A.N64.accept_len} with 64,
+Table~\ref{tab:spec-acceptance}). The coding-agent regimes, pooled over their levels, range from
+\dv{ctl.spec.E13.A.accept_len} for short independent prompts to \dv{ctl.spec.E13.C256k.accept_len} for independent
+256K-token contexts. All prompts were code or coding-agent turns with thinking off, so these values say nothing about
+prose, and with speculation always on, its share of the speeds reported in the paper is not separated from the
+offload's (E7, which would switch it off, did not run).
+
+\input{generated/pcie_per_token}
+\input{generated/spec_acceptance}

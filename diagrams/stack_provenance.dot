@@ -1,0 +1,35 @@
+// Who wrote which layer of the measured stack (audit/ATTRIBUTION.md). Rendered by `make figures`.
+// Laid out in four compact rows with short label lines so that it stays legible at the text width.
+digraph stack {
+  graph [rankdir=BT, fontname="Helvetica", nodesep=0.18, ranksep=0.32, bgcolor="white", newrank=true];
+  node  [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=13, color="#52514e", penwidth=0.7,
+         margin="0.10,0.05"];
+  edge  [color="#52514e", arrowsize=0.6, penwidth=0.7];
+
+  hw     [label="2x RTX PRO 6000\nBlackwell (sm_120),\nPCIe, pinned host RAM", fillcolor="#f2f1ed"];
+  prs    [label="4 upstream PR patches\nivanium, bluemelov1,\nbojiang-li, gcanlin", fillcolor="#dbe8f8"];
+  sm120  [label="sm120-thor-fixes.diff\nDiffbot; part identical\nto PR #57028 (zhao6300)", fillcolor="#fde3d8"];
+  sfx    [label="sfxnz recipe\nhelpers (MIT)", fillcolor="#f2f1ed"];
+  exl3v3 [label="ExLlamaV3 5be88657\nturboderp (MIT)\nEXL3 format,\nexl3_moe kernel", fillcolor="#d6f1e7"];
+  kern   [label="xmoe kernels,\nTHOR_* hooks,\nint4 Engram, plans\n(Diffbot, MIT)", fillcolor="#fde3d8"];
+  vllm   [label="vLLM 36768d1\n(Apache-2.0)\nDeepSeek-V4.1 graph,\nDSpark, UVA offload", fillcolor="#dbe8f8"];
+  plugin [label="vllm-exl3 d3cfd394\nVictor Cruz (vcruz305)\nAGPL-3.0; EXL3 in vLLM,\nfrom Mia's AI Lab work", fillcolor="#d6f1e7"];
+  patch  [label="exl3-thor.patch\nDiffbot (AGPL-3.0)\nper-expert host plan,\nsplit launch", fillcolor="#fde3d8"];
+  w      [label="weights: DeepSeek,\nEXL3 experts (coolbho3k),\nint4 Engram and drafter\n(Diffbot); all MIT", fillcolor="#f2f1ed"];
+  ik     [label="this artifact\n(Apache-2.0): build,\nconfiguration, harness,\nanalysis, measurement", fillcolor="#ffffff", style="rounded,bold"];
+
+  // six rows of at most two boxes (bottom to top), so the figure is narrow enough to print large at the text width
+  { rank=same; sfx; hw; }
+  { rank=same; kern; sm120; }
+  { rank=same; patch; exl3v3; }
+  { rank=same; plugin; prs; }
+  { rank=same; vllm; }
+  { rank=same; ik; w; }
+  // invisible edges keep each row in a fixed left-to-right order and stack the rows
+  sfx -> hw [style=invis]; kern -> sm120 [style=invis]; patch -> exl3v3 [style=invis]; plugin -> prs [style=invis];
+  ik -> w [style=invis]; sfx -> kern [style=invis]; hw -> sm120 [style=invis];
+
+  hw -> vllm; prs -> vllm; sm120 -> vllm; sfx -> vllm;
+  exl3v3 -> plugin; kern -> patch; patch -> plugin; plugin -> vllm;
+  vllm -> ik; w -> ik;
+}

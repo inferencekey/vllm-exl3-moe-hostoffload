@@ -1,0 +1,92 @@
+{
+ "workload_file": "/root/hob/experiments/workloads/lean_main.yaml",
+ "workload": {
+  "seed": 20261006,
+  "repetitions": 2,
+  "stop_ttft_p95_s": 120,
+  "stop_error_rate": 0.05,
+  "scenarios": [
+   {
+    "name": "A-code-4k",
+    "kind": "chat",
+    "prompt": {
+     "corpus": "code",
+     "tokens": 4096,
+     "template": "review",
+     "region": [
+      0.0,
+      0.5
+     ]
+    },
+    "output": {
+     "max_tokens": 256
+    },
+    "sampling": {
+     "temperature": 0.6,
+     "top_p": 0.95
+    },
+    "arrivals": {
+     "mode": "closed",
+     "levels": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32,
+      64
+     ],
+     "requests_per_user": 2,
+     "min_requests": 8,
+     "stagger_s": 5
+    }
+   },
+   {
+    "name": "B-prefix-16k",
+    "kind": "chat",
+    "prompt": {
+     "corpus": "code",
+     "tokens": 16128,
+     "shared_prefix_tokens": 16000,
+     "template": "qa_prefix",
+     "region": [
+      0.0,
+      0.5
+     ]
+    },
+    "output": {
+     "max_tokens": 256
+    },
+    "sampling": {
+     "temperature": 0.6,
+     "top_p": 0.95
+    },
+    "arrivals": {
+     "mode": "closed",
+     "levels": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32,
+      64
+     ],
+     "requests_per_user": 2,
+     "min_requests": 8,
+     "stagger_s": 5
+    }
+   }
+  ]
+ },
+ "base_seed": 20261006,
+ "repetitions": 2,
+ "harness_git": "d6baacdb3600a17df7d153f06ee41f4e89ec6bba",
+ "started_utc": "2026-10-06T20:17:16Z",
+ "status": "complete",
+ "server": {
+  "base_url": "http://127.0.0.1:8000",
+  "model": "deepseek-v4.1-flash"
+ },
+ "finished_utc": "2026-10-06T20:30:20Z"
+}

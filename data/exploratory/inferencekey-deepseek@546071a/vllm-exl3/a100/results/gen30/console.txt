@@ -1,0 +1,20 @@
+Second run: same pod, same build, relaunched with PLAN=plan-gen30-dh.json (2026-10-06 10:33:54 UTC launch, bench done 10:39:02).
+The JSON/log files of this run were lost: the scp used a quoted remote glob and failed, and the pod had already been deleted.
+These lines are the bench.py console output as printed over SSH (lines cut at 400 characters, prefix_metrics omitted).
+
+warmup {"s": 7.0}
+smoke {"ttft_s": 0.13, "total_s": 0.211, "completion_tokens": 11, "prompt_tokens": 16, "cached_tokens": 0, "decode_tok_s": 124.25}
+decode_120 {"ttft_s": 0.192, "total_s": 3.539, "completion_tokens": 120, "prompt_tokens": 18, "cached_tokens": 0, "decode_tok_s": 35.56}
+decode_480_0 {"ttft_s": 0.193, "total_s": 12.362, "completion_tokens": 480, "prompt_tokens": 18, "cached_tokens": 0, "decode_tok_s": 39.36}
+decode_480_1 {"ttft_s": 0.094, "total_s": 6.249, "completion_tokens": 480, "prompt_tokens": 23, "cached_tokens": 0, "decode_tok_s": 77.82}
+decode_480_2 {"ttft_s": 0.094, "total_s": 6.926, "completion_tokens": 480, "prompt_tokens": 19, "cached_tokens": 0, "decode_tok_s": 70.11}
+ttft_4k {"ttft_s": 1.002, "total_s": 1.258, "completion_tokens": 32, "prompt_tokens": 3595, "cached_tokens": 0, "decode_tok_s": 121.08}
+ttft_16k {"ttft_s": 4.733, "total_s": 5.067, "completion_tokens": 32, "prompt_tokens": 14855, "cached_tokens": 0, "decode_tok_s": 92.65}
+ttft_16k_second_turn {"ttft_s": 0.641, "total_s": 0.921, "completion_tokens": 32, "prompt_tokens": 14901, "cached_tokens": 14848, "decode_tok_s": 110.85}
+concurrent_4 {"wall_s": 12.65, "total_completion_tokens": 1024, "aggregate_tok_s": 80.96, "per_stream_decode": [20.32, 24.16, 23.55, 21.36], "ttft": [0.102, 0.471, 0.47, 0.47]}
+tool_call {"message": {"role": "assistant", "content": "I'll check the current weather in Reykjavik for you.\n\n", "tool_calls": [{"type": "function", "function": {"name": "get_weather", "arguments": "{\"city\": \"Reykjavik\"}"}}]}, "finish": "tool_calls"}
+coding {"ttft_s": 0.203, "total_s": 26.896, "completion_tokens": 4000, "prompt_tokens": 89, "cached_tokens": 0, "decode_tok_s": 149.82}
+system {"nvidia_smi": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 90111 MiB, 97887 MiB (x2)", "cgroup_memory_max": "376999997440", "cgroup_memory_current": "375842344960", "cgroup_memory_peak": "376999997440"}
+server log: SpecDecoding metrics: Mean acceptance length: 4.20, Accepted throughput: 117.49 tokens/s
+memory.stat: anon 73327169536, file 300757295104, shmem 154820784128
+versions: vllm 0.30.1rc1.dev312+g36768d1bf, torch 2.13.0+cu130, exllamav3 1.4.9 (5be88657), vllm-exl3 0.4.2 (d3cfd394 + exl3-thor.patch)

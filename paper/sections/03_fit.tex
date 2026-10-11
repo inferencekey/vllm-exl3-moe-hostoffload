@@ -1,0 +1,122 @@
+\section{Why the Model Does Not Fit, and How It Is Made To}\label{sec:background}
+
+\paragraph{Why this model.}
+On LiveBench~\citep{white2025livebench}, the unquantized model at maximum reasoning effort, as served by DeepSeek,
+scores \dv{livebench.deepseek-v4.1-flash-max.All} overall against \dv{livebench.claude-opus-5-5-max-effort.All} for
+Claude Opus 5.5 and \dv{livebench.claude-fable-5-1-max-effort.All} for Claude Fable 5.1 at maximum effort. On agentic
+coding it is first of the \dv{livebench.n_models} models listed, at
+\dv{livebench.deepseek-v4.1-flash-max.Agentic_Coding} against \dv{livebench.agentic.runner_up} for the next
+(Figure~\ref{fig:livebench}, Table~\ref{tab:livebench}). The leaderboard data were downloaded on 2026-10-07 and are
+stored with hashes in \datafile{data/static/livebench/}~\citep{livebench2026leaderboard}. These are third-party scores
+of a different configuration. We serve a \dv{cfg.exl3_bits}-bit pack with thinking disabled, which was not evaluated
+on LiveBench, so the scores say why the model is worth serving on modest hardware and are not results of this paper.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/generated/livebench.pdf}
+\caption{Third-party context, not a measurement of this paper: LiveBench scores (question set 2026-06-25, downloaded
+2026-10-07) of the unquantized models as served by their providers at the named reasoning effort. DeepSeek-V4.1-Flash
+(highlighted) is the maximum-effort, thinking-on configuration. The 3-bit, thinking-off stack studied here was not
+evaluated on LiveBench. Hollow markers are open-weight models. Values are labelled for DeepSeek-V4.1-Flash and the best
+model of each panel. Source: \datafile{data/static/livebench/}.}
+\label{fig:livebench}
+\end{figure}
+
+\input{generated/livebench}
+
+\paragraph{A team of specialists.}
+Picture a very large team of specialists, of whom only a few are consulted for any given word. That is a
+mixture-of-experts model. Each of DeepSeek-V4.1-Flash's \dv{cfg.num_hidden_layers}
+layers~\citep{deepseekai2026v41flash,deepseekai2026v41flashcard} has \dv{cfg.n_routed_experts} routed experts plus
+\dv{cfg.n_shared_experts} shared one, and a router sends each token (a piece of a word) to only
+\dv{cfg.num_experts_per_tok} of the \dv{cfg.n_routed_experts}. Most specialists are idle at any moment, but all of them
+have to be somewhere the GPU can reach, and together they hold most of the model's bytes:
+\dv{static.orig.routed_expert_gib}\,GiB of the \dv{static.orig.total_gib}\,GiB checkpoint. The offload rests on that
+picture. A specialist who is rarely consulted can wait in a back room, the host's memory, as long as the GPU can still
+reach it when the router calls. The rest of this section shows that the back room is necessary on two 96\,GB GPUs and
+how the stack uses it.
+
+\paragraph{Making the specialists smaller.}
+The first step is compression. EXL3, the format of ExLlamaV3~\citep{turboderp2026exllamav3}, belongs to the
+trellis-coded family of QTIP~\citep{tseng2024qtip}. Weights are rotated with Hadamard transforms so that no single
+value dominates, then encoded as paths through a trellis with a small codebook, and a GPU kernel decodes them tile by
+tile inside the matrix product. The served pack stores the routed experts at \dv{cfg.exl3_bits} bits per
+weight~\citep{coolbho3k2026dsv41exl3} and keeps the other weights in DeepSeek's FP8. One routed expert shrinks from
+\dv{static.orig.expert_mib}\,MiB in the original checkpoint to \dv{static.expert_mib}\,MiB, and all routed experts
+together from \dv{static.orig.routed_expert_gib} to \dv{static.pack.routed_expert_gib}\,GiB.
+
+\paragraph{Compression is not enough.}\label{sec:system}
+We accounted every tensor of both checkpoints by class, from their safetensors headers fetched with HTTP range
+requests (\dv{static.pack.n_tensors} tensors and \dv{static.pack.total_gib}\,GiB for the pack, with no weights
+downloaded), and from placement rules that mirror the documented configuration
+(\datafile{src/hostoffload/weights/split.py}, Table~\ref{tab:static-placement}). Even with the large tables and the
+embedding in host memory, the pack's GPU-resident weights come to \dv{static.noplan.vram_gib}\,GiB, or
+\dv{static.noplan.vram_per_gpu_gib}\,GiB per GPU, against the \dv{expl.gpu_total_gib}\,GiB the driver reports per
+card before any KV cache, CUDA graph or activation. That is \dv{expl.noplan_over_per_gpu_gib}\,GiB too much per card.
+The original checkpoint is far out of reach, with \dv{static.orig.vram_min_gib}\,GiB outside its Engram tables and
+embedding.
+
+\input{generated/static_placement}
+
+\paragraph{The back room.}
+Diffbot's plans close the gap by moving the least-used experts to pinned host memory. All the plans published with the
+recipe put \dv{static.gen30.host_target_experts} of the \dv{static.target_experts} target experts on the host
+(\dv{static.gen30.host_target_share_pct}\%, between \dv{static.gen30.host_per_layer_min} and
+\dv{static.gen30.host_per_layer_max} per layer, Figure~\ref{fig:hostperlayer}). They differ in which experts, chosen
+from the routing counts of different traffic. Two other large objects live in the back room in every configuration:
+the Engram tables~\citep{cheng2026engram}, two lookup tables indexed by hashed word sequences that give the model
+memory by lookup rather than by computation (compressed to int4, from \dv{static.orig.engram_table_gib} to
+\dv{static.pack.engram_table_gib}\,GiB), and the token embedding. With the \texttt{gen30} plan the pack's GPU share
+drops to \dv{static.gen30.vram_per_gpu_gib}\,GiB per GPU, and \dv{static.gen30.host_gib}\,GiB of file bytes sit on the
+host, \dv{static.gen30.host_expert_gib}\,GiB of them experts. Figure~\ref{fig:memarch} shows where everything lives.
+
+The back room is reached without copies. CUDA can register host memory as pinned and map it into the GPU's address
+space (unified virtual addressing, or UVA), so that a kernel dereferencing such a pointer reads the data over PCIe, the bus between each GPU and the
+computer's main memory, at the moment of use, with no explicit transfer and no cache on the GPU
+side~\citep{nvidia2026cudaguide}. This is called zero-copy access. Upstream vLLM already serves the Engram tables this way, and Diffbot's patch does
+the same for the cold experts. At each expert layer the patched plugin launches the GPU-resident experts on the main
+CUDA stream and the host experts on a second stream limited to a few of the GPU's compute units (SMs), so that the
+slow reads over PCIe overlap with the fast work in GPU memory. Because these reads are not copies, a profiler does not
+show them as transfers. They appear in the PCIe throughput counters, which our samplers record.
+
+\begin{figure}[t]
+\centering
+\resizebox{\linewidth}{!}{\input{figures/memory_architecture}}
+\caption{Memory architecture of the measured stack (two GPUs, tensor parallel). Blue: GPU memory (VRAM). Orange:
+pinned host memory that GPU kernels read over PCIe by zero-copy access (UVA). Sizes are checkpoint bytes from the safetensors headers
+(\datafile{data/static/weights/diffbot-a1cf1bd2/placement.json}) or values the server logged at load in the exploratory
+run (KV tokens, CUDA graph memory, Engram tables), all printed from data files.}
+\label{fig:memarch}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.49\linewidth]{figures/generated/static_placement.pdf}\hfill
+\includegraphics[width=0.49\linewidth]{figures/generated/static_host_per_layer.pdf}
+\caption{Static measurement. Left: checkpoint bytes per tensor class in GPU memory and in pinned host memory under the
+\texttt{gen30} plan. Right: experts the plan keeps in host memory, per layer (layers 40 to 42 are the drafter).
+Source: \datafile{data/static/weights/diffbot-a1cf1bd2/placement.json}.}
+\label{fig:hostperlayer}
+\end{figure}
+
+\paragraph{Checking the accounting against the server.}
+Placement rules are a model, so we checked them where the server reports what it did. The Engram bytes the server
+pinned in the exploratory run (\dv{expl.engram_pinned_gib}\,GiB, in four shards of
+\dv{expl.engram_per_table_rank_gib}\,GiB) equal the file bytes. The per-layer counts of host experts it logged equal
+those of one published plan on every layer, which identifies the plan each exploratory run used
+(Section~\ref{sec:results-exploratory}). File bytes are not runtime bytes, though. vLLM reported
+\dv{expl.model_loading_gib}\,GiB of weights per GPU, \dv{expl.runtime_minus_file_gib}\,GiB more than the plan's file
+bytes in GPU memory, presumably from repacked and duplicated layouts that we did not attribute allocation by
+allocation. The exploratory boot also left \dv{expl.headroom_mib}\,MiB of GPU memory unused per card at its peak.
+Spending all of it on experts would bring \dv{expl.min_share.movable_experts} of them back, so with this KV budget and
+these graph sizes at least \dv{expl.min_share.pct}\% of the target experts must stay on the host. That is an estimate
+from one boot, and no run searched for the smallest share that boots.
+
+\paragraph{The boots.}
+Experiment E2 tested the accounting on the GPUs (Table~\ref{tab:ctl-E2}). The EXL3 plugin with every expert in GPU
+memory and the offload build with an empty plan both stopped while loading, with the server's own out-of-memory
+errors. The same offload build with the \texttt{gen30} plan booted and served all the measurements of the next
+sections. The byte accounting (E0) and the boots (E2) are specified in Section~\ref{sec:method}, and the pods they ran
+on in Section~\ref{sec:setup}.
+
+\input{generated/controlled_E2}

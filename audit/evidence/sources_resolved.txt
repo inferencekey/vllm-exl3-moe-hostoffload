@@ -1,0 +1,19 @@
+# Sources resolved by fetch_sources.sh (checked 2026-10-06T12:53:28Z)
+vllm           36768d1bfd39094681cdbc8cb37d4b31c0729c89 2026-09-29  https://github.com/vllm-project/vllm.git
+vllm-exl3      d3cfd394920360d69f820d2dc96f8292a9e10283 2026-09-09  https://github.com/vcruz305/vllm-exl3.git
+exllamav3      5be886578ec80324c2c715269387be2058724b6e 2026-09-10  https://github.com/turboderp-org/exllamav3.git
+sfxnz-recipe   460ac89c7df1eea4db8a731f1feb807f1584f359 2026-09-11  https://github.com/sfxnz/DeepSeek-V4.1-Flash-EXL3-vLLM-2x-DGX-Spark.git
+mia-glm53      a246263a9891407e0d640db42d111545005dd83f 2026-10-04  https://github.com/MiaAI-Lab/GLM-5.3-Flash-EXL3-2x-DGX-Sparks.git
+hf-diffbot     a1cf1bd227a754aa7e2ca5c21652bfaf256ee8a5
+vllm sparse checkout:
+  /LICENSE
+  /vllm/models/deepseek_v41/
+  /vllm/config/cache.py
+  /vllm/parser/
+  /vllm/model_executor/kernels/linear/mxfp8/
+  /vllm/model_executor/layers/quantization/utils/mxfp8_utils.py
+  /vllm/utils/multi_stream_utils.py
+  /csrc/custom_all_reduce.cuh
+  /vllm/config/speculative.py
+  /vllm/v1/spec_decode/
+  /vllm/v1/attention/backends/mla/indexer.py

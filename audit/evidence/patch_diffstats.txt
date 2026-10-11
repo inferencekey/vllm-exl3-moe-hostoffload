@@ -1,0 +1,44 @@
+# git apply --numstat of every recipe patch (added, removed, path)
+## patches/vllm/pr58132-decoder-swa-replay.diff
+3	1	vllm/config/cache.py
+67	0	vllm/models/deepseek_v41/decoder_replay_layers.py
+222	40	vllm/models/deepseek_v41/nvidia/model.py
+321	2	vllm/models/deepseek_v41/nvidia/model_state.py
+5	0	vllm/models/deepseek_v41/nvidia/vl_model.py
+## patches/vllm/sm120-thor-fixes.diff
+10	4	vllm/model_executor/kernels/linear/mxfp8/flashinfer.py
+3	0	vllm/model_executor/layers/quantization/utils/mxfp8_utils.py
+12	5	vllm/models/deepseek_v41/attention.py
+66	1	vllm/models/deepseek_v41/common/engram.py
+9	3	vllm/models/deepseek_v41/nvidia/engram.py
+24	0	vllm/models/deepseek_v41/nvidia/flashinfer_sparse.py
+1	1	vllm/utils/multi_stream_utils.py
+## patches/vllm/pr59585-dsml-finite-args.diff
+12	4	vllm/parser/deepseek_v4.py
+## patches/vllm/pr59894-decoder-replay-cut-trim.diff
+117	27	vllm/models/deepseek_v41/attention.py
+20	52	vllm/models/deepseek_v41/decoder_replay_layers.py
+193	71	vllm/models/deepseek_v41/nvidia/model.py
+60	13	vllm/models/deepseek_v41/nvidia/model_state.py
+## patches/vllm/pr58560-compressor-null-block.diff
+5	1	vllm/models/deepseek_v41/compressor.py
+## patches/vllm-exl3/exl3-thor.patch
+676	50	src/vllm_exl3/exl3.py
+## kernels/exllamav3-5be8865-exl3_moe.patch
+4	257	bindings.cpp
+12	0	quant/comp_units/exl3_moe_instances.cuh
+5	0	quant/comp_units/exl3_moe_inst_k2_cb1.cu
+5	0	quant/comp_units/exl3_moe_inst_k3_cb1.cu
+4	0	quant/comp_units/exl3_moe_inst_k3_cb2.cu
+20	6	quant/exl3_devctx.cu
+2	0	quant/exl3_devctx.cuh
+2	0	quant/exl3_gemm_inner.cuh
+464	0	quant/exl3_gemm_inner_flat.cuh
+732	0	quant/exl3_gemm_inner_mt.cuh
+1	0	quant/exl3_moe_common.cuh
+80	13	quant/exl3_moe.cu
+5	0	quant/exl3_moe.cuh
+196	0	quant/exl3_moe_flat_kernel.cuh
+41	3	quant/exl3_moe_kernel.cuh
+## quantize/quantize_mtp_exl3.diff
+48	12	tools/quantize_experts_exl3.py

@@ -1,0 +1,5 @@
+pack/
+stage/
+logs/pod_id*
+logs/watchdog.log
+__pycache__/

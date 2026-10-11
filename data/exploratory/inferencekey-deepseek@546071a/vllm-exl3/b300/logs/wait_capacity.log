@@ -1,0 +1,45 @@
+2026-10-06T10:14:56Z EUR-IS-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:15:12Z EU-NL-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:15:27Z any FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:15:58Z EUR-IS-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:16:14Z EU-NL-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:16:29Z any FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:17:00Z EUR-IS-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:17:16Z EU-NL-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:17:31Z any FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:18:02Z EUR-IS-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:18:18Z EU-NL-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:18:34Z any FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:19:04Z EUR-IS-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:19:20Z EU-NL-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:19:36Z any FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:20:07Z EUR-IS-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:20:22Z EU-NL-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:20:38Z any FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:21:09Z EUR-IS-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:21:25Z EU-NL-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:21:40Z any FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:22:11Z EUR-IS-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:22:27Z EU-NL-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:22:43Z any FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:23:13Z EUR-IS-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:23:29Z EU-NL-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:23:45Z any FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:24:16Z EUR-IS-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:24:32Z EU-NL-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:24:48Z any FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:25:18Z EUR-IS-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:25:34Z EU-NL-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:25:50Z any FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:26:21Z EUR-IS-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:26:37Z EU-NL-1 CREATE 201 id=a3bzy3x959hdw2 ram=251 vcpu=32 cost=7.89 dc=EU-NL-1
+SUCCESS
+2026-10-06T10:48:48Z attempt1 a3bzy3x959hdw2 deleted: container never started (runtime null, uptime 0) after 22 min
+2026-10-06T10:48:51Z EUR-IS-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T10:49:07Z EU-NL-1 CREATE 201 id=68b5tndcox1o1r ram=251 vcpu=32 cost=7.89 dc=EU-NL-1
+SUCCESS
+2026-10-06T11:09:46Z attempt2 68b5tndcox1o1r same machine 0lhmwdguxacn, no container in 10 min, deleted; adding allowedCudaVersions 13.0
+2026-10-06T11:09:50Z EUR-IS-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T11:10:05Z EU-NL-1 FAIL 500 {"error":"create pod: There are no instances currently available","status":500} 
+2026-10-06T11:10:22Z any CREATE 201 id=8obc30jjcya44j ram=251 vcpu=24 cost=7.89 dc=any
+SUCCESS

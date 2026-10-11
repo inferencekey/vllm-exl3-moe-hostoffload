@@ -1,0 +1,2 @@
+ready after 191 s
+boot_s=191

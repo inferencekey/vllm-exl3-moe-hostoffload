@@ -1,0 +1,1 @@
+{"scenario": "A-code-4k", "point": {"mode": "closed", "value": 1}, "rep": 0, "seed": 20261007, "n_planned": 8, "t_start_wall": 1791355479.3437014, "t_end_wall": 1791355487.6585252, "warm_request": null, "summary": {"n": 8, "ok": 0, "errors": 8}}

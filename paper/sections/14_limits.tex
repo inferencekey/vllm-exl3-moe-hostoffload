@@ -1,0 +1,86 @@
+\section{Limitations and Threats to Validity}\label{sec:limits}
+
+The findings of Sections~\ref{sec:background} to~\ref{sec:discussion} are only as strong as the measurements behind
+them. This section says where they are weak, starting with the weakness that matters most.
+
+\paragraph{One boot per experiment.}
+The controlled evidence comes from three pod sessions on three different hosts (\dv{lean.session.minutes},
+\dv{lean.session2.minutes} and \dv{lean.session3.minutes} minutes, Table~\ref{tab:pod-hardware}). Each experiment's
+measurements come from a single boot. The \texttt{gen30} configuration was booted on all three pods, but no
+measurement was repeated across boots, so the intervals cover repetitions inside a boot and nothing across boots. The
+one configuration measured on two hosts differed by far more than any interval inside a boot
+(Section~\ref{sec:results-controlled}), which makes the placement of a pod a large factor that we did not control. E8
+has two repetitions per level in scenario B, but in scenario A only at $N=1$, because one client-side disconnect among
+eight requests tripped the pre-registered stop rule (error rate above 5\%) and ended A's second sweep. A rule evaluated
+on eight requests is too sensitive. After the first session we closed idle client connections before the server does,
+which was the cause of those disconnects, and required at least two errors, a rule that E12 and E13 used. The second
+session's rerun of the E3 subset kept the first session's rule to match its baseline, and the first session's data
+were not rerun under the new rule.
+
+\paragraph{The questions the campaign leaves open.}
+Our three sessions (Section~\ref{sec:setup}) answer RQ1 on the measured hardware, give RQ2 two host shares with one
+repetition each, measure the RQ4 frontier for two scenarios, give RQ5 a first answer on small subsets, and answer RQ6
+for one pod and six context regimes with one repetition (E13, Section~\ref{sec:agent}). They leave open the following.
+\begin{itemize}
+\item The speed of the model held entirely in GPU memory, so that without the 2x B300 pod (E9) the cost of the offload
+is bounded only by the slope between two host shares, not against a baseline without offload.
+\item RQ3 as a comparison of speed, because without Diffbot's hooks the zero-copy variant cannot serve DeepSeek-V4.1 on
+these pins at any KV block size (64 fails at initialization, 128 on the first request), so the cost of the per-expert
+split against upstream's offload is unknown.
+\item A quality reference on our own hardware and serving code, since the API stands in for E11 and differences may
+come from the API's precision, prompt handling or sampling rather than from quantization.
+\item Upstream vLLM with the original checkpoint on the same GPUs, dropped to avoid its \dv{static.orig.total_gib}\,GiB download.
+\item Plans fitted to routing counts at several shares and the smallest share that fits, and the decode scenario at the
+larger share, lost to a client-side disconnect.
+\item Placement policy (E4), Engram format (E5), the SM budget of the host-expert stream (E6) and speculation off (E7).
+\item The prose scenario, Poisson arrivals, MATH, MBPP, RULER and LongBench, while long context (E12) was measured with
+one repetition, on the slower second pod, and without a quality check at those lengths.
+\end{itemize}
+Statements about these remain hypotheses.
+
+\paragraph{Model capability.}
+The LiveBench scores in Section~\ref{sec:background} belong to the unquantized model at maximum reasoning effort as
+served by DeepSeek. How much of that capability survives \dv{cfg.exl3_bits}-bit quantization with thinking disabled is
+not measured, since our quality evidence covers three small task subsets with thinking off. Running LiveBench on the
+served stack, with thinking on and off, is future work.
+
+\paragraph{The coding-agent case study.}
+E13 is one repetition on one boot of one pod. Levels near the objective pass or fail by noise, which is why we
+provision on a 10\% margin, and its capacities do not transfer to another pod (Section~\ref{sec:results-controlled}).
+Replies have a fixed length of 400 tokens, and the agent turns are synthetic, with unique corpus text standing in for
+tool output, so speculative decoding may accept more or fewer tokens than on real coding work. The usage profile is
+one developer's week, read from a provider's billing categories that need not match vLLM's prefix-cache accounting, and
+the reply length per turn and the daily active window are assumptions varied in the tables. The duty cycle uses the
+floor of 40 tokens/s, an upper bound on busy time, and the Binomial model assumes independent developers with equal
+activity, which understates the tail for a team on one schedule. Costs are GPU rental at one quoted price and exchange
+rate. Storage, networking, engineering, operations and the differences in model capability and product features are
+not priced, except in the stated sensitivity.
+
+\paragraph{The exploratory data.}
+The imported runs were measured once per configuration, used usable bars chosen after seeing the data, started every
+level with a synchronized burst that dominates the TTFT tails, depend on content through speculative decoding with
+synthetic prompts (slices of the vLLM sources and question templates, or a few essays), and never evaluated quality.
+They also timed chunks rather than tokens, computed percentiles by nearest rank on 8 to 128 requests, measured
+aggregate throughput including ramp-up and drain, and ran on one pod on one day.
+
+\paragraph{The static accounting.}
+File bytes are not runtime allocations. Repacking, FP8 copies and workspaces change the memory used on the GPU
+(\dv{expl.runtime_minus_file_gib}\,GiB per GPU more in the exploratory boot). The placement rules model the documented
+configuration and are checked against the server log only where the log reports placement. The minimal host share is
+an estimate from one boot.
+
+\paragraph{The protocol.}
+The service-level objectives were registered before the controlled runs but after we saw the exploratory data. Cloud
+pods share hosts, so CPU, memory bandwidth and PCIe topology vary between pods. We record them but cannot control
+them, and repetitions across boots were designed for one pod and did not run. Upstream vLLM's zero-copy offload did
+fail on this model at the pinned commit, at both KV block sizes we tried, and we report that failure as a result, but
+it leaves RQ3 unanswered as a comparison of speed. When the B300 reference runs, it will bound the cost of the offload
+together with the difference in hardware, because it uses other GPUs. GSM8K, HumanEval and similar benchmarks may be
+in the training data, and since the comparison is between two versions of the same model, that limits the concern but
+does not remove it. NVML's PCIe counters are sampled and their meaning varies between GPUs, hence the calibration
+step.
+
+\paragraph{Attribution.}
+The audit relies on pinned public sources, keyword searches confirmed by reading code, and metadata from the Hub and
+GitHub. Diffbot's code is attributed to the organization, because individual authors are not visible. Work that is
+not public or not cited by the recipe could precede it.

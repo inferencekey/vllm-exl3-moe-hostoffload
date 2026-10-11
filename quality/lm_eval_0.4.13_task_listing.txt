@@ -1,0 +1,9 @@
+|longbench                                        |lm_eval/tasks/longbench/_longbench.yaml                                                                                                      |
+|ruler                                            |lm_eval/tasks/ruler/ruler.yaml                                                                                                               |
+|longbench_tasks                                 |
+|gsm8k_cot_llama                                                                       |lm_eval/tasks/gsm8k/gsm8k-cot-llama.yaml                                                                        
+|humaneval_instruct                                                                    |lm_eval/tasks/humaneval/humaneval_instruct.yaml                                                                 
+|ifeval                                                                                |lm_eval/tasks/ifeval/ifeval.yaml                                                                                
+|mbpp_instruct                                                                         |lm_eval/tasks/mbpp/mbpp_instruct.yaml                                                                           
+|minerva_math500                                                                       |lm_eval/tasks/minerva_math/minerva_math500.yaml                                                                 
+|niah_single_1                                                                         |lm_eval/tasks/ruler/niah_single_1.yaml                                                                          

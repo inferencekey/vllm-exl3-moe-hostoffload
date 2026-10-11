@@ -1,0 +1,15 @@
+# diffbot/DeepSeek-V4.1-Flash-EXL3-3bpw-2x-RTX-PRO-6000: commits on main (api/models/<repo>/commits/main), oldest last, and which recipe parts each tree has
+# columns: commit date authors | exl3-thor.patch plans/ xmoe/ xmoe_do convert_engram_int4 sm120-thor-fixes quantize_mtp_exl3
+a1cf1bd227 2026-10-05T16:38:40 miketung | Y Y Y Y Y Y Y | Add vLLM PR #58560 (keep warmup/capture writes out of the null KV block); speed and KL unchanged
+8727c2adec 2026-10-04T19:39:35 miketung | Y Y Y Y Y Y Y | Add vLLM PR #59894 (decoder replay skips the cut layer's unused work): fresh 1M-token prefill 145 s -> 123 s, 
+10d9a1ddb9 2026-10-03T14:52:13 miketung | Y Y Y Y Y Y Y | Default context window 1M tokens (MAX_MODEL_LEN 1048576, KV_MEM 4.25 GiB); 1.04M-token needle validated
+743708d75c 2026-10-02T08:30:45 miketung | Y Y Y Y Y Y Y | Image input on by default (VISION=1): vision encoder loaded, image-token budget fix in sitecustomize, image pr
+7b8e5f14af 2026-10-02T05:25:11 miketung | Y Y Y Y Y Y Y | Card: 4-stream agentic coding decode (232 tok/s aggregate)
+587f6423d7 2026-10-02T03:49:34 miketung | Y Y Y Y Y Y Y | Card: 1-stream agentic coding decode speed (159 tok/s token-weighted, 0.43 s median TTFT)
+797f3265e9 2026-10-02T03:32:55 miketung | Y Y Y Y Y Y Y | 2026-10-01: decode-once prefill MoE kernel (+18% prefill) and a host-expert plan tuned for agentic coding
+c2a11dd974 2026-10-01T20:51:35 miketung | Y Y Y . Y Y Y | 2026-10-01: vLLM #59585 -- DSML tool arguments stay valid JSON for NaN/Infinity/out-of-range numbers
+44899f5e0d 2026-09-30T19:59:43 miketung | Y Y Y . Y Y Y | Replace the 2.0 bpw pack with the 3.0 bpw pack (coolbho3k experts, int4 Engram, EXL3 drafter) and recipe
+28b7ab71ba 2026-09-11T10:00:33 miketung | . . Y . . . . | Add files using upload-large-folder tool
+c0696d0ca5 2026-09-11T09:59:54 miketung | . . Y . . . . | Add files using upload-large-folder tool
+7e45ac82dd 2026-09-11T09:58:52 miketung | . . Y . . . . | Add files using upload-large-folder tool
+303dc2f770 2026-09-11T09:36:30 miketung | . . . . . . . | initial commit

@@ -1,0 +1,58 @@
+# GPU pricing used by the cost model. Prices are per pod-hour for the whole pod (all its GPUs), USD.
+# Sources: RunPod create responses (costPerHr) recorded in the exploratory logs, and the orchestrator's quotes
+# for the planned runs (2026-10-06). Prices change; rerun the cost model with current prices before relying on it.
+fx:
+  # ECB euro foreign exchange reference rate, published for 2026-10-05, fetched 2026-10-06
+  # (data/static/fx/ecb-eurofxref-daily-2026-10-05.xml). 1 EUR = usd_per_eur USD.
+  usd_per_eur: 1.1204
+  date: "2026-10-05"
+  source: https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml
+  file: data/static/fx/ecb-eurofxref-daily-2026-10-05.xml
+configs:
+  2x-rtx-pro-6000:
+    gpus: 2
+    gpu: NVIDIA RTX PRO 6000 Blackwell Server Edition (96 GB)
+    usd_per_hour: 4.18
+    provider: RunPod SECURE, EUR-IS-1
+    source: "data/exploratory/inferencekey-deepseek@546071a/vllm-exl3/pro6000-concurrency/logs/create_loop.log"
+    host_ram_gib_cgroup: 351.1
+  1x-b300:
+    gpus: 1
+    gpu: NVIDIA B300 SXM6 (288 GB)
+    usd_per_hour: 7.89
+    provider: RunPod SECURE
+    source: "orchestrator quote 2026-10-06 (matches costPerHr in data/exploratory/.../b300/logs/created.txt)"
+  2x-b300:
+    gpus: 2
+    gpu: NVIDIA B300 SXM6 (288 GB)
+    usd_per_hour: 15.78
+    provider: RunPod SECURE
+    source: "2 x 1x-b300 quote (assumption: linear in GPU count; check the create response)"
+  1x-a100-sxm-80gb:
+    gpus: 1
+    gpu: NVIDIA A100 SXM 80 GB
+    usd_per_hour: 1.59
+    provider: RunPod SECURE
+    source: "orchestrator quote 2026-10-06"
+  4x-rtx-pro-6000:
+    gpus: 4
+    gpu: NVIDIA RTX PRO 6000 Blackwell Server Edition (96 GB)
+    usd_per_hour: 8.36
+    provider: RunPod SECURE
+    source: "2 x 2x-rtx-pro-6000 quote (assumption: linear in GPU count; check the create response)"
+  cpu-build:
+    gpus: 0
+    gpu: none (CPU pod for image builds)
+    usd_per_hour: 0.48
+    provider: RunPod
+    source: "data/exploratory/inferencekey-deepseek@546071a/docs/REPORT_vllm_excerpt.md (S11 CPU pod)"
+api:
+  deepseek-flash:
+    model_served: DeepSeek-V4.1-Flash (the pricing page says requests to deepseek-flash are served by DeepSeek-V4.1-Flash)
+    source: https://api-docs.deepseek.com/quick_start/pricing
+    fetched: "2026-10-06"
+    file: data/static/pricing/deepseek-api-pricing-2026-10-06.html
+    thinking_toggle: '{"thinking": {"type": "disabled"}} (data/static/pricing/deepseek-api-thinking-mode-2026-10-06.html)'
+    # USD per 1M tokens. Off-peak rates are half of peak; peak hours 01:00-04:00 and 06:00-10:00 UTC Mon-Fri.
+    peak: {input_cache_hit: 0.006, input_cache_miss: 0.30, output: 1.20}
+    off_peak: {input_cache_hit: 0.003, input_cache_miss: 0.15, output: 0.60}

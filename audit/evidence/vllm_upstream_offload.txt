@@ -1,0 +1,112 @@
+# Upstream vLLM weight offloading at the pinned commit 36768d1bfd39094681cdbc8cb37d4b31c0729c89 (Mon Sep 28 22:02:59 2026 -0700)
+# git show HEAD:vllm/config/offload.py (lines 12-45, 48-60, 83-91)
+offload.py:12: OffloadBackend = Literal["auto", "uva", "prefetch"]
+offload.py:13: 
+offload.py:14: 
+offload.py:15: @config
+offload.py:16: class UVAOffloadConfig:
+offload.py:17:     """Configuration for UVA (Unified Virtual Addressing) CPU offloading.
+offload.py:18: 
+offload.py:19:     Uses zero-copy access from CPU-pinned memory. Simple but requires
+offload.py:20:     fast CPU-GPU interconnect.
+offload.py:21:     """
+offload.py:22: 
+offload.py:23:     cpu_offload_gb: float = Field(default=0, ge=0)
+offload.py:24:     """The space in GiB to offload to CPU, per GPU. Default is 0, which means
+offload.py:25:     no offloading. Intuitively, this argument can be seen as a virtual way to
+offload.py:26:     increase the GPU memory size. For example, if you have one 24 GB GPU and
+offload.py:27:     set this to 10, virtually you can think of it as a 34 GB GPU. Then you can
+offload.py:28:     load a 13B model with BF16 weight, which requires at least 26GB GPU memory.
+offload.py:29:     Note that this requires fast CPU-GPU interconnect, as part of the model is
+offload.py:30:     loaded from CPU memory to GPU memory on the fly in each model forward pass.
+offload.py:31:     This uses UVA (Unified Virtual Addressing) for zero-copy access.
+offload.py:32:     """
+offload.py:33: 
+offload.py:34:     cpu_offload_params: set[str] = Field(default_factory=set)
+offload.py:35:     """The set of parameter name segments to target for CPU offloading.
+offload.py:36:     Unmatched parameters are not offloaded. If this set is empty, parameters
+offload.py:37:     are offloaded non-selectively until the memory limit defined by
+offload.py:38:     `cpu_offload_gb` is reached.
+offload.py:39:     Examples:
+offload.py:40:         - For parameter name "mlp.experts.w2_weight":
+offload.py:41:             - "experts" or "experts.w2_weight" will match.
+offload.py:42:             - "expert" or "w2" will NOT match (must be exact segments).
+offload.py:43:     This allows distinguishing parameters like "w2_weight" and "w2_weight_scale".
+offload.py:44:     """
+offload.py:45: 
+offload.py:48: class PrefetchOffloadConfig:
+offload.py:49:     """Configuration for prefetch-based CPU offloading.
+offload.py:50: 
+offload.py:51:     Groups layers and uses async H2D prefetch to hide transfer latency.
+offload.py:52:     """
+offload.py:53: 
+offload.py:54:     offload_group_size: int = Field(default=0, ge=0)
+offload.py:55:     """Group every N layers together. Offload last `offload_num_in_group`
+offload.py:56:     layers of each group. Default is 0 (disabled).
+offload.py:57:     Example: group_size=8, num_in_group=2 offloads layers 6,7,14,15,22,23,...
+offload.py:58:     Unlike cpu_offload_gb, this uses explicit async prefetching to hide transfer
+offload.py:59:     latency.
+offload.py:60:     """
+offload.py:83:     offload_backend: OffloadBackend = "auto"
+offload.py:84:     """The backend for weight offloading. Options:
+offload.py:85:     - "auto": Selects based on which sub-config has non-default values
+offload.py:86:       (prefetch if offload_group_size > 0, uva if cpu_offload_gb > 0).
+offload.py:87:     - "uva": UVA (Unified Virtual Addressing) zero-copy offloading.
+offload.py:88:     - "prefetch": Async prefetch with group-based layer offloading.
+offload.py:89:     """
+offload.py:90: 
+offload.py:91:     uva: UVAOffloadConfig = Field(default_factory=UVAOffloadConfig)
+
+# CLI flags (vllm/engine/arg_utils.py)
+arg_utils.py:1400:            "--offload-backend", **offload_kwargs["offload_backend"]
+arg_utils.py:1402:        offload_group.add_argument("--cpu-offload-gb", **uva_kwargs["cpu_offload_gb"])
+arg_utils.py:1404:            "--cpu-offload-params", **uva_kwargs["cpu_offload_params"]
+
+
+# vllm-exl3 after the pin: README at origin/HEAD 223e246ff8da552d2ace976c4bcbed804a8ec04c (Fri Sep 25 08:28:29 2026 -0700)
+README.md@HEAD:62: The public compiled checkpoint under active qualification is [`vcruz305/DSV4.1-Flash-EXL3-4.75bpw`](https://huggingface.co/vcruz305/DSV4.1-Flash-EXL3-4.75bpw). Use the [DeepSeek-V4.1 recipe](https://github.com/vcruz305/DeepSeek-V4.1-Flash-EXL3-DGX-Spark-recipe), which now contains TP2/TP4 Spark paths plus a separate one-GPU `sm_120`/large-host-RAM UVA qualification path.
+README.md@HEAD:63: 
+README.md@HEAD:64: #### Experimental vLLM UVA expert placement
+README.md@HEAD:65: 
+README.md@HEAD:66: Current vLLM exposes selective UVA weight offload and a DeepSeek-V4.1 Engram CPU/UVA mode. That makes a one-small-GPU/large-host-RAM experiment possible **without** first porting the full V4.1 graph into standalone ExLlamaV3.
+README.md@HEAD:67: 
+README.md@HEAD:68: When the recipe sets:
+README.md@HEAD:69: 
+README.md@HEAD:70: ```bash
+README.md@HEAD:71: export VLLM_EXL3_REQUIRE_UVA_EXPERTS=1
+README.md@HEAD:72: ```
+README.md@HEAD:73: 
+README.md@HEAD:74: this plugin requires all six large packed expert payload segments to carry vLLM's mapped-UVA placement marker before it builds the normal EXL3 handles/pointer tables:
+README.md@HEAD:75: 
+README.md@HEAD:76: ```text
+README.md@HEAD:77: w13_trellis  w13_suh  w13_svh
+README.md@HEAD:78: w2_trellis   w2_suh   w2_svh
+README.md@HEAD:79: ```
+README.md@HEAD:80: 
+README.md@HEAD:81: The expected vLLM CLI shape is:
+README.md@HEAD:82: 
+README.md@HEAD:83: ```bash
+README.md@HEAD:84: --offload-backend uva \
+README.md@HEAD:85: --cpu-offload-gb <budget> \
+README.md@HEAD:86: --cpu-offload-params \
+README.md@HEAD:87:   w13_trellis w13_suh w13_svh \
+README.md@HEAD:88:   w2_trellis w2_suh w2_svh
+README.md@HEAD:89: ```
+README.md@HEAD:90: 
+README.md@HEAD:91: with V4.1 Engram separately requested using:
+README.md@HEAD:92: 
+README.md@HEAD:93: ```bash
+README.md@HEAD:94: --engram-config '{"cpu_offload":true}'
+README.md@HEAD:95: ```
+README.md@HEAD:96: 
+README.md@HEAD:97: This is **not CPU compute**. The packed expert weights live in pinned host memory as mapped accelerator views and the GPU EXL3 kernels dereference them over UVA/PCIe. The guard rejects ordinary-CPU fallback placement, partial placement, and a requested run where none of the six payloads are actually UVA-mapped.
+README.md@HEAD:98: 
+README.md@HEAD:99: A successful guard is only a placement gate. It does not prove output parity, acceptable PCIe throughput, CUDA-graph behavior or that the host can pin hundreds of GiB. See [`docs/CPU_OFFLOAD.md`](docs/CPU_OFFLOAD.md).
+README.md@HEAD:100: 
+# same README at the pin d3cfd394: lines mentioning UVA/offload
+(end)
+
+# vllm-exl3 history: first commits documenting the UVA expert path (git log origin/HEAD -- README.md)
+1218889161cff0d74c2fc133b7111b6fa5a531e8 Fri Sep 11 16:10:29 2026 -0700 Victor Cruz docs: surface experimental vLLM UVA expert path
+f88aaaca84d89bd7849cb6ab1047d05872b25d71 Fri Sep 11 15:54:02 2026 -0700 Victor Cruz docs: document V4.1 and CPU-offload compatibility boundary
+# pin d3cfd394 is an ancestor of origin/HEAD: yes

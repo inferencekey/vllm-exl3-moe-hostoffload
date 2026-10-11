@@ -1,0 +1,65 @@
+{
+ "workload_file": "/root/hob/experiments/workloads/lean_probes.yaml",
+ "workload": {
+  "seed": 20261009,
+  "repetitions": 1,
+  "scenarios": [
+   {
+    "name": "prefill",
+    "kind": "prefill",
+    "prompt": {
+     "corpus": "code",
+     "template": "raw",
+     "region": [
+      0.0,
+      0.5
+     ]
+    },
+    "lengths": [
+     4096,
+     16384,
+     65536
+    ],
+    "requests": 3
+   },
+   {
+    "name": "decode",
+    "kind": "decode",
+    "prompt": {
+     "corpus": "code",
+     "template": "continue_prose",
+     "region": [
+      0.0,
+      0.5
+     ]
+    },
+    "prompt_tokens": 128,
+    "output_tokens": 512,
+    "sampling": {
+     "temperature": 0.6,
+     "top_p": 0.95
+    },
+    "arrivals": {
+     "mode": "closed",
+     "levels": [
+      1,
+      8,
+      32
+     ],
+     "requests_per_user": 1,
+     "min_requests": 4
+    }
+   }
+  ]
+ },
+ "base_seed": 20261009,
+ "repetitions": 1,
+ "harness_git": "d6baacdb3600a17df7d153f06ee41f4e89ec6bba",
+ "started_utc": "2026-10-06T20:30:22Z",
+ "status": "complete",
+ "server": {
+  "base_url": "http://127.0.0.1:8000",
+  "model": "deepseek-v4.1-flash"
+ },
+ "finished_utc": "2026-10-06T20:32:06Z"
+}

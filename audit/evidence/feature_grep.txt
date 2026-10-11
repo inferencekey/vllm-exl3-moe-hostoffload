@@ -1,0 +1,142 @@
+# Presence of each feature marker per tree: count of matching lines, then up to 3 file:line hits.
+# Trees: upstream = pinned commit as published; +recipe = after applying the recipe's patches (copies in $AUDIT_SRC/work).
+## host_expert_plan  /EXL3_HOST_EXPERTS|host_experts|_HOST_PLAN/
+  vllm@36768d1                          0  
+  vllm@36768d1+recipe                   0  
+  vllm-exl3@d3cfd394                    0  
+  vllm-exl3@d3cfd394+exl3-thor          9  src/vllm_exl3/exl3.py:2288:# thor host-expert project (2026-09-28): EXL3_HOST_EXPERTS=<plan.json> {layer_name: [cold expert ids]}. Hot experts live |src/vllm_exl3/exl3.py:2292:_EXL3_HOST_PLAN_PATH = os.environ.get("EXL3_HOST_EXPERTS", "")|src/vllm_exl3/exl3.py:2293:_EXL3_HOST_PLAN = None
+  exllamav3@5be88657                    0  
+  exllamav3_ext+exl3_moe.patch          0  
+  sfxnz@460ac89c                        0  
+  mia-glm53@HEAD                        0  
+  diffbot-recipe@a1cf1bd2               5  README.md:80:- `EXL3_HOST_EXPERTS`: the host-expert plan;|serve/serve.sh:49:export EXL3_HOST_EXPERTS=${EXL3_HOST_EXPERTS:-/opt/recipe/plans/$PLAN}|plans/README.md:3:`EXL3_HOST_EXPERTS=<plan.json>` maps each routed-expert layer to the expert ids that stay in pinned host RAM instead of VRAM:
+## cudaHostRegister  /cudaHostRegister/
+  vllm@36768d1                          5  vllm/models/deepseek_v41/nvidia/engram.py:67:    result = torch.cuda.cudart().cudaHostRegister(pointer, num_bytes, 0)|vllm/models/deepseek_v41/nvidia/engram.py:70:            "Engram cudaHostRegister failed (%s); using pinned memory.", result|vllm/models/deepseek_v41/nvidia/engram.py:204:                result = torch.cuda.cudart().cudaHostRegister(pointer, num_bytes, 0)
+  vllm@36768d1+recipe                   5  vllm/models/deepseek_v41/nvidia/engram.py:67:    result = torch.cuda.cudart().cudaHostRegister(pointer, num_bytes, 0)|vllm/models/deepseek_v41/nvidia/engram.py:70:            "Engram cudaHostRegister failed (%s); using pinned memory.", result|vllm/models/deepseek_v41/nvidia/engram.py:204:                result = torch.cuda.cudart().cudaHostRegister(pointer, num_bytes, 0)
+  vllm-exl3@d3cfd394                    0  
+  vllm-exl3@d3cfd394+exl3-thor          3  src/vllm_exl3/exl3.py:2385:        # explicit device: vLLM builds models under a CUDA default device. Exact-size pageable buffer + cudaHostRegister|src/vllm_exl3/exl3.py:2389:            err = torch.cuda.cudart().cudaHostRegister(self.host.data_ptr(), self.host.numel() * 2, 3)  # Portable|Mapped|src/vllm_exl3/exl3.py:2391:                raise RuntimeError(f"cudaHostRegister failed: {err}")
+  exllamav3@5be88657                    7  exllamav3/exllamav3_ext/cuda_host.cpp:8:    cudaError_t cr = cudaHostRegister(reinterpret_cast<void*>(ptr), nbytes, flags);|exllamav3/exllamav3_ext/cuda_host.cpp:22:        "cudaHostRegister(", reinterpret_cast<void*>(ptr), ", ", nbytes, ") failed: ",|exllamav3/exllamav3_ext/cuda_host.cpp:47:    // Device-side alias of memory registered with cudaHostRegisterMapped. Equal to the host
+  exllamav3_ext+exl3_moe.patch          4  cuda_host.cpp:8:    cudaError_t cr = cudaHostRegister(reinterpret_cast<void*>(ptr), nbytes, flags);|cuda_host.cpp:22:        "cudaHostRegister(", reinterpret_cast<void*>(ptr), ", ", nbytes, ") failed: ",|cuda_host.cpp:47:    // Device-side alias of memory registered with cudaHostRegisterMapped. Equal to the host
+  sfxnz@460ac89c                        0  
+  mia-glm53@HEAD                        0  
+  diffbot-recipe@a1cf1bd2               4  patches/vllm/sitecustomize.py:793:# lm_head) to exact-size cudaHostRegister'd host memory behind a UVA alias (same mechanism as the EXL3 cold expert|patches/vllm/sitecustomize.py:822:                err = _t.cuda.cudart().cudaHostRegister(host.data_ptr(), host.numel() * 2, 3)|patches/vllm/sitecustomize.py:824:                    print(f"[sitecustomize] THOR_EMBED_HOST: cudaHostRegister failed {err}", file=sys.stderr); con
+## side_stream_sm_budget  /EXL3_HOST_OVERLAP|xmoe_set_sm_budget|set_sm_budget/
+  vllm@36768d1                          0  
+  vllm@36768d1+recipe                   0  
+  vllm-exl3@d3cfd394                    0  
+  vllm-exl3@d3cfd394+exl3-thor          4  src/vllm_exl3/exl3.py:109:_EXL3_OVERLAP_DECODE = int(os.environ.get("EXL3_HOST_OVERLAP_SMS", "0") or 0)|src/vllm_exl3/exl3.py:110:_EXL3_OVERLAP_PREFILL = int(os.environ.get("EXL3_HOST_OVERLAP_SMS_PREFILL", str(_EXL3_OVERLAP_DECODE)) or 0)|src/vllm_exl3/exl3.py:111:_EXL3_OVERLAP_GROUP = int(os.environ.get("EXL3_HOST_OVERLAP_GROUP", "0") or 0)   # SMs per cold expert group (0 = 8; needs
+  exllamav3@5be88657                    0  
+  exllamav3_ext+exl3_moe.patch          3  bindings.cpp:8:    m.def("xmoe_set_sm_budget", &xmoe_set_sm_budget, "thor: cap the SMs a launch may occupy (0 = all)");|quant/exl3_moe.cu:62:void xmoe_set_sm_budget(int v) { xmoe_sm_budget = v; }|quant/exl3_moe.cuh:51:void xmoe_set_sm_budget(int v);
+  sfxnz@460ac89c                        0  
+  mia-glm53@HEAD                        0  
+  diffbot-recipe@a1cf1bd2              12  kernels/xmoe/bindings.cpp:8:    m.def("xmoe_set_sm_budget", &xmoe_set_sm_budget, "thor: cap the SMs a launch may occupy (0 = all)");|kernels/xmoe/quant/exl3_moe.cu:62:void xmoe_set_sm_budget(int v) { xmoe_sm_budget = v; }|kernels/xmoe/quant/exl3_moe.cuh:51:void xmoe_set_sm_budget(int v);
+## split_launch_negative_counts  /xmoe_set_force_group|skip but keep offsets|negative expert count/
+  vllm@36768d1                          0  
+  vllm@36768d1+recipe                   0  
+  vllm-exl3@d3cfd394                    0  
+  vllm-exl3@d3cfd394+exl3-thor          1  src/vllm_exl3/exl3.py:1589:    force = getattr(exllamav3_ext, "xmoe_set_force_group", None)
+  exllamav3@5be88657                    0  
+  exllamav3_ext+exl3_moe.patch          3  bindings.cpp:10:    m.def("xmoe_set_force_group", &xmoe_set_force_group, "thor: force the group (non-flat) kernel for subsequent exl3_moe calls");|quant/exl3_moe.cu:56:void xmoe_set_force_group(int v) { xmoe_force_group = v; }|quant/exl3_moe.cuh:49:void xmoe_set_force_group(int v);
+  sfxnz@460ac89c                        0  
+  mia-glm53@HEAD                        0  
+  diffbot-recipe@a1cf1bd2               6  kernels/xmoe/bindings.cpp:10:    m.def("xmoe_set_force_group", &xmoe_set_force_group, "thor: force the group (non-flat) kernel for subsequent exl3_m|kernels/xmoe/quant/exl3_moe.cu:56:void xmoe_set_force_group(int v) { xmoe_force_group = v; }|kernels/xmoe/quant/exl3_moe.cuh:49:void xmoe_set_force_group(int v);
+## decode_once_prefill  /EXL3_DO_MIN_TOKENS|EXL3_DO\b|xmoe_do/
+  vllm@36768d1                          0  
+  vllm@36768d1+recipe                   0  
+  vllm-exl3@d3cfd394                    0  
+  vllm-exl3@d3cfd394+exl3-thor          6  src/vllm_exl3/exl3.py:1308:# thor decode-once prefill MoE (2026-10-01, DS4.1 lever 2): EXL3_DO=1 sends every VRAM-resident (hot) expert of an eager |src/vllm_exl3/exl3.py:1309:# >= EXL3_DO_MIN_TOKENS tokens through kernels/xmoe_do (grouped GEMM that decodes each trellis tile once per <=128 rows i|src/vllm_exl3/exl3.py:1312:_EXL3_DO = os.environ.get("EXL3_DO", "0") == "1"
+  exllamav3@5be88657                    0  
+  exllamav3_ext+exl3_moe.patch          0  
+  sfxnz@460ac89c                        0  
+  mia-glm53@HEAD                        0  
+  diffbot-recipe@a1cf1bd2              25  kernels/build_xmoe_do.py:2:"""build_xmoe_do.py: JIT-build the decode-once prefill MoE extension (kernels/xmoe_do/do_gemm.cu, headers from kernels/xm|kernels/build_xmoe_do.py:3:sm_120a into kernels/build/xmoe_do (or $XMOE_BUILD_DIR/xmoe_do)."""|kernels/build_xmoe_do.py:7:bd = os.path.join(os.environ.get("XMOE_BUILD_DIR", os.path.join(K, "build")), "xmoe_do"); os.makedirs(bd, exist_ok=True)
+## lean_prep  /EXL3_LEAN_PREP/
+  vllm@36768d1                          0  
+  vllm@36768d1+recipe                   0  
+  vllm-exl3@d3cfd394                    0  
+  vllm-exl3@d3cfd394+exl3-thor          2  src/vllm_exl3/exl3.py:228:_EXL3_LEAN_PREP = os.environ.get("EXL3_LEAN_PREP", "0") == "1"|src/vllm_exl3/exl3.py:1452:    lean = _EXL3_LEAN_PREP and 0 < tokens <= FAT_EXPERT_THRESHOLD and tokens * topk <= _LEAN_MAX_ROWS
+  exllamav3@5be88657                    0  
+  exllamav3_ext+exl3_moe.patch          0  
+  sfxnz@460ac89c                        0  
+  mia-glm53@HEAD                        0  
+  diffbot-recipe@a1cf1bd2               3  README.md:82:- `EXL3_LEAN_PREP`: lighter routing preparation for decode-sized calls;|serve/serve.sh:54:export EXL3_LEAN_PREP=${EXL3_LEAN_PREP:-1}                                 # lean routing prep on decode-sized calls|patches/vllm-exl3/README.md:14:- Lean routing prep for decode-sized calls (`EXL3_LEAN_PREP`), one grow-only scratch buffer per device and shape,
+## flat_decode_kernel  /exl3_moe_flat|flat scheduler|gemm_inner_flat/
+  vllm@36768d1                          0  
+  vllm@36768d1+recipe                   0  
+  vllm-exl3@d3cfd394                    0  
+  vllm-exl3@d3cfd394+exl3-thor          0  
+  exllamav3@5be88657                    0  
+  exllamav3_ext+exl3_moe.patch         23  quant/comp_units/exl3_moe_inst_k3_cb2.cu:3:#include "../exl3_moe_flat_kernel.cuh"|quant/comp_units/exl3_moe_inst_k3_cb2.cu:9:fp_exl3_moe_kernel exl3_moe_flat_kernel_k3_n128_cb2() { return exl3_moe_flat_kernel<3, 128, 2>; }|quant/comp_units/exl3_moe_instances.cuh:31:fp_exl3_moe_kernel exl3_moe_flat_kernel_k2_n128_cb1();
+  sfxnz@460ac89c                        0  
+  mia-glm53@HEAD                        0  
+  diffbot-recipe@a1cf1bd2              24  kernels/xmoe/quant/comp_units/exl3_moe_inst_k3_cb2.cu:3:#include "../exl3_moe_flat_kernel.cuh"|kernels/xmoe/quant/comp_units/exl3_moe_inst_k3_cb2.cu:9:fp_exl3_moe_kernel exl3_moe_flat_kernel_k3_n128_cb2() { return exl3_moe_flat_kernel<3, 128, |kernels/xmoe/quant/comp_units/exl3_moe_instances.cuh:31:fp_exl3_moe_kernel exl3_moe_flat_kernel_k2_n128_cb1();
+## engram_int4  /ENGRAM_INT4|int4_fp16s32|_engram_lookup_int4/
+  vllm@36768d1                          0  
+  vllm@36768d1+recipe                   5  vllm/models/deepseek_v41/common/engram.py:646:# thor 2026-09-28: DSV41_ENGRAM_INT4=1 serves Engram tables re-encoded by convert_engram_int4.py: pack|vllm/models/deepseek_v41/common/engram.py:648:_ENGRAM_INT4 = os.environ.get("DSV41_ENGRAM_INT4", "0") == "1"|vllm/models/deepseek_v41/common/engram.py:652:def _engram_lookup_int4_kernel(
+  vllm-exl3@d3cfd394                    0  
+  vllm-exl3@d3cfd394+exl3-thor          0  
+  exllamav3@5be88657                    0  
+  exllamav3_ext+exl3_moe.patch          0  
+  sfxnz@460ac89c                        0  
+  mia-glm53@HEAD                        0  
+  diffbot-recipe@a1cf1bd2               7  README.md:95:- **Int4 Engram.** vLLM reads the int4 Engram tables (`DSV41_ENGRAM_INT4=1`) from pinned host memory. That saves 92 GB|docker/build.sh:52:docker commit --change 'ENV VLLM_PLUGINS=vllm_exl3' --change 'ENV DSV41_ENGRAM_DISK=0' --change 'ENV DSV41_ENGRAM_INT4=1' \|serve/serve.sh:97:  -e VLLM_PLUGINS=vllm_exl3 -e DSV41_ENGRAM_DISK=0 -e DSV41_ENGRAM_INT4=1 -e VLLM_MULTI_STREAM_GEMM_TOKEN_THRESHOLD=0 \
+## engram_host_offload  /cpu_offload|Engram CPU offload/
+  vllm@36768d1                         12  vllm/models/deepseek_v41/nvidia/engram.py:278:        cpu_offload: bool = False,|vllm/models/deepseek_v41/nvidia/engram.py:282:        self.cpu_offload = cpu_offload|vllm/models/deepseek_v41/nvidia/engram.py:288:            if not cpu_offload:
+  vllm@36768d1+recipe                  12  vllm/models/deepseek_v41/nvidia/engram.py:278:        cpu_offload: bool = False,|vllm/models/deepseek_v41/nvidia/engram.py:282:        self.cpu_offload = cpu_offload|vllm/models/deepseek_v41/nvidia/engram.py:288:            if not cpu_offload:
+  vllm-exl3@d3cfd394                    0  
+  vllm-exl3@d3cfd394+exl3-thor          0  
+  exllamav3@5be88657                   33  exllamav3/model/config.py:39:        self.moe_cpu_offload = int(os.environ.get("EXL3_MOE_CPU_OFFLOAD", 0))|exllamav3/model/config.py:40:        self.draft_moe_cpu_offload = 0|exllamav3/model/config.py:41:        self.moe_cpu_offload_assigned = {}
+  exllamav3_ext+exl3_moe.patch          0  
+  sfxnz@460ac89c                       17  README.md:5:552B backbone, 8B active at prefill and 16B at decode, 384 routed experts (top-6), CSA2, CED, Engram at layers 1 and 14. Native MXFP4/MX|docker/patch/engram_disk.py:4:Official vLLM stores Engram shards in pinned host RAM when cpu_offload=True.|docker/patch/upstream_apply_engram_patch.py:12:        cpu_offload: bool = False,
+  mia-glm53@HEAD                        0  
+  diffbot-recipe@a1cf1bd2               0  
+## engram_disk  /DSV41_ENGRAM_DISK/
+  vllm@36768d1                          0  
+  vllm@36768d1+recipe                   0  
+  vllm-exl3@d3cfd394                    0  
+  vllm-exl3@d3cfd394+exl3-thor          0  
+  exllamav3@5be88657                    0  
+  exllamav3_ext+exl3_moe.patch          0  
+  sfxnz@460ac89c                       33  tools/quantize_experts_exl3.py:6:hardlinked so DSV41_ENGRAM_DISK=1 can pread them - they must not be loaded into|README.md:5:552B backbone, 8B active at prefill and 16B at decode, 384 routed experts (top-6), CSA2, CED, Engram at layers 1 and 14. Native MXFP4/MX|README.md:27:| Engram | disk (`DSV41_ENGRAM_DISK=1`) |
+  mia-glm53@HEAD                        0  
+  diffbot-recipe@a1cf1bd2               3  docker/build.sh:52:docker commit --change 'ENV VLLM_PLUGINS=vllm_exl3' --change 'ENV DSV41_ENGRAM_DISK=0' --change 'ENV DSV41_ENGRAM_INT4=1' \|serve/serve.sh:97:  -e VLLM_PLUGINS=vllm_exl3 -e DSV41_ENGRAM_DISK=0 -e DSV41_ENGRAM_INT4=1 -e VLLM_MULTI_STREAM_GEMM_TOKEN_THRESHOLD=0 \|quantize/quantize_mtp_exl3.py:7:hardlinked so DSV41_ENGRAM_DISK=1 can pread them - they must not be loaded into
+## thor_hooks  /THOR_[A-Z_]+/
+  vllm@36768d1                          0  
+  vllm@36768d1+recipe                   3  vllm/models/deepseek_v41/nvidia/flashinfer_sparse.py:9:_THOR_PAD_FIX = _os_pad.environ.get("THOR_SM120_PAD_FIX", "1") == "1"|vllm/models/deepseek_v41/nvidia/flashinfer_sparse.py:819:        if _THOR_PAD_FIX:|vllm/models/deepseek_v41/nvidia/flashinfer_sparse.py:944:            if _THOR_PAD_FIX:
+  vllm-exl3@d3cfd394                    0  
+  vllm-exl3@d3cfd394+exl3-thor          0  
+  exllamav3@5be88657                    0  
+  exllamav3_ext+exl3_moe.patch          0  
+  sfxnz@460ac89c                        0  
+  mia-glm53@HEAD                        0  
+  diffbot-recipe@a1cf1bd2             147  kernels/thor_dense.py:11:GEMV_MAX = int(os.environ.get("THOR_DENSE_GEMV_MAX", "32"))|kernels/thor_dense.py:103:                      json.load(open(os.environ.get("THOR_DENSE_TABLE", "/opt/recipe/kernels/thor_dense_table.json"))).ite|kernels/thor_dense.py:113:    if t is not None and not os.environ.get("THOR_DENSE_CFG"):
+## dspark  /[Dd][Ss]park/
+  vllm@36768d1                        167  vllm/models/deepseek_v41/nvidia/flashinfer_sparse.py:36:    get_dspark_swa_index_width,|vllm/models/deepseek_v41/nvidia/flashinfer_sparse.py:95:    return get_dspark_swa_index_width(|vllm/models/deepseek_v41/nvidia/flashinfer_sparse.py:533:                # DSpark's non-causal window extends past the fixed 128 SWA
+  vllm@36768d1+recipe                 167  vllm/models/deepseek_v41/nvidia/flashinfer_sparse.py:38:    get_dspark_swa_index_width,|vllm/models/deepseek_v41/nvidia/flashinfer_sparse.py:97:    return get_dspark_swa_index_width(|vllm/models/deepseek_v41/nvidia/flashinfer_sparse.py:535:                # DSpark's non-causal window extends past the fixed 128 SWA
+  vllm-exl3@d3cfd394                    0  
+  vllm-exl3@d3cfd394+exl3-thor          0  
+  exllamav3@5be88657                   49  exllamav3/exllamav3_ext/bindings.cpp:231:    m.def("dspark_write_rows", &dspark_write_rows, "dspark_write_rows");|exllamav3/exllamav3_ext/generator/cache.cuh:22:void dspark_write_rows|exllamav3/exllamav3_ext/generator/cache.cu:92:__global__ void dspark_write_rows_kernel
+  exllamav3_ext+exl3_moe.patch          4  generator/cache.cuh:22:void dspark_write_rows|generator/cache.cu:92:__global__ void dspark_write_rows_kernel|generator/cache.cu:114:void dspark_write_rows
+  sfxnz@460ac89c                       11  tools/pack_meta.py:6:DSpark draft experts stay source-format from backbone layer 40.|README.md:29:| Speculative | DSpark-5 (`SPEC=none`) ||README.md:58:# non-expert shards (vision / DSpark / Engram): hardlinks, no GPU
+  mia-glm53@HEAD                        8  start-tp3.sh:496:# 1 = suppress client stop strings until </think> (DSpark #42 class).|start-tp3.sh:537:# Same single-key semantics as the DeepSeek V4 Flash DSpark deployment.|start.sh:392:# 1 = suppress client stop strings until </think> (DSpark #42 class).
+  diffbot-recipe@a1cf1bd2              24  README.md:8:- a DSpark drafter with EXL3 3-bit experts.|bench/ab-run.sh:4:# GSM8K-200 canary (needs bench/fetch-evaldata.sh), engine errors, DSpark mean acceptance length. KEEP=1 leaves it running.|serve/serve.sh:2:# Serve DeepSeek-V4.1-Flash (EXL3 3.0 bpw routed experts, int4 Engram, EXL3 3-bit DSpark drafter experts) with vLLM TP2 on
+## fat_any_item  /fat\.any\(\)\.item\(\)/
+  vllm@36768d1                          0  
+  vllm@36768d1+recipe                   0  
+  vllm-exl3@d3cfd394                    2  src/vllm_exl3/exl3.py:1240:    if fat_possible and bool(fat.any().item()):|src/vllm_exl3/exl3.py:1296:    if fat_possible and bool(fat.any().item()):
+  vllm-exl3@d3cfd394+exl3-thor          2  src/vllm_exl3/exl3.py:1535:        elif fat_possible and bool(fat.any().item()):|src/vllm_exl3/exl3.py:1732:    if fat_possible and fat is not None and bool(fat.any().item()):
+  exllamav3@5be88657                    0  
+  exllamav3_ext+exl3_moe.patch          0  
+  sfxnz@460ac89c                        0  
+  mia-glm53@HEAD                        0  
+  diffbot-recipe@a1cf1bd2               0  
+## cpu_moe_offload_exllamav3  /EXL3_MOE_CPU_OFFLOAD|moe_cpu_offload/
+  vllm@36768d1                          0  
+  vllm@36768d1+recipe                   0  
+  vllm-exl3@d3cfd394                    0  
+  vllm-exl3@d3cfd394+exl3-thor          0  
+  exllamav3@5be88657                   24  exllamav3/model/config.py:39:        self.moe_cpu_offload = int(os.environ.get("EXL3_MOE_CPU_OFFLOAD", 0))|exllamav3/model/config.py:40:        self.draft_moe_cpu_offload = 0|exllamav3/model/config.py:41:        self.moe_cpu_offload_assigned = {}
+  exllamav3_ext+exl3_moe.patch          0  
+  sfxnz@460ac89c                        0  
+  mia-glm53@HEAD                        0  
+  diffbot-recipe@a1cf1bd2               0  

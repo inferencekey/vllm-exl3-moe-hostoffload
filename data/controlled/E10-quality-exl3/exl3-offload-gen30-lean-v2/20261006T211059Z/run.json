@@ -1,0 +1,12 @@
+{
+ "status": "complete",
+ "server": {
+  "model": "deepseek-v4.1-flash",
+  "variant": "exl3-offload",
+  "plan": "plan-gen30-dh.json",
+  "thinking": "off"
+ },
+ "samples": "quality/subsets_lean2h_seed20261006.json",
+ "proxy_commit": "55be25d",
+ "note": "run.json written on the workstation after copy-back: do_run writes none for workload-less runs"
+}

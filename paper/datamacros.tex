@@ -1,0 +1,20 @@
+% Data macros. Every measured number in the paper is printed with \dv{key}; the values come from
+% paper/generated/values.tex, written by `make analyze` from files under data/ (see provenance.json).
+%   \dv{key}            the value, or a visible red NOT RUN marker if the key was never produced
+%   \notrunblock{p}{w}  a framed placeholder for a table or figure whose data (expected at p) does not exist
+% With \strictdatatrue (make paper STRICT=1) both stop the build with an error instead.
+\makeatletter
+\newif\ifstrictdata
+\strictdatafalse
+\newcommand{\dvset}[2]{\expandafter\gdef\csname dv@#1\endcsname{#2}}
+\newcommand{\dv}[1]{%
+  \ifcsname dv@#1\endcsname\csname dv@#1\endcsname%
+  \else\ifstrictdata\PackageError{datamacros}{missing data value #1}{Run make analyze or the experiment.}%
+  \else\typeout{DATAMACROS NOT RUN value: \detokenize{#1}}\textcolor{red}{\textbf{[NOT RUN: \detokenize{#1}]}}\fi\fi}
+\newcommand{\notrunblock}[2]{%
+  \ifstrictdata\PackageError{datamacros}{missing data for #2 (expected at #1)}{Run the experiment.}\fi
+  \typeout{DATAMACROS NOT RUN block: #1}%
+  \begin{center}\fcolorbox{red}{white}{\parbox{0.9\linewidth}{\centering\small
+    \textcolor{red}{\textbf{NOT RUN}}\\[2pt] #2\\[2pt]
+    \footnotesize Results will be generated from \texttt{#1} by \texttt{make analyze}.}}\end{center}}
+\makeatother

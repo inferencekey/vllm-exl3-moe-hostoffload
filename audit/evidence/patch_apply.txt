@@ -1,0 +1,23 @@
+# vLLM 36768d1bfd39094681cdbc8cb37d4b31c0729c89 (sparse checkout)
+alone      git apply --check pr58132-decoder-swa-replay.diff: OK
+alone      git apply --check sm120-thor-fixes.diff: OK
+alone      git apply --check pr59585-dsml-finite-args.diff: OK
+alone      git apply --check pr59894-decoder-replay-cut-trim.diff: FAIL: error: vllm/models/deepseek_v41/decoder_replay_layers.py: No such file or directory error: patch failed: vllm/models/deepseek_v41/nvidia/model.py:742 error: vllm/models/deepseek_v41/nvidia/model.py: patch does not apply 
+alone      git apply --check pr58560-compressor-null-block.diff: OK
+in-order   patch -p1 --forward pr58132-decoder-swa-replay.diff: OK (5 files)
+in-order   patch -p1 --forward sm120-thor-fixes.diff: OK (7 files)
+in-order   patch -p1 --forward pr59585-dsml-finite-args.diff: OK (1 files)
+in-order   patch -p1 --forward pr59894-decoder-replay-cut-trim.diff: OK (4 files)
+in-order   patch -p1 --forward pr58560-compressor-null-block.diff: OK (1 files)
+# vllm-exl3 d3cfd394920360d69f820d2dc96f8292a9e10283
+git apply --check exl3-thor.patch: OK
+patch -p1 exl3-thor.patch (as docker/build.sh): OK
+# ExLlamaV3 5be886578ec80324c2c715269387be2058724b6e, directory exllamav3/exllamav3_ext
+patch --dry-run -p1 exllamav3-5be8865-exl3_moe.patch: OK
+# sitecustomize: recipe patches/vllm/sitecustomize.py vs sfxnz docker/patch/sitecustomize.py, see sitecustomize_vs_sfxnz.txt
+# quantize/quantize_mtp_exl3.diff header:
+  --- a/tools/quantize_experts_exl3.py
+  +++ b/tools/quantize_experts_exl3.py
+  @@ -1,5 +1,6 @@
+   #!/usr/bin/env python3
+quantize_mtp_exl3.diff: applies to sfxnz tools/quantize_experts_exl3.py

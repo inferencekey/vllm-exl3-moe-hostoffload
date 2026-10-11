@@ -1,0 +1,18 @@
+{
+ "number": 56227,
+ "title": "[Feat][Model] Support encoder-side SWA-bounded replay for DeepSeek-V4.1-Flash",
+ "state": "MERGED",
+ "createdAt": "2026-09-10T07:44:40Z",
+ "mergedAt": "2026-09-18T22:01:24Z",
+ "url": "https://github.com/vllm-project/vllm/pull/56227",
+ "headRefOid": "4909bfff0ed7ee3d9036c3b8334dd54bbd9e0577",
+ "author": "ivanium",
+ "mergeCommit": "1dc2d854c12099f1f08233c886368a8c7baf430f",
+ "commit_authors": [
+  "WoosukKwon",
+  "claude",
+  "ivanium"
+ ],
+ "n_commits": 13,
+ "last_commit_date": "2026-09-18T18:43:38Z"
+}

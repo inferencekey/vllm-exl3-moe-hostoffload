@@ -1,0 +1,31 @@
+# Service-level objectives for the cost-under-SLA analysis.
+#
+# Registered on 2026-10-06, BEFORE any controlled run of this artifact. The authors had already seen the
+# exploratory data (data/exploratory/), so these thresholds are pre-registered with respect to the controlled
+# data only; the paper says so. Changing them after controlled data exist requires a new id and a note in the paper.
+#
+# A load point meets an SLO when, pooled over all repetitions, every bound holds AND it holds in every single
+# repetition (conservative rule; the paper also reports the pooled-only rule).
+registered_utc: "2026-10-06"
+slos:
+  interactive:
+    description: chat-like use, prompts up to about 4K tokens
+    ttft_p95_s: 2.0
+    tpot_p95_s: 0.050        # 20 tok/s per request at the 95th percentile of TPOT
+    max_error_rate: 0.0
+  relaxed:
+    description: agentic or batch-like use
+    ttft_p95_s: 10.0
+    tpot_p95_s: 0.100        # 10 tok/s per request
+    max_error_rate: 0.0
+  long_context:
+    description: 16K-token shared prefix (cached) plus a short question
+    ttft_p95_s: 5.0
+    tpot_p95_s: 0.0667       # 15 tok/s per request
+    max_error_rate: 0.0
+# The exploratory post-hoc bars, kept only to reproduce the exploratory tables (never used for controlled claims):
+exploratory_bars:
+  strict_A: {decode_p5_tok_s: 15, ttft_p95_s: 5}
+  strict_B: {decode_p5_tok_s: 15, ttft_p95_s: 15}
+  loose_A: {decode_p5_tok_s: 10, ttft_p95_s: 10}
+  loose_B: {decode_p5_tok_s: 10, ttft_p95_s: 30}

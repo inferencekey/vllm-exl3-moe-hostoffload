@@ -1,0 +1,29 @@
+# Pinned prompt corpora. text_sha256 pins the assembled corpus text (what prompts are cut from); the harness refuses
+# to run if it differs. archive_sha256 values are the bytes observed on 2026-10-06 (advisory: GitHub may recompress
+# archives, Project Gutenberg may re-serve files). Corpora are used only as prompt text and are never committed.
+code:
+  name: vllm-36768d1-py
+  kind: tarball
+  suffix: .py
+  urls:
+    - https://codeload.github.com/vllm-project/vllm/tar.gz/36768d1bfd39094681cdbc8cb37d4b31c0729c89
+  archive_sha256: [54b150e3d534bc792c68f61e77fbf0d2eab311cb23eebef3d06f1812cd1b8f9a]
+  text_sha256: d3f399964ba639075adbfe0a22383f97136d23c58ec1e05ed9963cb9ecb8fc62
+  chars: 63871598
+  license: Apache-2.0 (vLLM source code, used as prompt text only)
+prose:
+  name: gutenberg-prose
+  kind: texts
+  urls:
+    - https://www.gutenberg.org/cache/epub/2600/pg2600.txt   # War and Peace
+    - https://www.gutenberg.org/cache/epub/1342/pg1342.txt   # Pride and Prejudice
+    - https://www.gutenberg.org/cache/epub/2701/pg2701.txt   # Moby Dick
+    - https://www.gutenberg.org/cache/epub/1661/pg1661.txt   # The Adventures of Sherlock Holmes
+  archive_sha256:
+    - 2d5bb2ad5f422765e714617e21fa31bbaf8958aa79682c86fca6660fcc5d1b2b
+    - 3f6bb9d6f78e0293b56acd4714dd68cb7d6d1d293402031ce9d5a216bcaf9d75
+    - 907420db6c4b68c70e2988cd2ad9c8cf79138667a01b63376d18dd17fef1a18b
+    - 922e2a12ccb43a4c9544c260b2166c6ad2097aeb5957faeee113f173bb857cd0
+  text_sha256: 070bed94ad1544136f88e15b859098cb3caed41bca254bb76a774c9d66166e55
+  chars: 5795669
+  license: Public domain in the USA (Project Gutenberg eBooks; the Gutenberg license header is part of the text)

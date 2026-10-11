@@ -1,0 +1,13 @@
+{
+ "kind": "gpu_oom",
+ "lineno": 147,
+ "line": "(Worker_TP1 pid=15785) ERROR 10-06 20:08:11 [multiproc_executor.py:948] torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1.58 GiB. GPU 1 has a total capacity of 94.97 GiB of which 507.38 MiB is free. Including non-PyTorch memory, this process has 94.33 GiB memory in use. Of the allocated memory 93.25 GiB is allocated by PyTorch, and 45.97 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:Tr",
+ "context": [
+  "(Worker_TP1 pid=15785) ERROR 10-06 20:08:11 [multiproc_executor.py:948]   File \"/usr/local/lib/python3.12/dist-packages/torch/utils/_device.py\", line 122, in __torch_function__",
+  "(Worker_TP1 pid=15785) ERROR 10-06 20:08:11 [multiproc_executor.py:948]     return func(*args, **kwargs)",
+  "(Worker_TP1 pid=15785) ERROR 10-06 20:08:11 [multiproc_executor.py:948]            ^^^^^^^^^^^^^^^^^^^^^",
+  "(Worker_TP1 pid=15785) ERROR 10-06 20:08:11 [multiproc_executor.py:948] torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1.58 GiB. GPU 1 has a total capacity of 94.97 GiB of which 507.38 MiB is free. Including non-PyTorch memory, this process has 94.33 GiB memory in use. Of the allocate",
+  "(EngineCore pid=14832) INFO 10-06 20:08:11 [multiproc_executor.py:474] [shutdown] Executor: waiting for worker exit count=2",
+  "NCCL version 2.30.7+cuda13.3"
+ ]
+}

@@ -1,0 +1,65 @@
+\section{Reproducibility}\label{sec:repro}
+
+A measurement study is only useful if someone else can repeat it. Everything in this paper comes out of the artifact
+repository through documented commands.
+\begin{itemize}
+\item \texttt{make audit} reruns the attribution audit, with the sources fetched at their pins outside the repository.
+\item \texttt{make static} measures the byte accounting and the Hub metadata again from public files.
+\texttt{make test} runs the test suite, including the guard against numbers without data described below, and
+\texttt{make analyze figures paper} regenerates every table, figure and value and builds this PDF.
+\item \texttt{make stack-fetch} and \texttt{make pod-bootstrap VARIANT=\ldots} build each variant from pinned inputs
+with recorded hashes. \texttt{make bench-E\textit{n}} and \texttt{make quality-E\textit{n}} run each experiment on a
+prepared pod, and \texttt{make plan} regenerates the plan of experiments.
+\end{itemize}
+
+\paragraph{No number without a file.}
+Every measured number in the text is printed by a macro that looks up a value written by the analysis pipeline. The
+pipeline refuses values without an existing source file, refuses controlled values computed from exploratory files,
+and records the sha256 of every source (\datafile{paper/generated/provenance.json}). Tables appear only for experiments
+with data, so running one of the experiments of Section~\ref{sec:not-run} (\texttt{make bench-E\textit{n}}) adds its
+table on the next build, and \texttt{STRICT=1} makes the build fail if any cited value lacks its source. A test fails
+if a decimal number appears in the paper sources outside these macros, unless it is a whitelisted configuration
+constant with its source (\datafile{paper/literal_numbers.yaml}).
+
+\paragraph{From a finding to its data.}
+Table~\ref{tab:trace} follows each row of Table~\ref{tab:key-results} back to the experiment, the script that ran it on
+the pod, the folder that holds its raw data and the table or figure that prints it. The runners are the session
+scripts of Appendix~\ref{app:plan}, and each folder has a README with the status of every run in it.
+
+\begin{table}[h]
+\centering\footnotesize
+\begin{tabular}{>{\raggedright\arraybackslash}p{3.2cm}l>{\raggedright\arraybackslash}p{3.4cm}>{\raggedright\arraybackslash}p{3.6cm}>{\raggedright\arraybackslash}p{2.9cm}}
+\toprule
+finding & exp. & ran with & folder in \texttt{data/controlled/} & printed in \\
+\midrule
+fits only with the offload & E0, E2 & \texttt{make static}, \repolink{experiments/runs/lean.sh}{\texttt{lean.sh}} & \repolink{data/controlled/E2-feasibility/}{\texttt{E2-feasibility/}} (bytes: \datafile{data/static/weights/}) & Tables~\ref{tab:static-placement}, \ref{tab:ctl-E2} \\
+reading against writing & E12, E3 & \repolink{experiments/runs/long.sh}{\texttt{long.sh}} & \repolink{data/controlled/E12-long-context/}{\texttt{E12-long-context/}} & Figure~\ref{fig:read-write}, Table~\ref{tab:ctl-E12} \\
+one user and many & E8 & \repolink{experiments/runs/lean.sh}{\texttt{lean.sh}} & \repolink{data/controlled/E8-main/}{\texttt{E8-main/}} & Figure~\ref{fig:ctl-E8}, Table~\ref{tab:ctl-E8} \\
+quality against the API & E10, E11 & \repolink{experiments/runs/lean.sh}{\texttt{lean.sh}}, \repolink{quality/api_proxy.py}{\texttt{api\_proxy.py}} & \repolink{data/controlled/E10-quality-exl3/}{\texttt{E10-quality-exl3/}}, \repolink{data/controlled/E11-quality-reference/}{\texttt{E11-quality-reference/}} & Table~\ref{tab:ctl-quality-paired} \\
+streams and developers & E13 & \repolink{experiments/runs/agent.sh}{\texttt{agent.sh}} & \repolink{data/controlled/E13-coding-agent/}{\texttt{E13-coding-agent/}} & Figures~\ref{fig:agent}, \ref{fig:two-capacities}, Tables~\ref{tab:agent-capacity}, \ref{tab:agent-seats} \\
+upstream offload alone & E3 & \repolink{experiments/runs/lean.sh}{\texttt{lean.sh}}, \repolink{experiments/runs/long.sh}{\texttt{long.sh}} & \repolink{data/controlled/E3-host-share/}{\texttt{E3-host-share/}} & Table~\ref{tab:ctl-E3} \\
+the host matters & E3 & \repolink{experiments/runs/lean.sh}{\texttt{lean.sh}}, \repolink{experiments/runs/long.sh}{\texttt{long.sh}} & \repolink{data/controlled/E3-host-share/}{\texttt{E3-host-share/}}, \repolink{data/controlled/LEAN/}{\texttt{LEAN/}} & Tables~\ref{tab:cross-pod}, \ref{tab:pod-hardware} \\
+\bottomrule
+\end{tabular}
+\caption{Traceability of the findings in Table~\ref{tab:key-results}. Session runners are in
+\datafile{experiments/runs/}, the API proxy in \datafile{quality/}.}
+\label{tab:trace}
+\end{table}
+
+\paragraph{Licenses and redistribution.}
+The repository contains no third-party source code. The recipe, the plugin and the kernels are fetched and patched at
+build time from pinned revisions. vllm-exl3 and Diffbot's patch to it are AGPL-3.0, so a built image that includes
+them carries AGPL obligations when distributed or served with modifications. Our code is Apache-2.0, compatible with
+vLLM's license and combinable with the AGPL components in a built image, and text and data are CC-BY-4.0. Model weights
+are never redistributed (\datafile{THIRD_PARTY.md}, \datafile{PROVENANCE.md}).
+
+\paragraph{Archival.}
+The repository is prepared for an archived release with a persistent identifier (\datafile{CITATION.cff},
+\datafile{.zenodo.json}, \datafile{RELEASE_CHECKLIST.md}).
+
+\paragraph{Availability.}
+The artifact repository, \url{https://github.com/inferencekey/vllm-exl3-moe-hostoffload}, holds the code, the
+stack configurations, the workloads, the raw data and the sources of this paper, and every file named in the text
+links to it. The configurations that
+make the model boot (the variant builds, the expert plans and the session runners) are the ones measured here and
+can be reused to serve the model on the same class of hardware.

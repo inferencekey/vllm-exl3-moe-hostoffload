@@ -1,0 +1,41 @@
+# Coding-agent case study (E13 and the seat/cost model). Inputs only; every derived number is computed in
+# src/hostoffload/cost/seats.py and registered by the analysis pipeline.
+#
+# The usage sample is one developer's Claude Code usage screen, reported by the author on 2026-10-07 for the 7 days
+# before. It is a workload SHAPE, not a token-accounting equivalence: Claude's "cache read" and "cache write" are the
+# provider's billing categories and need not match vLLM's prefix-cache hits and prefills one to one.
+usage_sample:
+  source: "author's Claude Code usage screen, reported 2026-10-07 (7-day window); no screenshot stored"
+  subscription_eur_month: 180
+  window_days: 7
+  active_days: 5
+  sessions: 9
+  longest_session_h: 19.83          # 19 h 50 min
+  tokens:
+    total: 94_600_000               # as displayed (rounded)
+    input: 892                      # uncached new input
+    output: 387_700
+    cache_read: 90_800_000
+    cache_write: 3_400_000
+
+# Service objective of the case study (per active stream, not aggregate).
+slo:
+  stream_tok_s: 40                  # median per-stream rate of a level must reach this
+  max_error_rate: 0.0
+  # Seats and pods are provisioned on the capacity measured with this margin above the SLO (44 tok/s): with one
+  # repetition, levels within a few tok/s of 40 pass or fail by noise (E13: two regimes reach N = 6 by < 1 tok/s).
+  provisioning_margin: 0.10
+
+# Assumptions that the sample cannot fix. Each is varied in the sensitivity tables.
+assumptions:
+  output_tokens_per_turn: 400       # agent reply length per turn; fixes context per turn through the observed ratios
+  active_hours_per_active_day: [4, 8, 12, 24]   # window in which a developer's generation happens (8 is the baseline)
+  baseline_active_hours: 8
+  month_hours: 730
+  days_per_month: 30.44
+  utilization: [1.0, 0.7, 0.5, 0.3]
+  overflow_probability: [0.01, 0.05]            # P(simultaneous active streams > capacity) allowed
+  seats: [10, 15, 20, 25, 50, 100, 250]
+  ops_eur_month: [0, 500, 1500, 4000]           # engineering and operations, excluded from the first table
+  scheduled_hours_month: 264                    # 12 h x 22 working days, if the pod is stopped otherwise
+  storage_note: "a stopped pod needs the 309 GiB pack on a network volume or a fresh download per start"

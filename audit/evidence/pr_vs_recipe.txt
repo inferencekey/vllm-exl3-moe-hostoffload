@@ -1,0 +1,75 @@
+# vLLM PRs: metadata (gh pr view) and a line-level comparison of the PR diff (gh pr diff, PR head today) with the recipe file
+# per file: +/- = lines added/removed by the recipe patch; 'in PR' = how many of them the PR diff also has
+
+PR #58132 MERGED author=ivanium commit_authors=['claude', 'codex', 'ivanium'] merged=2026-09-29T08:25:47Z merge_commit=4b2e1cfa7b8094f1a9547aee41c39e05d2ce5c97 head=e0f1dc431dd09a70d5179a65e2e678f4be3b8d55 last_commit=2026-09-29T07:31:46Z
+  [Model] Decoder-side SWA bounded replay for DeepSeek-V4.1
+  https://github.com/vllm-project/vllm/pull/58132
+  recipe file: patches/vllm/pr58132-decoder-swa-replay.diff
+    .buildkite/test_areas/models_basic.yaml: only in PR (+3 -1)
+    tests/distributed/test_engram_dp_shard.py: only in PR (+17 -16)
+    tests/models/test_deepseek_v41_decoder_replay_layers.py: only in PR (+104 -0)
+    tests/models/test_deepseek_v41_replay_batch.py: only in PR (+259 -0)
+    vllm/config/cache.py: recipe +3 -1, in PR +3 -1; PR +3 -1  IDENTICAL
+    vllm/models/deepseek_v41/decoder_replay_layers.py: recipe +67 -0, in PR +67 -0; PR +67 -0  IDENTICAL
+    vllm/models/deepseek_v41/nvidia/model.py: recipe +222 -40, in PR +222 -40; PR +222 -40  IDENTICAL
+    vllm/models/deepseek_v41/nvidia/model_state.py: recipe +321 -2, in PR +321 -2; PR +321 -2  IDENTICAL
+    vllm/models/deepseek_v41/nvidia/vl_model.py: recipe +5 -0, in PR +5 -0; PR +5 -0  IDENTICAL
+  => 661/661 changed lines of the recipe file also appear in the PR diff (100%)
+
+PR #58560 MERGED author=bluemelov1 commit_authors=['bluemelov', 'claude', 'cursoragent', 'ivanium'] merged=2026-10-05T01:49:42Z merge_commit=49e0f4797853da0d1da7fdfe794f327fb5d5843d head=4f96913cf8e71be40e9d64ec6ed62f8b70595129 last_commit=2026-10-05T00:40:25Z
+  [Bugfix][DSv4.1] Keep the compressor ring out of the null block
+  https://github.com/vllm-project/vllm/pull/58560
+  recipe file: patches/vllm/pr58560-compressor-null-block.diff
+    tests/kernels/test_compressor_kv_cache.py: only in PR (+15 -13)
+    vllm/models/deepseek_v41/compressor.py: recipe +5 -1, in PR +5 -1; PR +5 -1  IDENTICAL
+  => 6/6 changed lines of the recipe file also appear in the PR diff (100%)
+
+PR #59585 OPEN author=bojiang-li commit_authors=['bojiang-li'] merged=None merge_commit=None head=cd317dc09db690b2f4c187b23a753f0bce5d86e0 last_commit=2026-10-01T09:55:30Z
+  [Bugfix][Parser] Keep DeepSeek DSML tool arguments valid JSON
+  https://github.com/vllm-project/vllm/pull/59585
+  recipe file: patches/vllm/pr59585-dsml-finite-args.diff
+    tests/parser/engine/test_dsml_finite.py: only in PR (+130 -0)
+    vllm/parser/deepseek_v4.py: recipe +12 -4, in PR +12 -4; PR +12 -4  IDENTICAL
+  => 16/16 changed lines of the recipe file also appear in the PR diff (100%)
+
+PR #59894 OPEN author=gcanlin commit_authors=['claude', 'gcanlin'] merged=None merge_commit=None head=526f37fe178748332e77a2a959986337be93d247 last_commit=2026-10-03T18:34:33Z
+  [Perf][DSV4.1] Decoder replay: trim the cut layer's query side and FFN
+  https://github.com/vllm-project/vllm/pull/59894
+  recipe file: patches/vllm/pr59894-decoder-replay-cut-trim.diff
+    tests/distributed/test_engram_dp_shard.py: only in PR (+0 -1)
+    tests/models/test_deepseek_v41_replay_batch.py: only in PR (+19 -5)
+    vllm/models/deepseek_v41/attention.py: recipe +117 -27, in PR +117 -27; PR +117 -27  IDENTICAL
+    vllm/models/deepseek_v41/decoder_replay_layers.py: recipe +20 -52, in PR +20 -52; PR +20 -52  IDENTICAL
+    vllm/models/deepseek_v41/nvidia/model.py: recipe +193 -71, in PR +193 -71; PR +193 -71  IDENTICAL
+    vllm/models/deepseek_v41/nvidia/model_state.py: recipe +60 -13, in PR +60 -13; PR +60 -13  IDENTICAL
+  => 553/553 changed lines of the recipe file also appear in the PR diff (100%)
+
+PR #57028 OPEN author=zhao6300 commit_authors=['Codex CLI', 'zhao6300'] merged=None merge_commit=None head=71a9dbcaf315ca11b9efc9d48d7f5f75f92a54ed last_commit=2026-09-30T05:41:03Z
+  # [Bugfix][DSv4.1] Fix SM120 FlashInfer serving blockers
+  https://github.com/vllm-project/vllm/pull/57028
+  recipe file: patches/vllm/sm120-thor-fixes.diff
+    tests/kernels/quantization/test_mxfp8_empty_batch.py: only in PR (+24 -0)
+    tests/v1/attention/test_ds41_sparse_mla_cache_geometry.py: only in PR (+45 -0)
+    tests/v1/cudagraph/test_breakable_cudagraph.py: only in PR (+30 -0)
+    vllm/model_executor/kernels/linear/mxfp8/flashinfer.py: recipe +10 -4, in PR +10 -4; PR +10 -4  IDENTICAL
+    vllm/model_executor/layers/quantization/utils/mxfp8_utils.py: recipe +3 -0, in PR +3 -0; PR +3 -0  IDENTICAL
+    vllm/models/deepseek_v41/attention.py: recipe +12 -5, in PR +8 -4; PR +8 -4
+    vllm/models/deepseek_v41/common/engram.py: only in recipe (+66 -1)
+    vllm/models/deepseek_v41/nvidia/engram.py: only in recipe (+9 -3)
+    vllm/models/deepseek_v41/nvidia/flashinfer_sparse.py: only in recipe (+24 -0)
+    vllm/utils/multi_stream_utils.py: recipe +1 -1, in PR +1 -1; PR +1 -1  IDENTICAL
+  => 31/139 changed lines of the recipe file also appear in the PR diff (22%)
+
+PR #56227 MERGED author=ivanium commit_authors=['WoosukKwon', 'claude', 'ivanium'] merged=2026-09-18T22:01:24Z merge_commit=1dc2d854c12099f1f08233c886368a8c7baf430f head=4909bfff0ed7ee3d9036c3b8334dd54bbd9e0577 last_commit=2026-09-18T18:43:38Z
+  [Feat][Model] Support encoder-side SWA-bounded replay for DeepSeek-V4.1-Flash
+  https://github.com/vllm-project/vllm/pull/56227
+
+#57144 is an issue, not a PR: state=open author=thomaslwang title='[Feature]: SM8x (Ampere A100/A800) support for DeepSeek-V4.1-Flash' https://github.com/vllm-project/vllm/issues/57144
+
+# merge commits vs the vLLM pin 36768d1 (git merge-base --is-ancestor)
+PR #58132 merge commit 4b2e1cfa7b8094f1a9547aee41c39e05d2ce5c97: NOT in the pin (merged later)
+PR #58560 merge commit 49e0f4797853da0d1da7fdfe794f327fb5d5843d: NOT in the pin (merged later)
+PR #59585: not merged
+PR #59894: not merged
+PR #57028: not merged
+PR #56227 merge commit 1dc2d854c12099f1f08233c886368a8c7baf430f: already in the pin

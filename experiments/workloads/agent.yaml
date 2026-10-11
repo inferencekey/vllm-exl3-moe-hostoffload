@@ -1,0 +1,60 @@
+# E13, interactive coding-agent workload (designed 2026-10-07). Question: how many streams can generate at the same
+# time while each keeps a median of at least 40 output tokens/s, under context-sharing regimes typical of coding
+# agents? All regimes run on ONE boot of the gen30 stack, so they are comparable with each other (not with other pods).
+# Replies are 400 tokens (experiments/agent_workload.yaml: output_tokens_per_turn) with ignore_eos, so every level
+# decodes the same amount. A sweep stops after two consecutive levels below the SLO; every level run is kept.
+seed: 20261013
+repetitions: 1
+slo_stream_tok_s: 40
+stop_after_slo_failures: 2
+stop_min_errors: 2
+stop_error_rate: 0.05
+stop_ttft_p95_s: 900
+scenarios:
+  # A: independent short sessions, unique 4K-token code prompts (the E8 baseline shape)
+  - name: A-short-4k
+    kind: chat
+    prompt: {corpus: code, tokens: 4096, template: review, region: [0.0, 0.5]}
+    output: {max_tokens: 400, ignore_eos: true}
+    sampling: {temperature: 0.6, top_p: 0.95}
+    arrivals: {mode: closed, levels: [1, 2, 3, 4, 5, 6, 8, 12, 16, 24, 32], requests_per_user: 2, min_requests: 4, stagger_s: 5}
+  # B: many streams branching from one cached large context (one repository shared by everyone)
+  - name: B-cached-128k
+    kind: chat
+    prompt: {corpus: code, tokens: 131200, shared_prefix_tokens: 131072, template: qa_prefix, region: [0.0, 0.5]}
+    output: {max_tokens: 400, ignore_eos: true}
+    sampling: {temperature: 0.6, top_p: 0.95}
+    arrivals: {mode: closed, levels: [1, 2, 3, 4, 5, 6, 8, 12, 16], requests_per_user: 2, min_requests: 4, stagger_s: 5}
+  - name: B-cached-256k
+    kind: chat
+    prompt: {corpus: code, tokens: 258128, shared_prefix_tokens: 258000, template: qa_prefix, region: [0.0, 0.5]}
+    output: {max_tokens: 400, ignore_eos: true}
+    sampling: {temperature: 0.6, top_p: 0.95}
+    arrivals: {mode: closed, levels: [1, 2, 3, 4, 5, 6, 8, 12, 16], requests_per_user: 2, min_requests: 4, stagger_s: 5}
+  # C: every stream owns an independent cached long context (different developers, different repositories); the
+  # session-opening prefill is the warm turn, the measured turns add 512 new tokens each. The KV cache holds
+  # 623,891 tokens, so 5 x 128K and 3 x 256K exceed it: those levels measure the KV wall (eviction, recompute).
+  - name: C-own-128k
+    kind: agent
+    agent: {base_tokens: 131072, append_tokens: 512, turns: 2}
+    prompt: {corpus: code, region: [0.0, 0.5]}
+    output_tokens: 400
+    sampling: {temperature: 0.6, top_p: 0.95}
+    arrivals: {mode: closed, levels: [1, 2, 3, 4, 5]}
+  - name: C-own-256k
+    kind: agent
+    agent: {base_tokens: 258000, append_tokens: 512, turns: 2}
+    prompt: {corpus: code, region: [0.0, 0.5]}
+    output_tokens: 400
+    sampling: {temperature: 0.6, top_p: 0.95}
+    arrivals: {mode: closed, levels: [1, 2, 3]}
+  # D: coding-agent turns shaped by the observed usage ratios (cache read / output = 234, cache write / output = 8.8):
+  # with 400-token replies a turn reads about 94K tokens of context and adds about 3.5K new tokens. Base 88,000 plus
+  # 3,500 per turn over 3 turns reads 91.5K to 98.5K. Independent contexts per stream, as in C.
+  - name: D-agent-turns
+    kind: agent
+    agent: {base_tokens: 88000, append_tokens: 3500, turns: 3}
+    prompt: {corpus: code, region: [0.0, 0.5]}
+    output_tokens: 400
+    sampling: {temperature: 0.6, top_p: 0.95}
+    arrivals: {mode: closed, levels: [1, 2, 3, 4, 6, 8]}

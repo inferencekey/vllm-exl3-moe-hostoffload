@@ -1,0 +1,48 @@
+# recipe patches/vllm/sitecustomize.py (980 lines) vs sfxnz@460ac89c docker/patch/sitecustomize.py (119 lines)
+# diffstat of sfxnz -> recipe:
+  added lines: 831
+  removed lines: 6
+# sfxnz hooks (comment headers in sfxnz file) and whether the recipe keeps them:
+  sfxnz:14   # Load vLLM general plugins in every process (API, EngineCore, workers).                   kept at recipe:14
+  sfxnz:15   # VLLM_PLUGINS=vllm_exl3 is not enough on this image: EngineCore can resolve               kept at recipe:15
+  sfxnz:16   # --quantization exl3 before load_general_plugins() runs.                                  kept at recipe:16
+  sfxnz:24   # DSV4.1 mapper picks weight_scale vs weight_scale_inv from                                kept at recipe:24
+  sfxnz:45   # DSv4 sparse-MLA mixed warmup still dummy-forwards through DeepGEMM paged-MQA             kept at recipe:48
+  sfxnz:63   # FlashInfer SM120 DSV4 decode is compiled only for page_block_size=64.                    kept at recipe:70
+  sfxnz:64   # Upstream V4.1 hardcodes SWA pages to 32 (DeepGEMM paged-MQA).                            kept at recipe:71
+  sfxnz:84   # Indexer + compressed MLA share a packed KV group, so they must agree.                    kept at recipe:93
+  sfxnz:85   # DeepGEMM paged-MQA asserts block_kv in {32, 64}; FlashInfer DSV4 decode                  kept at recipe:94
+  sfxnz:101  # --language-model-only still flattens vision_max_n_token onto hf_config, so               kept at recipe:127
+  sfxnz:102  # SWA prefill index rows widen to window+1024=1152. SM120 DSV4 decode topk is              kept at recipe:128
+# recipe-only hooks: 'thor' comment blocks and the env switches they read (file:line)
+  sitecustomize.py:151:# thor (2026-10-02): image input with the text-only hook above kept ON, so attention sees vision_max_n_token = 0 exactly as in the
+  sitecustomize.py:187:# thor: allow the MXFP4 sparse-indexer K cache on SM120. vLLM gates it to sm_10x, but DeepGEMM's
+  sitecustomize.py:210:# thor: optional custom exl3_moe kernel (kernels/build/<XMOE_EXT>), e.g. XMOE_EXT=xmoe_mt4 (multi-M prefill reuse).
+  sitecustomize.py:231:# thor: hybrid dense MXFP8 (DENSE_HYBRID_M=<rows>, needs --linear-backend marlin). Marlin (W8A16) wins at decode row
+  sitecustomize.py:282:# thor (2026-09-28): SM120 decode GEMM fixes found by the torch profile (both opt-in).
+  sitecustomize.py:283:# THOR_ROUTER_SPLITK=1: MoE router logits (GateLinear, bf16 x bf16 -> fp32) for <= 64 rows via a deterministic Triton
+  sitecustomize.py:286:# THOR_MHC_SPLITS=<n>: let the mHC prenorm GEMM use <n> K-splits at decode sizes (vLLM bounds it to 16 -> 16 CTAs).
+  sitecustomize.py:380:# THOR_DENSE_GEMV=1 (2026-09-29): replace Marlin W8A16 on the block-FP8 dense layers with thor_dense.py (checkpoint layout,
+  sitecustomize.py:457:# THOR_FP8_LMHEAD=1 (2026-09-29): lm_head (bf16 [vocab/TP, hidden], read twice per decode step: target + DSpark) quantized
+  sitecustomize.py:511:# THOR_KEEP_SET=<json> (2026-09-29): emulate expert pruning (tacos4me Prune-2xRTX6K keep sets: {"<layer>"|"mtp.<i>": [kept ids]})
+  sitecustomize.py:542:# thor (vLLM main with #58132 decoder replay): the replay sub-batch runs Marlin dense GEMMs on a (stream, ubatch, lane) that warmup
+  sitecustomize.py:565:# thor (vLLM nightly + SM120 FlashInfer 0.7.0): CUDA-graph capture's dummy runs leave non-finite FP8 bytes in KV slots that
+  sitecustomize.py:588:# thor bisect (THOR_NO_DECODER_TRIM=1): keep #56227 (encoder-side SWA bounded replay: SWA KV out of the prefix cache, last window
+  sitecustomize.py:601:# thor (THOR_REPLAY_TOKENS=N): #56227 rebuilds sliding-window KV after a prefix hit by replaying only the hit's last `sliding_window`
+  sitecustomize.py:617:# thor debug (THOR_DUMP_LAYERS=<dir>): after every DeepseekV4DecoderLayer forward in an eager multi-token step (rank 0 only), keep the
+  sitecustomize.py:669:# THOR_MEMSNAP=<dir> (2026-09-30, lever 1 VRAM audit): a watcher thread in every process starts torch's allocator history
+  sitecustomize.py:709:# THOR_OPROJ_DIAG (2026-09-30, default on in the test tree): print wo_a's runtime dtype/shape/quant method once per process at the
+  sitecustomize.py:713:# thor_dense2.gemv_grouped (<= 64 rows, graph-captured decode) or per-call dequant + bmm (prefill). Needs THOR_DENSE_PY=thor_dense2.py.
+  sitecustomize.py:792:# THOR_EMBED_HOST=1 (2026-09-30, lever 1 VRAM): right before CUDA-graph capture, move every VocabParallelEmbedding table (not the
+  sitecustomize.py:835:# THOR_INDEXER_BUF_MULT=<F> (2026-09-30, lever 1 VRAM): vLLM sizes the sparse-indexer prefill K-gather workspace as
+  sitecustomize.py:859:# THOR_ROUTE_STATS=<dir> (2026-09-30, drafter-experts lever): count routed-expert selections per MoE gate (target 40 + DSpark 3), split
+  sitecustomize.py:906:# THOR_INDEXER_EXPAND_CAP=1 (2026-09-30, VRAM): the sparse-indexer metadata builder allocates expanded_block_table_buffer as
+  sitecustomize.py:934:# THOR_ROPE_CAP=1 (2026-09-30, VRAM): DeepseekScalingRotaryEmbedding / DeepseekV4ScalingRotaryEmbedding materialize fp32 cos/sin for
+# env vars read by the recipe sitecustomize.py but not by sfxnz's:
+  "DENSE_HYBRID_M" "DSV41_SKIP_WARMUP" "THOR_DENSE_GEMV" "THOR_DENSE_MAX_NK" "THOR_DENSE_ONE_COPY" "THOR_DENSE_PY" "THOR_DUMP_LAYERS" "THOR_EM
+  BED_HOST" "THOR_FP4_INDEXER" "THOR_FP8_LMHEAD" "THOR_INDEXER_BUF_MULT" "THOR_INDEXER_EXPAND_CAP" "THOR_KEEP_SET" "THOR_MEMSNAP" "THOR_MHC_SP
+  LITS" "THOR_NO_DECODER_TRIM" "THOR_OPROJ_DIAG" "THOR_REPLAY_TOKENS" "THOR_ROPE_CAP" "THOR_ROUTER_SPLITK" "THOR_ROUTER_TORCH_SUM" "THOR_ROUTE
+  _STATS" "THOR_SM120_PAGE" "THOR_TEXT_ONLY_ROWS" "THOR_VISION_BUDGET" "THOR_WOA_FP8" "THOR_WS_LATE_ALLOC" "THOR_ZERO_KV_AFTER_CAPTURE" "XMOE_
+  EXT" 
+# hunks of the sfxnz part (lines 1-150 of the recipe file) that differ from sfxnz:
+  38c38,41 59c62,66 65a73,74 88a98,99 90,92c101,108 95c111 97a114,123 105a132,133 112a141,142 119a150 

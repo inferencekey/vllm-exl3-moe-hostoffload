@@ -1,0 +1,13 @@
+{
+ "kind": "config_error",
+ "lineno": 337,
+ "line": "(Worker_TP0 pid=33851) ERROR 10-06 21:00:37 [multiproc_executor.py:1058] ValueError: No common block size for 64 (FLASHINFER_MLA_SPARSE_DSV41: [128]; DEEPSEEK_V41_INDEXER: [128]).",
+ "context": [
+  "(Worker_TP0 pid=33851) ERROR 10-06 21:00:37 [multiproc_executor.py:1058]                            ^^^^^^^^^^^^^^^^^^^^^^^^^",
+  "(Worker_TP0 pid=33851) ERROR 10-06 21:00:37 [multiproc_executor.py:1058]   File \"/usr/local/lib/python3.12/dist-packages/vllm/v1/worker/utils.py\", line 386, in select_common_block_size",
+  "(Worker_TP0 pid=33851) ERROR 10-06 21:00:37 [multiproc_executor.py:1058]     raise ValueError(",
+  "(Worker_TP0 pid=33851) ERROR 10-06 21:00:37 [multiproc_executor.py:1058] ValueError: No common block size for 64 (FLASHINFER_MLA_SPARSE_DSV41: [128]; DEEPSEEK_V41_INDEXER: [128]).",
+  "(Worker_TP0 pid=33851) ERROR 10-06 21:00:37 [multiproc_executor.py:1058] Traceback (most recent call last):",
+  "(Worker_TP0 pid=33851) ERROR 10-06 21:00:37 [multiproc_executor.py:1058]   File \"/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py\", line 1050, in _execute_worker_rpc"
+ ]
+}

@@ -1,0 +1,63 @@
+\section{Experiment Plan and Status}\label{app:plan}
+
+Table~\ref{tab:plan} lists every experiment of the protocol (\datafile{experiments/experiments.yaml}), whether it ran,
+and where its data are. Hours and commands of the full and minimal plans are in \datafile{experiments/PLAN.md}. The
+experiments that did not run keep their workloads, runners and data folders in the repository, and running one makes
+its table appear in the paper on the next build.
+
+\paragraph{The campaign.}
+The campaign that ran is a reduced version of the protocol, called the \emph{lean plan} in the repository
+(\datafile{experiments/runs/lean.sh}). Its first session runs on one 2x RTX PRO 6000 pod of at most
+\dv{lean.hard_cap_minutes} minutes, paying boot, build and the weight download once. It covers the setup, E2 reduced to
+the two EXL3 boots without offload, E8 with scenarios A and B at all seven concurrency levels, two repetitions and the
+probes, E10 on fixed-seed subsets of GSM8K, IFEval and HumanEval, and E3 reduced to the \texttt{gen30} plan against
+upstream's zero-copy offload at the \texttt{gen30} host bytes, with one repetition at $N\in\{1,8,32\}$. A final
+optional step adds a larger nested plan, the union of the \texttt{gen30} and \texttt{agent30} cold sets. The runner
+checks the remaining time before every step, so that a session ends cleanly instead of in the middle of a
+measurement.
+
+\paragraph{How each session went.}
+The first session ran on \dv{lean.session.date} for \dv{lean.session.minutes} minutes
+(\datafile{data/controlled/LEAN/session.json}). It completed every step, including the optional one, plus a repeat of
+E10 after the continuation fix of Section~\ref{sec:quality}. Two bootstrap bugs forced two restarts before the first
+valid boot: git refused the copied sources, and a patch check could not tell whether overlapping patches had been
+applied. Both are fixed in \datafile{stack/build/bootstrap_pod.sh}. The second session, on \dv{lean.session2.date}
+(\dv{lean.session2.minutes} minutes, \datafile{experiments/runs/long.sh}), ran on a different host. A first attempt
+was aborted by a third bootstrap bug, a git configuration step that ran before git was installed, and its boots were
+invalid and stayed on the pod. The session then ran the long-context experiment E12, the E3 \texttt{gen30} point again
+as a baseline on the same pod, and the zero-copy rung with the KV block size it needs. The third session
+(\dv{lean.session3.minutes} minutes, \datafile{experiments/runs/agent.sh}) ran on a third host, whose record notes the
+first host's public IP but a different CPU model and GPU bus ids (Table~\ref{tab:pod-hardware}). It ran the
+coding-agent experiment E13 after a first attempt that stopped before any measurement because the image lacked git.
+
+\paragraph{The quality reference.}
+The quality reference is the official DeepSeek API, whose \texttt{deepseek-flash} model is served by
+DeepSeek-V4.1-Flash according to its pricing page (fetched 2026-10-06, \datafile{data/static/pricing/}). The run sent
+\dv{ctl.E11.api.requests} requests, all answered, through the proxy that logs the real token counts.
+
+\begin{table}[h]
+\centering\small
+\begin{tabular}{llp{6.2cm}p{3.6cm}}
+\toprule
+id & GPUs & question & status \\
+\midrule
+E0 & none & static byte accounting & done (Section~\ref{sec:system}) \\
+E1 & CPU & reproducible build of every variant, image digests and provenance & not run \\
+E2 & 2x PRO 6000 & feasibility without host offload, exact failure & ran (session 1, EXL3 rungs only) \\
+E3 & 2x PRO 6000 & host share, upstream zero-copy offload at equal host bytes & ran (two shares, sessions 1 and 2, zero-copy cannot serve) \\
+E4 & 2x PRO 6000 & placement policy at 30\%: recipe plans, random, our profile plan & not run \\
+E5 & 2x PRO 6000 & Engram int4 vs FP8 in host memory & not run \\
+E6 & 2x PRO 6000 & SM budget of the host-expert stream & not run \\
+E7 & 2x PRO 6000 & DSpark on vs off, code vs prose & not run \\
+E8 & 2x PRO 6000 & main benchmark: $N$ = 1 to 64, probes, memory, PCIe & ran (session 1, closed loop, two repetitions in B, one in A beyond $N=1$ and in the probes) \\
+E9 & 2x B300 & upstream reference with everything in GPU memory, original checkpoint & not run \\
+E10 & 2x PRO 6000 & quality of the EXL3 stack & ran (session 1, fixed subsets) \\
+E11 & 2x B300 & quality of the reference & ran through DeepSeek's API instead \\
+E12 & 2x PRO 6000 & long context at 128K and 256K tokens & ran (session 2) \\
+E13 & 2x PRO 6000 & coding-agent workload, streams at 40 tokens/s & ran (session 3) \\
+\bottomrule
+\end{tabular}
+\caption{Controlled experiments and their status. Sessions: \datafile{data/controlled/LEAN/session.json},
+\datafile{data/controlled/LEAN/session2.json}, \datafile{data/controlled/LEAN/session3.json}.}
+\label{tab:plan}
+\end{table}

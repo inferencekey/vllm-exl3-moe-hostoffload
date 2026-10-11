@@ -1,0 +1,15 @@
+{
+ "status": "complete",
+ "rc": 0,
+ "start": "2026-10-06T18:11:38Z",
+ "end": "2026-10-06T18:12:53Z",
+ "server": {
+  "model": "deepseek-flash",
+  "endpoint": "https://api.deepseek.com/chat/completions",
+  "thinking": "disabled"
+ },
+ "samples": "quality/subsets_lean2h_seed20261006.json",
+ "repo_git": "b08899e5a6bd16561e9d0dd95f41b7e2333ee2ea",
+ "proxy_commit": "c357a38",
+ "note": "repo_git is the checkout when the run started; the proxy code in use was committed as proxy_commit"
+}

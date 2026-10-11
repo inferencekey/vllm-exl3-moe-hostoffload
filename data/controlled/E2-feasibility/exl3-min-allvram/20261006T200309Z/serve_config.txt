@@ -1,0 +1,69 @@
+variant=exl3-min pack=/root/models/exl3-3bpw-a1cf1bd227a754aa7e2ca5c21652bfaf256ee8a5
+DSV41_ENGRAM_DISK=0
+DSV41_ENGRAM_INT4=1
+FLASHINFER_CUDA_ARCH_LIST=12.0f
+FLASHINFER_DISABLE_VERSION_CHECK=1
+NCCL_CUMEM_ENABLE=0
+NCCL_DEBUG=WARN
+PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+TORCH_CUDA_ARCH_LIST=12.0a
+VLLM_ENGINE_READY_TIMEOUT_S=3600
+VLLM_PLUGINS=vllm_exl3
+VLLM_SERVER_DEV_MODE=1
+arg: --tensor-parallel-size
+arg: 2
+arg: --host
+arg: 0.0.0.0
+arg: --port
+arg: 8000
+arg: --api-key
+arg: hob-49403b90d6d76a2cc0145947
+arg: --max-model-len
+arg: 262144
+arg: --kv-cache-dtype
+arg: fp8
+arg: --kv-cache-memory
+arg: 4563402752
+arg: --max-num-seqs
+arg: 64
+arg: --max-num-batched-tokens
+arg: 16384
+arg: --block-size
+arg: 64
+arg: --disable-custom-all-reduce
+arg: --language-model-only
+arg: --enable-prompt-tokens-details
+arg: --tokenizer-mode
+arg: deepseek_v41
+arg: --tool-call-parser
+arg: deepseek_v41
+arg: --enable-auto-tool-choice
+arg: --reasoning-parser
+arg: deepseek_v41
+arg: --served-model-name
+arg: deepseek-v4.1-flash
+arg: --trust-remote-code
+arg: --quantization
+arg: exl3
+arg: --linear-backend
+arg: marlin
+arg: --compilation-config
+arg: {"cudagraph_mode":"FULL_DECODE_ONLY","custom_ops":["all"]}
+arg: --cudagraph-capture-sizes
+arg: 1
+arg: 2
+arg: 4
+arg: 6
+arg: 8
+arg: 12
+arg: 16
+arg: 24
+arg: 32
+arg: 48
+arg: 64
+arg: 96
+arg: 128
+arg: 192
+arg: 256
+arg: --speculative-config
+arg: {"method":"dspark","num_speculative_tokens":5,"draft_sample_method":"probabilistic"}

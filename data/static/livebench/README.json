@@ -1,0 +1,18 @@
+{
+ "source": "https://livebench.ai/ (leaderboard data files served by the site)",
+ "urls": [
+  "https://livebench.ai/categories_2026_06_25.json",
+  "https://livebench.ai/cost_2026_06_25.csv",
+  "https://livebench.ai/table_2026_06_25.csv"
+ ],
+ "question_set_release": "2026-06-25",
+ "fetched_utc": "2026-10-07",
+ "site_build": "v=1791404103 (the cache-busting parameter the site appends; 2026-10-07)",
+ "note": "2026-06-25 names the LiveBench question set; models are scored and added to it after that date, which is why models released later (e.g. deepseek-v4.1-flash-max) appear. Category scores are the mean of the category's task scores (categories_2026_06_25.json) and the overall score the mean of the category scores, as the site computes them. The author's copy of the page sorted by Agentic Coding (https://livebench.ai/#/?sort=Agentic+Coding&dir=desc) matched these files on every value shown, up to one rounding difference.",
+ "what_it_measures": "third-party evaluations of each model as served by its provider, with the reasoning effort named in the model id (deepseek-v4.1-flash-max: maximum effort, thinking on); NOT the 3-bit EXL3 stack measured in this paper",
+ "sha256": {
+  "categories_2026_06_25.json": "dad300ad18655b69db720e1b88fc5a5eac06c5b2f0e52c2bf50f10ff057674f3",
+  "cost_2026_06_25.csv": "3f86c0c386951ca1dd8d030f4f5f77515080bfc8941be5a86f7b7a731a6e01ee",
+  "table_2026_06_25.csv": "620e6d46b85269c7efa9b7644ff2f4e12a2305aca9d6824b937421063286fc31"
+ }
+}

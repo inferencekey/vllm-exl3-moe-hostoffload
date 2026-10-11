@@ -1,0 +1,359 @@
+# inferencekey-deepseek@546071a scripts vs the Diffbot recipe @a1cf1bd2
+## in-repo copies (/home/ubuntu/me/vllm-exl3-moe-hostoffload/data/exploratory/inferencekey-deepseek@546071a) vs git show 546071a:
+  same vllm-exl3/a100/scripts/bench.py
+  same vllm-exl3/a100/scripts/bootstrap.sh
+  same vllm-exl3/a100/scripts/download.py
+  same vllm-exl3/a100/scripts/pod.sh
+  same vllm-exl3/a100/scripts/rp_create_loop.py
+  same vllm-exl3/a100/scripts/rp_stock2.py
+  same vllm-exl3/a100/scripts/serve.sh
+  same vllm-exl3/a100/scripts/watchdog.sh
+  same vllm-exl3/pro6000-concurrency/scripts/bootstrap.sh
+  same vllm-exl3/pro6000-concurrency/scripts/download.py
+  same vllm-exl3/pro6000-concurrency/scripts/loadgen.py
+  same vllm-exl3/pro6000-concurrency/scripts/mem_sampler.py
+  same vllm-exl3/pro6000-concurrency/scripts/pod.sh
+  same vllm-exl3/pro6000-concurrency/scripts/restart_A.sh
+  same vllm-exl3/pro6000-concurrency/scripts/rp_create_loop.py
+  same vllm-exl3/pro6000-concurrency/scripts/run_all.sh
+  same vllm-exl3/pro6000-concurrency/scripts/serve.sh
+  same vllm-exl3/pro6000-concurrency/scripts/summarize.py
+  same vllm-exl3/pro6000-concurrency/scripts/watchdog.sh
+
+################ a100
+## serve.sh vs recipe serve/serve.sh: env knobs and vllm flags (mechanical extraction)
+  env/default            recipe                                  inferencekey
+  != CACHE_DIR                      $REPO/.cache                                   -
+     CAPTURE_SIZES                  1 2 4 6 8 12 16 24 32 48                       1 2 4 6 8 12 16 24 32 48
+  != CONTAINER_MEM                  260g                                           -
+     DENSE_HYBRID_M                 128                                            128
+     DSV41_ENGRAM_DISK              0                                              0
+     DSV41_ENGRAM_INT4              1                                              1
+     EAGER                          0                                              0
+     EXL3_DO                        1                                              1
+     EXL3_FAT_SLICE                 0                                              0
+     EXL3_HOST_EXPERTS              /opt/recipe/plans/$PLAN                        /opt/recipe/plans/$PLAN
+     EXL3_HOST_OVERLAP_GROUP        16                                             16
+     EXL3_HOST_OVERLAP_SMS          32                                             32
+     EXL3_HOST_OVERLAP_SMS_PREFILL  64                                             64
+     EXL3_LEAN_PREP                 1                                              1
+     FI_ARCH                        12.0f                                          12.0f
+  != FLASHINFER_CUDA_ARCH_LIST      "$FI_ARCH"                                     $FI_ARCH
+     FLASHINFER_DISABLE_VERSION_CHECK 1                                              1
+  != IMAGE                          dsv41-flash-exl3-3bpw-sm120                    -
+     KV_MEM                         4563402752                                     4563402752
+  != LINEAR_BACKEND                 marlin                                         -
+     MAX_BATCHED                    16384                                          16384
+  != MAX_MODEL_LEN                  1048576                                        262144
+     MAX_NUM_SEQS                   8                                              8
+  != MODELS_DIR                     $HOME/models                                   -
+  != NAME                           dsv41-flash-exl3                               -
+     NCCL_CUMEM_ENABLE              0                                              0
+     NCCL_DEBUG                     WARN                                           WARN
+  != NCCL_P2P_DISABLE               ${NCCL_P2P_DISABLE:-0}                         0
+  != NO_CUSTOM_AR                   1                                              -
+  != PACK                           $MODELS_DIR/DeepSeek-V4.1-Flash-EXL3-3bpw      /root/models/DeepSeek-V4.1-Flash-EXL3-3bpw
+     PLAN                           plan-agent30-dh.json                           plan-agent30-dh.json
+     PORT                           8000                                           8000
+     PYTORCH_CUDA_ALLOC_CONF        expandable_segments:True                       expandable_segments:True
+     SERVED                         deepseek-v4.1-flash                            deepseek-v4.1-flash
+     SPEC                           dspark                                         dspark
+     SPEC_K                         5                                              5
+  != THINKING                       default                                        -
+     THOR_DENSE_GEMV                1                                              1
+     THOR_DENSE_GEMV_MAX            64                                             64
+     THOR_DENSE_MBLOCK              64                                             64
+     THOR_DENSE_ONE_COPY            1                                              1
+     THOR_DENSE_PY                  /opt/recipe/kernels/thor_dense2.py             /opt/recipe/kernels/thor_dense2.py
+     THOR_DENSE_TABLE               /opt/recipe/kernels/thor_dense_table_v2.json   /opt/recipe/kernels/thor_dense_table_v2.json
+     THOR_EMBED_HOST                1                                              1
+     THOR_FP8_LMHEAD                1                                              1
+     THOR_INDEXER_BUF_MULT          8                                              8
+     THOR_INDEXER_EXPAND_CAP        1                                              1
+     THOR_MHC_SPLITS                80                                             80
+     THOR_ROPE_CAP                  1                                              1
+     THOR_ROUTER_SPLITK             1                                              1
+     THOR_WOA_FP8                   1                                              1
+     TILELANG_CACHE_DIR             /root/.cache/tilelang                          /root/.cache/tilelang
+     TORCH_CUDA_ARCH_LIST           12.0a                                          12.0a
+     TRITON_CACHE_DIR               /root/.cache/triton                            /root/.cache/triton
+     UTIL                           0.92                                           0.92
+  != VISION                         1                                              0
+     VLLM_ENGINE_READY_TIMEOUT_S    3600                                           3600
+     VLLM_MULTI_STREAM_GEMM_TOKEN_THRESHOLD 0                                              0
+     VLLM_PLUGINS                   vllm_exl3                                      vllm_exl3
+  != WARMUP                         1                                              -
+     XMOE_EXT                       xmoe                                           xmoe
+  vllm/docker flags      recipe | inferencekey
+  --api-key                            both
+  --block-size                         both
+  --cap-add                            recipe only
+  --compilation-config                 both
+  --cudagraph-capture-sizes            both
+  --default-chat-template-kwargs       recipe only
+  --disable-custom-all-reduce          both
+  --enable-auto-tool-choice            both
+  --enable-prompt-tokens-details       inferencekey only
+  --enforce-eager                      both
+  --entrypoint                         recipe only
+  --gpu-memory-utilization             both
+  --gpus                               recipe only
+  --host                               both
+  --ipc                                recipe only
+  --kernel-config                      both
+  --kv-cache-dtype                     both
+  --kv-cache-memory                    both
+  --language-model-only                both
+  --linear-backend                     both
+  --max-model-len                      both
+  --max-num-batched-tokens             both
+  --max-num-seqs                       both
+  --memory                             recipe only
+  --memory-swap                        recipe only
+  --name                               recipe only
+  --network                            recipe only
+  --port                               both
+  --quantization                       both
+  --reasoning-parser                   both
+  --rm                                 recipe only
+  --served-model-name                  both
+  --shm-size                           recipe only
+  --speculative-config                 both
+  --tensor-parallel-size               both
+  --tokenizer-mode                     both
+  --tool-call-parser                   both
+  --trust-remote-code                  both
+  --ulimit                             recipe only
+## diff -u recipe serve/serve.sh  inferencekey a100/scripts/serve.sh  (stat)
+  added lines: 23
+  removed lines: 99
+## bootstrap.sh vs recipe docker/build.sh + kernels/build.sh: build steps
+  recipe docker/build.sh + kernels/build.sh:
+    sitecustomize.py
+    checkout -q "$RECIPE_REF"
+    apt-get install -y --no-install-recommends git patch libcusparse-dev-13-0 libcusolver-dev-13-0
+    patch -p1 --forward < <patches>/vllm/pr58132-decoder-swa-replay.diff
+    patch -p1 --forward < <patches>/vllm/sm120-thor-fixes.diff
+    patch -p1 --forward < <patches>/vllm/pr59585-dsml-finite-args.diff
+    patch -p1 --forward < <patches>/vllm/pr59894-decoder-replay-cut-trim.diff
+    patch -p1 --forward < <patches>/vllm/pr58560-compressor-null-block.diff
+    git clone https://github.com/vcruz305/vllm-exl3.git /opt/vllm-exl3
+    checkout "$VLLM_EXL3_REF"
+    patch -p1 < <patches>/vllm-exl3/exl3-thor.patch
+    fix_vllm_exl3_setup.py
+    pip install --no-build-isolation --no-deps /opt/vllm-exl3
+    git clone https://github.com/turboderp-org/exllamav3.git /opt/exllamav3
+    checkout "$EXLLAMAV3_REF"
+    pip install --no-build-isolation --no-deps /opt/exllamav3
+    build_xmoe_do.py
+    build_xmoe.py "$V" "$V"
+  inferencekey a100/scripts/bootstrap.sh:
+    apt-get install -y --no-install-recommends git patch libcusparse-dev-13-0 libcusolver-dev-13-0
+    pip install -q ninja
+    patch -p1 --forward < <patches>/vllm/$p.diff
+    git clone -q https://github.com/vcruz305/vllm-exl3.git /opt/vllm-exl3
+    checkout -q d3cfd394920360d69f820d2dc96f8292a9e10283
+    patch -p1 < <patches>/vllm-exl3/exl3-thor.patch
+    fix_vllm_exl3_setup.py
+    pip install --no-build-isolation --no-deps /opt/vllm-exl3
+    git clone -q https://github.com/turboderp-org/exllamav3.git /opt/exllamav3
+    checkout -q 5be886578ec80324c2c715269387be2058724b6e
+    pip install --no-build-isolation --no-deps /opt/exllamav3
+    build_xmoe.py xmoe xmoe
+    build_xmoe_do.py
+    sitecustomize.py
+    sitecustomize.py
+  vLLM patch order in bootstrap.sh: pr58132-decoder-swa-replay sm120-thor-fixes pr59585-dsml-finite-args pr59894-decoder-replay-cut-trim pr58560-compressor-null-block
+  vLLM patch order in recipe build.sh: pr58132-decoder-swa-replay sm120-thor-fixes pr59585-dsml-finite-args pr59894-decoder-replay-cut-trim pr58560-compressor-null-block
+  pins in bootstrap.sh: 5be886578ec80324c2c715269387be2058724b6e d3cfd394920360d69f820d2dc96f8292a9e10283
+  pins in recipe build.sh: 0ad6fa4178c34f4e04402452bbc4294df6dd2fb2 36768d1bfd39094681cdbc8cb37d4b31c0729c89 460ac89c7df1eea4db8a731f1feb807f1584f359 5be886578ec80324c2c715269387be2058724b6e d3cfd394920360d69f820d2dc96f8292a9e10283
+
+################ pro6000-concurrency
+## serve.sh vs recipe serve/serve.sh: env knobs and vllm flags (mechanical extraction)
+  env/default            recipe                                  inferencekey
+  != CACHE_DIR                      $REPO/.cache                                   -
+     CAPTURE_SIZES                  1 2 4 6 8 12 16 24 32 48                       1 2 4 6 8 12 16 24 32 48
+  != CONTAINER_MEM                  260g                                           -
+     DENSE_HYBRID_M                 128                                            128
+     DSV41_ENGRAM_DISK              0                                              0
+     DSV41_ENGRAM_INT4              1                                              1
+     EAGER                          0                                              0
+     EXL3_DO                        1                                              1
+     EXL3_FAT_SLICE                 0                                              0
+     EXL3_HOST_EXPERTS              /opt/recipe/plans/$PLAN                        /opt/recipe/plans/$PLAN
+     EXL3_HOST_OVERLAP_GROUP        16                                             16
+     EXL3_HOST_OVERLAP_SMS          32                                             32
+     EXL3_HOST_OVERLAP_SMS_PREFILL  64                                             64
+     EXL3_LEAN_PREP                 1                                              1
+     FI_ARCH                        12.0f                                          12.0f
+  != FLASHINFER_CUDA_ARCH_LIST      "$FI_ARCH"                                     $FI_ARCH
+     FLASHINFER_DISABLE_VERSION_CHECK 1                                              1
+  != IMAGE                          dsv41-flash-exl3-3bpw-sm120                    -
+     KV_MEM                         4563402752                                     4563402752
+  != LINEAR_BACKEND                 marlin                                         -
+     MAX_BATCHED                    16384                                          16384
+  != MAX_MODEL_LEN                  1048576                                        262144
+     MAX_NUM_SEQS                   8                                              8
+  != MODELS_DIR                     $HOME/models                                   -
+  != NAME                           dsv41-flash-exl3                               -
+     NCCL_CUMEM_ENABLE              0                                              0
+     NCCL_DEBUG                     WARN                                           WARN
+  != NCCL_P2P_DISABLE               ${NCCL_P2P_DISABLE:-0}                         0
+  != NO_CUSTOM_AR                   1                                              -
+  != PACK                           $MODELS_DIR/DeepSeek-V4.1-Flash-EXL3-3bpw      /root/models/DeepSeek-V4.1-Flash-EXL3-3bpw
+     PLAN                           plan-agent30-dh.json                           plan-agent30-dh.json
+     PORT                           8000                                           8000
+     PYTORCH_CUDA_ALLOC_CONF        expandable_segments:True                       expandable_segments:True
+     SERVED                         deepseek-v4.1-flash                            deepseek-v4.1-flash
+     SPEC                           dspark                                         dspark
+     SPEC_K                         5                                              5
+  != THINKING                       default                                        -
+     THOR_DENSE_GEMV                1                                              1
+     THOR_DENSE_GEMV_MAX            64                                             64
+     THOR_DENSE_MBLOCK              64                                             64
+     THOR_DENSE_ONE_COPY            1                                              1
+     THOR_DENSE_PY                  /opt/recipe/kernels/thor_dense2.py             /opt/recipe/kernels/thor_dense2.py
+     THOR_DENSE_TABLE               /opt/recipe/kernels/thor_dense_table_v2.json   /opt/recipe/kernels/thor_dense_table_v2.json
+     THOR_EMBED_HOST                1                                              1
+     THOR_FP8_LMHEAD                1                                              1
+     THOR_INDEXER_BUF_MULT          8                                              8
+     THOR_INDEXER_EXPAND_CAP        1                                              1
+     THOR_MHC_SPLITS                80                                             80
+     THOR_ROPE_CAP                  1                                              1
+     THOR_ROUTER_SPLITK             1                                              1
+     THOR_WOA_FP8                   1                                              1
+     TILELANG_CACHE_DIR             /root/.cache/tilelang                          /root/.cache/tilelang
+     TORCH_CUDA_ARCH_LIST           12.0a                                          12.0a
+     TRITON_CACHE_DIR               /root/.cache/triton                            /root/.cache/triton
+     UTIL                           0.92                                           0.92
+  != VISION                         1                                              0
+     VLLM_ENGINE_READY_TIMEOUT_S    3600                                           3600
+     VLLM_MULTI_STREAM_GEMM_TOKEN_THRESHOLD 0                                              0
+     VLLM_PLUGINS                   vllm_exl3                                      vllm_exl3
+  != WARMUP                         1                                              -
+     XMOE_EXT                       xmoe                                           xmoe
+  vllm/docker flags      recipe | inferencekey
+  --api-key                            both
+  --block-size                         both
+  --cap-add                            recipe only
+  --compilation-config                 both
+  --cudagraph-capture-sizes            both
+  --default-chat-template-kwargs       recipe only
+  --disable-custom-all-reduce          both
+  --enable-auto-tool-choice            both
+  --enable-prompt-tokens-details       inferencekey only
+  --enforce-eager                      both
+  --entrypoint                         recipe only
+  --gpu-memory-utilization             both
+  --gpus                               recipe only
+  --host                               both
+  --ipc                                recipe only
+  --kernel-config                      both
+  --kv-cache-dtype                     both
+  --kv-cache-memory                    both
+  --language-model-only                both
+  --linear-backend                     both
+  --max-model-len                      both
+  --max-num-batched-tokens             both
+  --max-num-seqs                       both
+  --memory                             recipe only
+  --memory-swap                        recipe only
+  --name                               recipe only
+  --network                            recipe only
+  --port                               both
+  --quantization                       both
+  --reasoning-parser                   both
+  --rm                                 recipe only
+  --served-model-name                  both
+  --shm-size                           recipe only
+  --speculative-config                 both
+  --tensor-parallel-size               both
+  --tokenizer-mode                     both
+  --tool-call-parser                   both
+  --trust-remote-code                  both
+  --ulimit                             recipe only
+## diff -u recipe serve/serve.sh  inferencekey pro6000-concurrency/scripts/serve.sh  (stat)
+  added lines: 23
+  removed lines: 99
+## bootstrap.sh vs recipe docker/build.sh + kernels/build.sh: build steps
+  recipe docker/build.sh + kernels/build.sh:
+    sitecustomize.py
+    checkout -q "$RECIPE_REF"
+    apt-get install -y --no-install-recommends git patch libcusparse-dev-13-0 libcusolver-dev-13-0
+    patch -p1 --forward < <patches>/vllm/pr58132-decoder-swa-replay.diff
+    patch -p1 --forward < <patches>/vllm/sm120-thor-fixes.diff
+    patch -p1 --forward < <patches>/vllm/pr59585-dsml-finite-args.diff
+    patch -p1 --forward < <patches>/vllm/pr59894-decoder-replay-cut-trim.diff
+    patch -p1 --forward < <patches>/vllm/pr58560-compressor-null-block.diff
+    git clone https://github.com/vcruz305/vllm-exl3.git /opt/vllm-exl3
+    checkout "$VLLM_EXL3_REF"
+    patch -p1 < <patches>/vllm-exl3/exl3-thor.patch
+    fix_vllm_exl3_setup.py
+    pip install --no-build-isolation --no-deps /opt/vllm-exl3
+    git clone https://github.com/turboderp-org/exllamav3.git /opt/exllamav3
+    checkout "$EXLLAMAV3_REF"
+    pip install --no-build-isolation --no-deps /opt/exllamav3
+    build_xmoe_do.py
+    build_xmoe.py "$V" "$V"
+  inferencekey pro6000-concurrency/scripts/bootstrap.sh:
+    apt-get install -y --no-install-recommends git patch libcusparse-dev-13-0 libcusolver-dev-13-0
+    pip install -q ninja
+    patch -p1 --forward < <patches>/vllm/$p.diff
+    git clone -q https://github.com/vcruz305/vllm-exl3.git /opt/vllm-exl3
+    checkout -q d3cfd394920360d69f820d2dc96f8292a9e10283
+    patch -p1 < <patches>/vllm-exl3/exl3-thor.patch
+    fix_vllm_exl3_setup.py
+    pip install --no-build-isolation --no-deps /opt/vllm-exl3
+    git clone -q https://github.com/turboderp-org/exllamav3.git /opt/exllamav3
+    checkout -q 5be886578ec80324c2c715269387be2058724b6e
+    pip install --no-build-isolation --no-deps /opt/exllamav3
+    build_xmoe.py xmoe xmoe
+    build_xmoe_do.py
+    sitecustomize.py
+    sitecustomize.py
+  vLLM patch order in bootstrap.sh: pr58132-decoder-swa-replay sm120-thor-fixes pr59585-dsml-finite-args pr59894-decoder-replay-cut-trim pr58560-compressor-null-block
+  vLLM patch order in recipe build.sh: pr58132-decoder-swa-replay sm120-thor-fixes pr59585-dsml-finite-args pr59894-decoder-replay-cut-trim pr58560-compressor-null-block
+  pins in bootstrap.sh: 5be886578ec80324c2c715269387be2058724b6e d3cfd394920360d69f820d2dc96f8292a9e10283
+  pins in recipe build.sh: 0ad6fa4178c34f4e04402452bbc4294df6dd2fb2 36768d1bfd39094681cdbc8cb37d4b31c0729c89 460ac89c7df1eea4db8a731f1feb807f1584f359 5be886578ec80324c2c715269387be2058724b6e d3cfd394920360d69f820d2dc96f8292a9e10283
+
+## pro6000-concurrency: settings passed at launch (from logs/serve.log, not in the committed serve.sh)
+  'max_model_len': 262144
+  cudagraph_capture_sizes': [1, 2, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 256]
+  enable_prefix_caching=True
+  max_num_seqs': 64
+## pro6000-concurrency/README.md launch line and stated changes from the recipe:
+  README.md:27:- **Two changes from the recipe defaults, needed to admit 64 users:** `MAX_NUM_SEQS=64` (default 8) and
+  README.md:203:6. `PLAN=plan-gen30-dh.json MAX_NUM_SEQS=64 CAPTURE_SIZES="1 2 4 6 8 12 16 24 32 48 64 96 128 192 256" API_KEY=... bash serve.sh`
+## a100/README.md statements about the recipe:
+  README.md:25:- diffbot's recipe replayed without docker (`scripts/bootstrap.sh`): 5 vLLM patches, vllm-exl3 `d3cfd394` +
+  README.md:28:- Weights: `diffbot/DeepSeek-V4.1-Flash-EXL3-3bpw-2x-RTX-PRO-6000@a1cf1bd2` (309 GiB: EXL3 3.0 bpw routed experts by
+  README.md:42:Two host-expert plans were measured on the same pod: `agent30` (recipe default, tuned for agentic coding traffic) and
+  README.md:79:| **vllm-exl3 + diffbot recipe, 2x RTX PRO 6000** | **29-78 (text), 99-150 (code)** | **16K in 3-5 s, 2nd turn 0.6-0.8 s** | **yes** | **4.18 USD** |
+  README.md:83:these prompts (diffbot reports 130-232 on their agentic traffic).
+  README.md:89:1. Locally, fetch the recipe (no weights) into `pack/` and the sfxnz helpers (`docker/patch` of
+  README.md:90:   sfxnz/DeepSeek-V4.1-Flash-EXL3-vLLM-2x-DGX-Spark @460ac89c), tar them as `stage/recipe.tgz` and `stage/dsv41-patch.tgz`.
+  README.md:93:3. Copy the tarballs and `bootstrap.sh serve.sh bench.py download.py` to `/root`; untar to `/opt/recipe` and
+  README.md:108:Licensing: vllm-exl3 and its patch are AGPL-3.0; the diffbot recipe and the weights are MIT. Serving it to customers
+## a100/scripts/serve.sh header:
+  serve.sh:2: # Pod side: diffbot recipe/serve/serve.sh turned into a direct `vllm serve` (no docker). Same env knobs and args, TP2.
+## a100/scripts/bootstrap.sh header:
+  bootstrap.sh: # Pod side: replay diffbot recipe/docker/build.sh + recipe/kernels/build.sh without docker, inside the
+  bootstrap.sh: # vllm/vllm-openai:nightly-36768d1 pod. Expects /opt/recipe (the pack's recipe/ folder) and /opt/dsv41-patch (sfxnz docker/patch).
+
+## inferencekey files with no recipe counterpart (scripts/ of both runs)
+  a100/scripts/bench.py                              104 lines  # Pod side (stdlib only): measurements against the local vLLM server. Writes /root/results/bench.json.
+  a100/scripts/download.py                             9 lines  # Pod side: download the diffbot pack to the container disk (never a network volume).
+  a100/scripts/pod.sh                                  3 lines  # Local helper: run a command on the pod.
+  a100/scripts/rp_create_loop.py                      40 lines  # Wait for capacity: try to create the 2x RTX PRO 6000 pod every 45 s, rotating datacenters, for up to MAX_WAI# No pod exists while waiting. A pod that comes up with too little RAM or too high a price is deleted at once.
+  a100/scripts/rp_stock2.py                           13 lines  # Price and stock of RTX PRO 6000 types for gpuCount=2 per datacenter (read-only GraphQL).
+  a100/scripts/watchdog.sh                             6 lines  # Hard stop: delete the pod after LIMIT_S seconds whatever its state (money guard).
+  pro6000-concurrency/scripts/loadgen.py             309 lines  """Closed-loop concurrency load generator for an OpenAI-compatible /v1/chat/completions server (vLLM).
+  pro6000-concurrency/scripts/mem_sampler.py          59 lines  """Pod side: every 5 s append one CSV row with VRAM, GPU util, cgroup RAM and vLLM KV usage / queue depth.
+  pro6000-concurrency/scripts/summarize.py            53 lines  """Local: turn results/scenario_{A,B}.json and results/mem_samples.csv into the README tables and the usable-N
+  pro6000-concurrency/scripts/run_all.sh              17 lines  # Pod side: wait for the server, warm it up, then run scenario A and B. Logs to /root/logs, JSON to /root/resu
+  pro6000-concurrency/scripts/restart_A.sh            13 lines  # Pod side: used once in this run, to restart scenario A and B with the recalibrated loadgen (server already w
+  pro6000-concurrency/scripts/download.py              9 lines  # Pod side: download the diffbot pack to the container disk (never a network volume).
+  pro6000-concurrency/scripts/rp_create_loop.py       40 lines  # Wait for capacity: try to create the 2x RTX PRO 6000 pod every 45 s, rotating datacenters, for up to MAX_WAI# No pod exists while waiting. A pod that comes up with too little RAM or too high a price is deleted at once.
+  pro6000-concurrency/scripts/pod.sh                   3 lines  # Local helper: run a command on the pod.
+  pro6000-concurrency/scripts/watchdog.sh              6 lines  # Hard stop: delete the pod after LIMIT_S seconds whatever its state (money guard).
+  a100 vs pro6000 copies: serve.sh=same bootstrap.sh=same download.py=same pod.sh=same rp_create_loop.py=DIFF watchdog.sh=same 

@@ -1,0 +1,16 @@
+# Lean plan, E8 probes (one repetition): prefill isolation and decode isolation.
+seed: 20261009
+repetitions: 1
+scenarios:
+  - name: prefill
+    kind: prefill
+    prompt: {corpus: code, template: raw, region: [0.0, 0.5]}
+    lengths: [4096, 16384, 65536]
+    requests: 3
+  - name: decode
+    kind: decode
+    prompt: {corpus: code, template: continue_prose, region: [0.0, 0.5]}
+    prompt_tokens: 128
+    output_tokens: 512
+    sampling: {temperature: 0.6, top_p: 0.95}
+    arrivals: {mode: closed, levels: [1, 8, 32], requests_per_user: 1, min_requests: 4}

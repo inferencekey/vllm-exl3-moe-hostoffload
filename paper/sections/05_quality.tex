@@ -1,0 +1,41 @@
+\section{Do the Answers Hold?}\label{sec:quality}
+
+On the items we tested, the \dv{cfg.exl3_bits}-bit stack matches DeepSeek's own service within the uncertainty. On a
+fixed subset of GSM8K it scores \dv{ctl.E10.gsm8k_cot_llama.exact_match} against
+\dv{ctl.E11.gsm8k_cot_llama.exact_match} for the API, with the same outcome on every item. On IFEval the difference is
+\dv{ctl.Q.ifeval.diff} (95\% interval \dv{ctl.Q.ifeval.ci_lo} to \dv{ctl.Q.ifeval.ci_hi}) and on HumanEval
+\dv{ctl.Q.humaneval_instruct.diff} (\dv{ctl.Q.humaneval_instruct.ci_lo} to \dv{ctl.Q.humaneval_instruct.ci_hi}). Both
+intervals include zero, and \dv{ctl.Q.ifeval.flips_pct}\% and \dv{ctl.Q.humaneval_instruct.flips_pct}\% of the items
+change outcome between the two systems (Table~\ref{tab:ctl-quality-paired}).
+
+We did not assume the answers would hold. Routed experts at \dv{cfg.exl3_bits} bits per weight, int4 Engram tables and an FP8 output head
+are aggressive choices, and mixture-of-experts models can react unevenly to quantization across
+experts~\citep{li2024quantmoebench}. Equal averages can also hide answers that flip between right and
+wrong~\citep{dutta2024accuracy}, which is why we compare item by item with a paired bootstrap and report the flips.
+Diffbot's model card reports its own divergence measurements and small probes~\citep{diffbot2026dsv41exl3}. We cite
+them and do not reuse their numbers.
+
+\paragraph{How the comparison was run.}
+Both systems answered the same fixed-seed subsets (\datafile{quality/subsets_lean2h_seed20261006.json}) through
+lm-evaluation-harness~\citep{sutawika2023lmeval}, with greedy decoding and thinking off, behind the same local proxy
+that logs every request (\datafile{quality/api_proxy.py}). HumanEval needed one fix on each side. Its prompts end with
+a partial assistant message that the model must continue, and a plain chat request opens a new turn instead. Our first
+API run did that, and our first run on the stack hit a related problem, because vLLM's DeepSeek-V4.1 tokenizer closes
+the prefilled message with an end-of-sentence token and the model writes after it. We fixed the proxy so that both
+backends continue the message (DeepSeek's chat prefix completion, and on vLLM the prompt rendered by vLLM's own
+encoder without that token), and reran. The invalid runs are kept and marked as such in the data
+(\datafile{data/controlled/E11-quality-reference/api/} and the E10 folder).
+
+\paragraph{What the comparison covers.}
+The subsets have \dv{ctl.Q.ifeval.n} (IFEval) and \dv{ctl.Q.humaneval_instruct.n} (HumanEval) items, so differences of
+a few points cannot be excluded. The reference is DeepSeek's public API with thinking disabled, whose precision and
+serving code we cannot see. The comparison therefore bounds the quality cost of the whole measured stack against the
+vendor's service, not of quantization alone, and the designed reference, the original checkpoint on our own hardware,
+did not run. The LiveBench scores of Section~\ref{sec:background} are not comparable with these subsets.
+Tables~\ref{tab:ctl-E10} and~\ref{tab:ctl-E11} give the scores of each system with their standard errors, and
+Section~\ref{sec:method} gives the task subsets, their seeds and the proxy that logs both backends.
+
+\input{generated/quality_paired}
+
+\input{generated/controlled_E10}
+\input{generated/controlled_E11}

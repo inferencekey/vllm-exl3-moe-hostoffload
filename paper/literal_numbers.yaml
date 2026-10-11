@@ -1,0 +1,15 @@
+# Decimal literals allowed in the paper sources outside \dv{}. Each one is a configuration value, a version or a
+# pre-registered threshold, not a measurement, and names its source. tests/test_no_fake_data.py enforces this list.
+allowed:
+  - {literal: "4.1", source: "model name DeepSeek-V4.1-Flash"}
+  - {literal: "0.6", source: "sampling temperature in experiments/workloads/*.yaml"}
+  - {literal: "0.95", source: "top_p in experiments/workloads/*.yaml"}
+  - {literal: "0.5", source: "sampler interval, SAMPLE_INTERVAL default in experiments/lib.sh"}
+  - {literal: "4.25", source: "KV cache budget in GiB, KV_MEM=4563402752 in stack/serve.sh (recipe value)"}
+  - {literal: "0.4.13", source: "lm-evaluation-harness version, LM_EVAL_VERSION in stack/pins.env"}
+  - {literal: "66.7", source: "long_context SLO tpot_p95_s 0.0667 in experiments/sla.yaml"}
+  - {literal: "3.2", source: "model name DeepSeek-V3.2 in the related work"}
+  - literal: "5.5"
+    source: "model name Claude Opus 5.5 (LiveBench id claude-opus-5-5-max-effort, data/static/livebench/table_2026_06_25.csv), not a measurement"
+  - literal: "5.1"
+    source: "model name Claude Fable 5.1 (LiveBench id claude-fable-5-1-max-effort, data/static/livebench/table_2026_06_25.csv), not a measurement"

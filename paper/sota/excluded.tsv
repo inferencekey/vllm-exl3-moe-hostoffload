@@ -1,0 +1,24 @@
+candidate	kind	reason
+DBLP as venue source	metadata decision	DBLP search and API returned an Anubis bot-check page; Crossref API and publisher pages used instead
+SGLang page numbers 62557-62583	metadata decision	seen only in a search snippet, not on a fetched page; omitted
+Splitwise IEEE Micro 2025 (DOI 10.1109/mm.2025.3575361)	duplicate or redundant source	different article (different author list, includes Fonseca); ISCA 2024 version cited instead
+MoE-Infinity as a peer-reviewed venue paper	duplicate or redundant source	no venue confirmed on any fetched page; kept only as arXiv @misc (xue2024moeinfinity)
+ZeRO-Inference as a separate entry	duplicate or redundant source	no standalone paper; it is the heterogeneous component of DeepSpeed-Inference (aminabadi2022deepspeedinference)
+DOIs for ICLR/ICML/JMLR/arXiv entries	metadata decision	not present on fetched pages; none added (no invented DOIs)
+HOBBIT (arXiv 2411.01433, Tang et al. 2024)	candidate dropped	Verified on arXiv, but the abstract states the system is implemented on top of an out-of-scope edge inference framework that the project rules exclude; dropped per scope rule.
+MoEShard	candidate dropped	Not fetched or verified in this pass; it targets expert sharding across multiple GPUs rather than host offloading, so lower relevance.
+CoX-MoE (arXiv 2605.17889)	candidate dropped	Seen only in search results, not fetched/verified; relies on CPU AMX expert compute; over the ~15 entry budget.
+MoE-CORE (arXiv 2610.01950)	candidate dropped	Seen only in search results, not fetched/verified.
+ExactMoE (arXiv 2608.15383)	candidate dropped	Seen only in search results (pinned-host experts copied into a GPU slot cache), not fetched/verified.
+BOOST (arXiv 2609.13592)	candidate dropped	Seen only in search results, not fetched/verified; concurrent host memory and HBM access, could be worth a follow-up check.
+Multipath Memory Access (arXiv 2512.16056)	candidate dropped	Seen only in search results, not fetched; host-GPU copy bandwidth, not MoE specific.
+Engineering forum or issue-tracker posts on zero-copy expert reads	candidate dropped	Not peer-reviewed or archival papers; cannot be cited as bibliography.
+How Good Are Low-bit Quantized LLaMA3 Models? (arXiv 2404.14047)	candidate dropped	optional; not fetched or verified in this pass (dutta2024accuracy covers quantized-model quality evaluation); title on arXiv appears to have changed to "An empirical study of LLaMA3 quantization: from LLMs to MLLMs", so it would need a separate check before use
+DBLP cross-check for all entries	metadata decision	not an entry; dblp.org returned socket hang up on every request, so venues were confirmed from the official proceedings pages instead
+Optimizing Speculative Decoding for Serving Large Language Models Using Goodput (SmartSpec, Liu et al.) as a separate entry	duplicate or redundant source	Same arXiv record 2406.14066, now retitled TurboSpec; included once as liu2024turbospec.
+DeepSeek-V4-Flash HF model card as a separate entry	duplicate or redundant source	Card is shared with the V4 series and links arXiv:2606.19348, which is cited as deepseekai2026v4
+Third-party DSpark explainers (deeplearning.ai, spheron, fullstack, ai-infrastructure.net)	duplicate or redundant source	Secondary sources; primary paper arXiv:2607.05147 cited instead
+diffbot/DeepSeek-V4.1-Flash-EXL3-3bpw-2x-RTX-PRO-6000 copy of the tech report	duplicate or redundant source	Third-party mirror; the original PDF is hosted on deepseek-ai/DeepSeek-V4.1-Flash and the same report is on arXiv:2609.19969
+EleutherAI/lm-evaluation-harness GitHub repo as separate @misc	duplicate or redundant source	redundant; cited via verified Zenodo v0.4.0 record (sutawika2023lmeval) plus biderman2024lessons
+Systems centered on excluded local-inference frameworks	scope rule	Excluded by protocol before screening (see PROTOCOL.md, exclusion criterion E4)
+Engram (two versions)	metadata decision	Both kept: ACL 2026 version (cheng2026dse, 14 authors, module named DSE) and arXiv extended version (cheng2026engram, 21 authors, module named Engram); they differ in authors and naming

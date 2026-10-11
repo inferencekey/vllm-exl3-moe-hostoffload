@@ -1,0 +1,28 @@
+# Quality evaluation plan (E10 measured stack, E11 reference). lm-evaluation-harness 0.4.13 (PyPI, MIT;
+# tag v0.4.13 = eb4678c395c2c1f157d462b8f3a09831160c861a). Task names verified with `lm-eval validate` against
+# 0.4.13 on 2026-10-06 (quality/lm_eval_0.4.13_task_listing.txt).
+#
+# Both systems get the same prompts (lm-eval's own), greedy decoding (temperature 0), thinking off, the same seeds,
+# and --log_samples so that differences can be tested per item (paired bootstrap, hostoffload.analysis.quality).
+harness: {package: lm-eval, version: 0.4.13, extras: [api, ifeval, ruler, math]}
+seeds: "1234,1234,1234,1234"
+gen_kwargs: {temperature: 0}
+server: "thinking off by default (stack/serve.sh THINKING=off sets --default-chat-template-kwargs)"
+num_concurrent: 32
+groups:
+  reasoning:
+    - {task: gsm8k_cot_llama, n: 1319, fewshot: "8 (task default, chat format)", metric: exact_match, filter: flexible-extract, max_gen_toks: 1024, minimal: true}
+    - {task: minerva_math500, n: 500, fewshot: "4 (task default)", metric: math_verify, max_gen_toks: 2048, minimal: false}
+  code:
+    - {task: humaneval_instruct, n: 164, metric: "pass@1", max_gen_toks: 1024, unsafe_code: true, minimal: true}
+    - {task: mbpp_instruct, n: 500, metric: "pass_at_1", max_gen_toks: 1024, unsafe_code: true, minimal: false}
+  instruction_following:
+    - {task: ifeval, n: 541, metric: "prompt_level_strict_acc, inst_level_strict_acc", max_gen_toks: 1280, minimal: true}
+  long_context:
+    - {task: ruler, metric: score, metadata: {max_seq_lengths: [4096, 16384, 65536]}, limit: 50, max_gen_toks: 128, minimal: false,
+       note: "needs the tokenizer (deepseek-ai/DeepSeek-V4.1-Flash) for length control"}
+    - {task: longbench_tasks, limit: 50, max_gen_toks: 512, minimal: false, note: "English subsets only in the analysis"}
+reference_options:
+  primary: "E11: DeepSeek's original checkpoint (FP4 experts, FP8 dense and Engram, the precision DeepSeek released) on upstream vLLM, 2x B300"
+  alternative: "DeepSeek's official API, if it serves DeepSeek-V4.1-Flash; cheaper, but the served precision and system prompt cannot be verified, so it is reported separately and never pooled with E11"
+  third_party_claims: "Diffbot's model card reports KL, GSM8K-200 and HumanEval for the pack; quoted as third-party claims, not as our data"

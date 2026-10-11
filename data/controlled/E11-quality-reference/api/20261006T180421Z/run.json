@@ -1,0 +1,14 @@
+{
+ "status": "invalid",
+ "rc": 0,
+ "start": "2026-10-06T18:04:21Z",
+ "end": "2026-10-06T18:09:49Z",
+ "server": {
+  "model": "deepseek-flash",
+  "endpoint": "https://api.deepseek.com/chat/completions",
+  "thinking": "disabled"
+ },
+ "samples": "quality/subsets_lean2h_seed20261006.json",
+ "repo_git": "b08899e5a6bd16561e9d0dd95f41b7e2333ee2ea",
+ "invalid_reason": "humaneval_instruct ends with a partial assistant message (lm-eval gen_prefix); the proxy at b08899e opened a new turn instead of continuing it, so every completion restarted the code block and scored 0. Superseded by the next run, made with the prefix-continuation proxy."
+}

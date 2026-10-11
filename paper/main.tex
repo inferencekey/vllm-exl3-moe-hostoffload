@@ -1,0 +1,87 @@
+% Second version of the paper: the same data, told as a narrative. Findings first (Sections 1 to 7), then
+% the record (methods, setup, related work, limitations, reproducibility), rewritten in the same voice.
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\usepackage{rotating}
+% fittable: typesets a tabular in a box, logs its natural width (grep FITTABLE in main.log) and shrinks it only if it is
+% wider than the text block, so that tables print as large as the page allows
+\newsavebox{\fittablebox}
+\newenvironment{fittable}[1]{\def\fittablelabel{#1}\begin{lrbox}{\fittablebox}}{\end{lrbox}%
+  \typeout{FITTABLE \fittablelabel\space width \the\wd\fittablebox\space of \the\linewidth}%
+  \ifdim\wd\fittablebox>\linewidth\resizebox{\linewidth}{!}{\usebox{\fittablebox}}\else\usebox{\fittablebox}\fi}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage{array}
+\usepackage{caption}
+\usepackage[numbers,sort]{natbib}
+\usepackage[hidelinks]{hyperref}
+\usepackage{url}
+\usepackage{etoolbox}
+% keep every float inside the section that cites it (a \FloatBarrier at each \section)
+\usepackage[section]{placeins}
+\setlength{\emergencystretch}{3em}
+
+\input{datamacros}
+% `make paper STRICT=1` defines \strictbuild, which turns every missing value into a build error
+\ifdefined\strictbuild\strictdatatrue\fi
+\input{generated/values}
+
+\newcommand{\expl}{\textsc{exploratory}}
+\urlstyle{tt}
+\makeatletter\g@addto@macro{\UrlBreaks}{\UrlOrds}\makeatother
+% Every file or folder named in the text links to the public repository (pin to the release tag at release time)
+\newcommand{\repourl}{https://github.com/inferencekey/vllm-exl3-moe-hostoffload}
+\newcommand{\repoblob}{\repourl/tree/main}
+\newcommand{\repolink}[2]{\href{\repoblob/#1}{#2}}
+\newcommand{\datafile}[1]{\repolink{#1}{\nolinkurl{#1}}}
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue!50!black}
+
+\title{Serving a \dv{hub.orig.params_b}B Mixture-of-Experts Model on Workstation GPUs:\\
+\large A Measurement Study of Expert Offload in vLLM}
+\author{Javier Abrego\\ \small Inferencekey \quad \texttt{javier@inferencekey.com}}
+\date{}
+
+\begin{document}
+\maketitle
+
+\input{sections/abstract}
+\input{sections/01_introduction}
+\input{sections/02_people}
+\input{sections/03_fit}
+\input{sections/04_speed}
+\input{sections/05_quality}
+\input{sections/06_agents}
+\input{sections/07_discussion}
+
+\input{sections/08_record}
+\input{sections/09_exploratory}
+\input{sections/10_bytes}
+\input{sections/11_methods}
+\input{sections/12_setup}
+\input{sections/13_related}
+\input{sections/14_limits}
+\input{sections/15_repro}
+
+\section*{Acknowledgments}
+This paper measures open work by others. We thank Victor Cruz, whose vllm-exl3 plugin brings EXL3 to vLLM and is the
+base on which the host-memory offload is built; turboderp for ExLlamaV3 and the EXL3 format; Diffbot for the serving
+recipe, the host-expert patch and its kernels; coolbho3k for the 3-bit EXL3 checkpoint; sfxnz for the recipe helpers;
+Mia's AI Lab for the work vllm-exl3 derives from; the vLLM project and the authors of the pull requests the recipe
+carries; and DeepSeek for releasing the model's weights. None of them took part in this study, and any error is ours.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\appendix
+\input{sections/16_appendix}
+
+\end{document}

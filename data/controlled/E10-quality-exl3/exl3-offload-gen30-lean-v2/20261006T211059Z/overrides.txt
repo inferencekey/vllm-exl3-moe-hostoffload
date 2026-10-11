@@ -1,0 +1,2 @@
+PLAN=/opt/recipe/plans/plan-gen30-dh.json
+THINKING=off

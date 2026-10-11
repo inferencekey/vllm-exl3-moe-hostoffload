@@ -1,0 +1,49 @@
+# Main controlled workload (E8, E9). Sampling: temperature 0.6, top_p 0.95, per-request seeds derived from `seed`;
+# thinking off. Prompts come from the first half of each pinned corpus (the calibration workload uses the second
+# half). All requests are saved raw; summaries are recomputed by `make analyze`.
+seed: 20261006
+repetitions: 3
+stop_ttft_p95_s: 120
+stop_error_rate: 0.05
+scenarios:
+  - name: A-code-4k              # independent users, unique 4K-token code prompts, no shared prefix
+    kind: chat
+    prompt: {corpus: code, tokens: 4096, template: review, region: [0.0, 0.5]}
+    output: {max_tokens: 256}
+    sampling: {temperature: 0.6, top_p: 0.95}
+    arrivals: {mode: closed, levels: [1, 2, 4, 8, 16, 32, 64], requests_per_user: 4, min_requests: 16, stagger_s: 10}
+  - name: A-code-4k-poisson      # the same prompts as an open-loop Poisson stream
+    kind: chat
+    prompt: {corpus: code, tokens: 4096, template: review, region: [0.0, 0.5]}
+    output: {max_tokens: 256}
+    sampling: {temperature: 0.6, top_p: 0.95}
+    arrivals: {mode: poisson, rates: [0.25, 0.5, 1.0, 2.0, 4.0], requests: 64}
+  - name: B-prefix-16k           # shared 16K-token code prefix (cached after one warm request) + a question
+    kind: chat
+    prompt: {corpus: code, tokens: 16128, shared_prefix_tokens: 16000, template: qa_prefix, region: [0.0, 0.5]}
+    output: {max_tokens: 256}
+    sampling: {temperature: 0.6, top_p: 0.95}
+    arrivals: {mode: closed, levels: [1, 2, 4, 8, 16, 32, 64], requests_per_user: 4, min_requests: 16, stagger_s: 10}
+  - name: P-prose-1k             # prose continuation: the content class where speculation accepts less
+    kind: chat
+    prompt: {corpus: prose, tokens: 1024, template: continue_prose, region: [0.0, 0.5]}
+    output: {max_tokens: 256}
+    sampling: {temperature: 0.6, top_p: 0.95}
+    arrivals: {mode: closed, levels: [1, 2, 4, 8, 16, 32, 64], requests_per_user: 4, min_requests: 16, stagger_s: 10}
+  - name: prefill                # isolation probe: unique prompts, 1 output token, one at a time
+    kind: prefill
+    prompt: {corpus: code, template: raw, region: [0.0, 0.5]}
+    lengths: [1024, 4096, 16384, 32768, 65536]
+    requests: 5
+  - name: decode                 # isolation probe: 128-token prompts, 512 forced output tokens, N streams
+    kind: decode
+    prompt: {corpus: code, template: continue_prose, region: [0.0, 0.5]}
+    prompt_tokens: 128
+    output_tokens: 512
+    sampling: {temperature: 0.6, top_p: 0.95}
+    arrivals: {mode: closed, levels: [1, 2, 4, 8, 16, 32, 64], requests_per_user: 2, min_requests: 8}
+  - name: L-long-128k            # long context: TTFT of fresh 128K-token prompts (excluded from the minimal run)
+    kind: prefill
+    prompt: {corpus: prose, template: summarize, region: [0.0, 0.5]}
+    lengths: [131072]
+    requests: 3

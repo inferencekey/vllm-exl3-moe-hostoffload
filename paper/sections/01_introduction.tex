@@ -1,0 +1,110 @@
+\section{Introduction}\label{sec:intro}
+
+On \dv{lean.session.date_long} we rented a cloud server (a pod) with two NVIDIA RTX PRO 6000 GPUs, 96\,GB each, and
+asked it to load a version of DeepSeek-V4.1-Flash whose routed experts are quantized to \dv{cfg.exl3_bits} bits, with
+every expert in GPU memory. The load failed with a CUDA out-of-memory error, and so did the offload build with an
+empty plan. With a plan that moves \dv{static.gen30.host_target_share_pct}\% of the routed experts to the host's
+ordinary memory, a back room that the GPUs can still reach, the same offload build started answering requests.
+
+DeepSeek publishes the model in \dv{static.orig.total_gib}\,GiB, and the community pack with 3-bit experts takes
+\dv{static.pack.total_gib}\,GiB. Not all of it has to be on the GPUs: the two Engram lookup tables and the token
+embedding (\dv{static.noplan.host_gib}\,GiB together) are kept in the host's memory before any expert moves,
+and a vision encoder is not loaded at all. The rest, \dv{static.noplan.vram_gib}\,GiB, must be split between the two cards, which comes to
+\dv{static.noplan.vram_per_gpu_gib}\,GiB per card, and the driver reports \dv{expl.gpu_total_gib}\,GiB per card. The weights alone are \dv{expl.noplan_over_per_gpu_gib}\,GiB
+too large for each GPU, before any memory is set aside for the KV cache, which holds the context of every conversation
+in progress.
+
+The software that turned the failed boot into a working one was written by other people. Section~\ref{sec:attribution}
+names them and what each one built. This paper is about what that software buys and what it costs, and the question we
+set ourselves was:
+\begin{quote}
+\emph{What exactly does host-memory offload make possible on two 96\,GB GPUs, and at what cost in speed, capacity and
+quality?}
+\end{quote}
+
+The model is the reason the question is worth asking. On LiveBench, a third-party benchmark that refreshes its
+questions to limit contamination, the unquantized model at maximum reasoning effort ranks first of the
+\dv{livebench.n_models} models listed on agentic coding (Section~\ref{sec:background}). Those scores belong to
+DeepSeek's own service, not to the configuration we run, but they explain the interest. A model of that standing on
+two workstation-class GPUs is a coding model that a company can rent for \dv{price.2xpro6000.eur_h}\,EUR an hour or
+run on hardware it owns.
+
+Table~\ref{tab:key-results} gives the answers a reader can take away. Each row points to the section that holds the
+data and its caveats. Experiments carry the numbers E1 to E13 of the protocol in Section~\ref{sec:method}, and the
+ones that did not run (among them E9, the reference with everything in GPU memory) are listed there. Every row
+carries the same caveat. Each experiment ran on a single boot of the server on a single rented pod, so the intervals
+describe repetitions within that boot and nothing measures how much a second boot or another pod would move the
+numbers, and the cost of the offload against the model held entirely in GPU memory is still unmeasured.
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{>{\raggedright\arraybackslash}p{3.3cm}>{\raggedright\arraybackslash}p{9.6cm}l}
+\toprule
+question & what we measured & section \\
+\midrule
+Does the model fit without the offload? & No. The pack needs \dv{static.noplan.vram_per_gpu_gib}\,GiB of weights per GPU
+against \dv{expl.gpu_total_gib}\,GiB available. Both configurations without offload run out of memory while loading,
+and the configuration with Diffbot's \texttt{gen30} plan boots and serves (E2). & \ref{sec:system} \\
+What does a long prompt cost? & Reading it: a fresh 128K-token prompt takes
+\dv{ctl.E12.long.prefill-long-131072.closed:1.ttft_p50}\,s to its first token. Writing barely changes for a single
+request: \dv{ctl.E12.long.decode-256k.closed:1.tpot_p50_ms}\,ms per token after a 256K-token prompt against
+\dv{ctl.E3.gen30-session2.A-code-4k.closed:1.tpot_p50_ms}\,ms after 4K tokens on the same pod (E12). &
+\ref{sec:results-controlled} \\
+How fast for one user, and for many? & One stream writes at a median of \dv{ctl.E8.stream.A.N1.p50} tokens/s. With a
+cached 16K-token prefix, 64 users together get \dv{ctl.E8.main.B-prefix-16k.closed:64.agg_mean} tokens/s, but each
+one only \dv{ctl.E8.stream.B.N64.p50} (E8). & \ref{sec:results-controlled} \\
+Are the answers as good? & On fixed subsets, GSM8K gives the same outcome on every item as DeepSeek's API. The
+differences on IFEval (\dv{ctl.Q.ifeval.diff}) and HumanEval (\dv{ctl.Q.humaneval_instruct.diff}) have 95\% intervals
+that include zero (E10, E11). & \ref{sec:quality} \\
+How many coding agents at once? & \dv{agent.E13.agent.Cprov} simultaneous agent-turn streams keep at least 40 output
+tokens/s each with a 10\% margin, on a pod running nothing else (E13). & \ref{sec:agent} \\
+How many developers per server? & About \dv{agent.E13.agent.seats_conc_e1} intermittently active developers, so that
+fewer than one moment in a hundred has more than four of them waiting for the model, against
+\dv{agent.E13.agent.seats_volume_u100} by monthly token volume at full utilization. A pod costs as much as
+\dv{agent.break_even_seats} subscriptions (derived from E13). & \ref{sec:agent} \\
+Can upstream vLLM do it alone? & Not on these pins. Its zero-copy offload of the same experts fails at initialization
+with a KV block of 64 and on the first request with 128 (E3). & \ref{sec:results-controlled} \\
+Does the host matter? & Yes. On a second host with a different NUMA layout and CPU, the median time per token was
+\dv{ctl.pod.cross.A.N1.tpot_ratio} to \dv{ctl.pod.cross.A.N32.tpot_ratio} times higher (E3, one repetition per
+pod). & \ref{sec:results-controlled} \\
+\bottomrule
+\end{tabular}
+\caption{What this paper found. Pod measurements come from one boot per experiment on 2x RTX PRO 6000 pods, with the
+model's step-by-step reasoning mode (thinking) turned off. The first row also rests on the byte accounting of the
+checkpoint headers. The quality reference (E11) is DeepSeek's API on benchmark subsets, and the seat counts are
+derived from E13 under the usage assumptions of Section~\ref{sec:agent}.}
+\label{tab:key-results}
+\end{table}
+
+How many developers using a coding agent can share one server? The usual way to answer is by volume: count the output
+tokens the server can produce in a month and divide by what one developer consumes. For the usage profile we measured,
+that gives \dv{agent.E13.agent.seats_volume_u100} developers at full utilization and
+\dv{agent.E13.agent.seats_volume_u50} at half. If each developer must see the model write at least 40 tokens per
+second, the answer is \dv{agent.E13.agent.seats_conc_e1}, between \dv{agent.E13.agent.volume_over_conc_u50} and
+\dv{agent.E13.agent.volume_over_conc_u100} times fewer. We designed the coding-agent experiment around this gap. The
+server behaves like a bar that can pour for a whole office every night but has four stools at the counter, and
+Section~\ref{sec:agent} explains why the number of stools decides how many regulars it can take.
+
+\paragraph{How we measured.}
+Before running anything we audited who wrote each part of the stack, from pinned sources and patches
+(Section~\ref{sec:attribution}). We accounted every byte of both checkpoints from their safetensors headers, without
+downloading the weights, to know what fits where before touching a GPU (Section~\ref{sec:system}). We then ran
+experiments in three sessions on rented pods with the same GPU model: the boots without offload, a concurrency sweep,
+two host shares and upstream vLLM's own offload, prompts up to 260,000 tokens, quality on three task subsets against
+DeepSeek's API, and a coding-agent workload built from one developer's observed usage. Every number in the paper is
+printed by a macro that reads a value computed from a data file, and the build fails if the file is missing
+(Section~\ref{sec:repro}).
+
+\paragraph{How to read this paper.}
+Sections~\ref{sec:attribution} to~\ref{sec:discussion} give the findings in the order that makes them easiest to
+follow: who built the stack, why the model does not fit and how it is made to, how fast the result runs, whether the
+answers hold, what it means for coding agents, and what remains open. The record follows, with the earlier
+exploratory runs (Section~\ref{sec:results-exploratory}), the full methodology, the setup of the pods, related work,
+limitations and reproducibility. A reader who wants to check a claim can go from any sentence of the first part to
+the protocol and the data file behind it.
+
+\paragraph{What this paper does not claim.}
+It claims no new algorithm or system. The offload is third-party work, and our part is the integration, the
+configuration and the measurement. It does not claim that the stack preserves the model's quality in general, since
+our quality evidence covers three small task subsets with thinking off. And it does not yet say what the offload costs
+against the same model held entirely in GPU memory, because that reference needs larger hardware and was not run.

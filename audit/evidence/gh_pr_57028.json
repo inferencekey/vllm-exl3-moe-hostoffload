@@ -1,0 +1,17 @@
+{
+ "number": 57028,
+ "title": "# [Bugfix][DSv4.1] Fix SM120 FlashInfer serving blockers",
+ "state": "OPEN",
+ "createdAt": "2026-09-15T15:34:36Z",
+ "mergedAt": null,
+ "url": "https://github.com/vllm-project/vllm/pull/57028",
+ "headRefOid": "71a9dbcaf315ca11b9efc9d48d7f5f75f92a54ed",
+ "author": "zhao6300",
+ "mergeCommit": null,
+ "commit_authors": [
+  "Codex CLI",
+  "zhao6300"
+ ],
+ "n_commits": 15,
+ "last_commit_date": "2026-09-30T05:41:03Z"
+}

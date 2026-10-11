@@ -1,0 +1,17 @@
+# Calibration workload for routing counts (E3 profile step). Uses the SECOND half of each corpus, so plans built from
+# these counts are never evaluated on the prompts they were fitted to.
+seed: 20261008
+repetitions: 1
+scenarios:
+  - name: cal-code
+    kind: chat
+    prompt: {corpus: code, tokens: 4096, template: review, region: [0.5, 1.0]}
+    output: {max_tokens: 256}
+    sampling: {temperature: 0.6, top_p: 0.95}
+    arrivals: {mode: closed, levels: [8], requests_per_user: 8, min_requests: 64}
+  - name: cal-prose
+    kind: chat
+    prompt: {corpus: prose, tokens: 1024, template: continue_prose, region: [0.5, 1.0]}
+    output: {max_tokens: 256}
+    sampling: {temperature: 0.6, top_p: 0.95}
+    arrivals: {mode: closed, levels: [8], requests_per_user: 8, min_requests: 64}

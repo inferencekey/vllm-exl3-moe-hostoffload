@@ -1,0 +1,16 @@
+{
+ "number": 59585,
+ "title": "[Bugfix][Parser] Keep DeepSeek DSML tool arguments valid JSON",
+ "state": "OPEN",
+ "createdAt": "2026-10-01T09:56:01Z",
+ "mergedAt": null,
+ "url": "https://github.com/vllm-project/vllm/pull/59585",
+ "headRefOid": "cd317dc09db690b2f4c187b23a753f0bce5d86e0",
+ "author": "bojiang-li",
+ "mergeCommit": null,
+ "commit_authors": [
+  "bojiang-li"
+ ],
+ "n_commits": 1,
+ "last_commit_date": "2026-10-01T09:55:30Z"
+}

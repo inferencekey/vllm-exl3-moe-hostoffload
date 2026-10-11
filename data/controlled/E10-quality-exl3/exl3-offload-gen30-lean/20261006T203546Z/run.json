@@ -1,0 +1,12 @@
+{
+ "status": "invalid",
+ "server": {
+  "model": "deepseek-v4.1-flash",
+  "variant": "exl3-offload",
+  "plan": "plan-gen30-dh.json",
+  "thinking": "off"
+ },
+ "samples": "quality/subsets_lean2h_seed20261006.json",
+ "proxy_commit": "c357a38",
+ "invalid_reason": "humaneval_instruct: vLLM's DeepSeek V4.1 tokenizer ignores continue_final_message and closes the prefilled assistant message with EOS, so the model generated after EOS (empty answers, reasoning text or template tokens; pass@1 0.244). Superseded by exl3-offload-gen30-lean-v2 (proxy 55be25d)."
+}

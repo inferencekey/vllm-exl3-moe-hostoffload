@@ -1,0 +1,32 @@
+{
+  "title": "Serving a 763B Mixture-of-Experts Model on Workstation GPUs: A Measurement Study of Expert Offload in vLLM (artifact)",
+  "upload_type": "software",
+  "version": "0.1.0",
+  "creators": [
+    {
+      "name": "Abrego, Javier",
+      "affiliation": "Inferencekey"
+    }
+  ],
+  "description": "Research artifact: attribution audit, static weight accounting, exploratory data (imported with hashes), benchmark harness, raw data of the controlled experiments that ran (E2, E3, E8, E10 to E13), analysis pipeline, cost model and LaTeX paper. E1, E4 to E7 and E9 are designed but not run. No model weights and no third-party source code are included.",
+  "license": "Apache-2.0",
+  "access_right": "open",
+  "keywords": [
+    "vLLM",
+    "mixture of experts",
+    "EXL3",
+    "quantization",
+    "offloading",
+    "LLM serving",
+    "benchmarking",
+    "reproducibility"
+  ],
+  "notes": "Code: Apache-2.0. Paper text and data: CC-BY-4.0 (LICENSE-data). Third-party components are fetched at build time; see THIRD_PARTY.md.",
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/inferencekey/vllm-exl3-moe-hostoffload",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ]
+}

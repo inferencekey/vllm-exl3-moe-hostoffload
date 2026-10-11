@@ -1,0 +1,31 @@
+{
+ "pod_id": "2vmd81aa4tovr7",
+ "config": "2x-rtx-pro-6000",
+ "datacenter": "EUR-IS-1",
+ "cloud": "SECURE",
+ "usd_per_hour": 4.18,
+ "created_utc": "2026-10-07T06:02:18Z",
+ "deleted_utc": "2026-10-07T06:45:33Z",
+ "minutes": 43.2,
+ "usd": 3.01,
+ "runner": "experiments/runs/long.sh",
+ "source": "create and delete times recorded by the workstation scripts; price from the RunPod create response (costPerHr)",
+ "host_differs_from_session1": {
+  "cpu": [
+   "AMD EPYC 9534 64-Core (224 threads visible)",
+   "AMD EPYC 9535 64-Core (256 threads visible)"
+  ],
+  "gpu_topology": [
+   "both GPUs on NUMA node 1 (NODE)",
+   "GPU0 on NUMA node 0, GPU1 on node 1 (SYS)"
+  ],
+  "files": [
+   "E8-main/main/20261006T200848Z/nvidia-smi-topo.txt",
+   "E12-long-context/long/20261007T061605Z/nvidia-smi-topo.txt"
+  ]
+ },
+ "attempts": [
+  "1: bootstrap aborted (git config before git was installed); boots invalid, kept on the pod only",
+  "2: complete"
+ ]
+}

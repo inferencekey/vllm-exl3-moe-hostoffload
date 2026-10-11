@@ -1,0 +1,215 @@
+\section{Related Work}\label{sec:related}
+
+Every system that serves a model larger than its GPUs has to answer the same four questions: where the weights that
+do not fit should live, whether the CPU should compute with them, how they reach the GPU when they are needed, and
+whether the choice of what lives where is fixed or adapts at run time. This section uses those four questions to
+place the stack we measured among the systems that came before it, after the serving machinery that all of them share.
+
+\paragraph{Serving systems and batching.}
+The evaluated stack runs on vLLM~\citep{kwon2023vllm,vllm2026github}, whose PagedAttention manages the KV cache in
+fixed-size blocks, in the spirit of virtual memory paging, so that almost no memory is wasted and blocks can be shared
+within and across requests. Orca~\citep{yu2022orca} introduced iteration-level scheduling, in which requests join and
+leave the running batch between model iterations instead of between whole batches. Sarathi-Serve~\citep{agrawal2024sarathi}
+splits long prompts into chunked prefills and schedules them without stalling ongoing decodes.
+DistServe~\citep{zhong2024distserve} and Splitwise~\citep{patel2024splitwise} go further and place the prefill and
+decode phases on different GPUs or machines, optimizing each for its own latency target (TTFT and TPOT, in DistServe's
+terms). SGLang~\citep{zheng2024sglang} pairs a frontend language with a runtime that reuses the KV cache through
+RadixAttention, and FlashInfer~\citep{ye2025flashinfer,flashinfer2026github} provides attention kernels with composable
+block-sparse KV formats and a scheduler compatible with CUDA graphs. Host-resident experts add PCIe traffic on top of
+this machinery.
+
+\paragraph{Where idle experts can go.}
+Sparse mixture-of-experts layers~\citep{shazeer2017outrageously,lepikhin2021gshard,fedus2022switch} activate a few
+experts per token, so most expert weights are idle at any moment, which makes them natural candidates for slower
+memory. DeepSpeed-MoE~\citep{rajbhandari2022deepspeedmoe} serves MoE models from aggregate GPU memory with expert
+parallelism and does not offload. The systems that do offload fall into four families according to the four questions
+above, and Table~\ref{tab:related-offload} places each one.
+
+The first family keeps experts in host memory and \emph{copies} them into an expert cache on the GPU, hiding the
+transfer with prediction. \citet{eliseev2023fast} keep an LRU cache of experts per layer and load experts speculatively
+by applying the next layer's gate to the current hidden states, combined with mixed HQQ quantization.
+MoE-Infinity~\citep{xue2024moeinfinity} traces expert activation per request and uses the trace to drive replacement
+and prefetching. Pre-gated MoE~\citep{hwang2024pregated} changes the model itself, with a trained pre-gate that selects
+the experts of the next block one block ahead so that only those are prefetched. SiDA~\citep{du2024sida} trains an
+offline hash function that predicts expert activation and places experts on the GPU ahead of each batch.
+ProMoE~\citep{song2024promoe} predicts later expert usage from intermediate results and fetches experts proactively,
+AdapMoE~\citep{zhong2024adapmoe} adds sensitivity-based adaptive gating and a cache allocation per layer,
+ExpertFlow~\citep{he2026expertflow} predicts routing paths for all layers with a learned predictor and schedules tokens
+with similar routes together, and Fate~\citep{fang2025fate} uses a cross-layer gate for prefetching with a cache that
+favors shallow layers and quantized cached experts. SwapMoE~\citep{kong2024swapmoe} and EdgeMoE~\citep{yi2025edgemoe}
+target edge devices, the first by keeping a small dynamic set of important experts in memory and the second by
+preloading predicted experts from storage with bit widths chosen per expert.
+
+The second family aims at throughput and \emph{streams} weights layer by layer, spreading each transfer over a large
+batch. FlexGen~\citep{sheng2023flexgen} and ZeRO-Inference, the heterogeneous component of
+DeepSpeed-Inference~\citep{aminabadi2022deepspeedinference}, do this for dense models, FlexGen with a linear program
+that splits weights, activations and KV cache across GPU, CPU and disk. MoE-Lightning~\citep{cao2025moelightning}
+pipelines paged weight transfers with attention on the CPU under a performance model,
+MoE-Gen~\citep{xu2025moegen} accumulates tokens in host memory to launch large batches per module on the GPU,
+Klotski~\citep{fang2025klotski} overlaps expert loading with computation over several batches using a prefetcher aware
+of expert correlations, and MoE-Lens~\citep{yuan2025moelens} derives its design from a holistic performance model of
+CPU memory capacity and GPU compute.
+
+The third family \emph{computes} cold experts on the CPU and moves activations instead of weights.
+Fiddler~\citep{kamahori2025fiddler} places frequently used experts on the GPU from offline popularity profiling and,
+for the remaining experts, chooses with a latency model between copying weights to the GPU and running the expert on
+the CPU. KTransformers~\citep{chen2025ktransformers} keeps routed experts in CPU memory and runs them with CPU kernels
+aware of arithmetic intensity and NUMA placement, keeps attention and shared experts on the GPU, and uses Expert
+Deferral to overlap part of the expert work with the next layer's attention. HybriMoE~\citep{zhong2025hybrimoe},
+DAOP~\citep{zhang2025daop} and DALI~\citep{zhu2026dali} schedule experts dynamically between CPU and GPU, and HybriMoE
+and DALI argue explicitly that fixed assignments are inefficient because activation patterns vary.
+eMoE~\citep{tairin2025emoe} combines learned expert prediction with request scheduling aware of service-level
+objectives.
+
+The fourth family, the one closest to the stack we measured, lets GPU kernels \emph{read host memory in place}.
+DAK~\citep{lin2026dak} reads weights and KV cache directly from host memory without staging them in device memory,
+with static offload ratios per operation from an offline sweep. Its abstract reports that direct access outperforms
+prefetching, but it targets dense models. CUDA exposes the underlying mechanism as mapped, page-locked host memory in
+a unified virtual address space~\citep{nvidia2026cudaguide}. In our search we found no peer-reviewed MoE system whose
+GPU kernels execute host-resident expert weights in place. The only instance we found is the third-party software we
+evaluate~\citep{vcruz2026vllmexl3,diffbot2026dsv41exl3}.
+
+\begin{table}[t]
+\centering
+\small
+\begin{fittable}{tab:related-offload}
+\begin{tabular}{@{}l >{\raggedright\arraybackslash}p{1.55cm} >{\raggedright\arraybackslash}p{1.65cm} >{\raggedright\arraybackslash}p{3.0cm} >{\raggedright\arraybackslash}p{2.6cm} >{\raggedright\arraybackslash}p{1.95cm}@{}}
+\toprule
+System & Cold weights in & CPU computes & How weights reach the GPU & Placement & Quantization \\
+\midrule
+\multicolumn{6}{@{}l}{\emph{Copy into a GPU expert cache, hidden by prediction}} \\
+\citet{eliseev2023fast} & host & no & copy, speculative prefetch & dynamic (LRU) & HQQ \\
+MoE-Infinity~\citep{xue2024moeinfinity} & host & no & copy, prefetch & dynamic (activation-aware) & n.s. \\
+Pre-gated MoE~\citep{hwang2024pregated} & host & no & copy, trained pre-gate & dynamic & n.s. \\
+SiDA~\citep{du2024sida} & host & no & copy ahead of each batch & dynamic (offline-trained predictor) & no \\
+ProMoE~\citep{song2024promoe} & host & no & copy, proactive prefetch & dynamic (LRU) & INT4 in evaluation \\
+AdapMoE~\citep{zhong2024adapmoe} & host or SSD & no & copy, prefetch & dynamic (adaptive cache) & 4-bit \\
+ExpertFlow~\citep{he2026expertflow} & host & no & copy, predictive & dynamic (predictive cache) & no \\
+Fate~\citep{fang2025fate} & host & no & copy, prefetch & dynamic (ARC) & INT4, INT2 \\
+\midrule
+\multicolumn{6}{@{}l}{\emph{Stream weights, amortized over large batches}} \\
+Klotski~\citep{fang2025klotski} & host, disk & no & copy, pipelined with batches & dynamic (correlation-aware) & 4-bit, optional \\
+MoE-Lightning~\citep{cao2025moelightning} & host & attention only & copy, paged streaming & offline policy search & n.s. \\
+MoE-Gen~\citep{xu2025moegen} & host & part of attention & copy, module batching & n.s. & n.s. \\
+FlexGen$^\dagger$~\citep{sheng2023flexgen} & GPU, host, disk & optional attention & copy, layer streaming & offline LP & 4-bit \\
+ZeRO-Inference$^\dagger$~\citep{aminabadi2022deepspeedinference} & host or NVMe & no & copy, layer prefetch & static & n.s. \\
+\midrule
+\multicolumn{6}{@{}l}{\emph{Compute cold experts on the CPU}} \\
+Fiddler~\citep{kamahori2025fiddler} & host & yes & per expert: copy or CPU compute & static (offline profiling) & no \\
+KTransformers~\citep{chen2025ktransformers} & host (routed experts) & yes & none: activations move & static & CPU block-wise \\
+HybriMoE~\citep{zhong2025hybrimoe} & host & yes & copy or CPU compute & dynamic & 4-bit \\
+DAOP~\citep{zhang2025daop} & host & yes & activations move to the CPU & calibrated, adjusted per sequence & n.s. \\
+DALI~\citep{zhu2026dali} & host & yes & copy or CPU compute & dynamic & n.s. \\
+\midrule
+\multicolumn{6}{@{}l}{\emph{Read host memory in place from GPU kernels}} \\
+DAK$^\dagger$~\citep{lin2026dak} & host & no & in place, direct kernel access & static (offline sweep) & n.s. \\
+\textbf{Evaluated stack}~\citep{vcruz2026vllmexl3,diffbot2026dsv41exl3} & pinned host & no & in place, UVA zero-copy & static (usage profile) & EXL3, int4 Engram \\
+\bottomrule
+\end{tabular}
+\end{fittable}
+\caption{Qualitative positioning of offloading systems, grouped by how cold weights reach the computation and restricted
+to facts stated in each paper (for the evaluated stack, in its documentation). ``Host'' is system memory (DRAM).
+``Copy'' means host-resident weights are transferred into device memory before use, ``in place'' that GPU kernels read
+host memory directly. $^\dagger$~dense model, all others are MoE. n.s.: not stated as part of the design in the text
+we read.}
+\label{tab:related-offload}
+\end{table}
+
+\paragraph{Making weights smaller.}
+Post-training weight quantization ranges from scalar methods such as GPTQ~\citep{frantar2023gptq}, which uses
+approximate second-order information, and AWQ~\citep{lin2024awq}, which protects salient channels identified from
+activation statistics, to methods that also quantize activations, such as LLM.int8()~\citep{dettmers2022llmint8} with
+its decomposition of outliers in mixed precision and SmoothQuant~\citep{xiao2023smoothquant}, which migrates the
+difficulty of quantization from activations to weights. At three bits and below, incoherence processing and vector
+codes dominate. QuIP~\citep{chee2023quip} introduced incoherence processing with random orthogonal transforms,
+QuIP\#~\citep{tseng2024quipsharp} combined the randomized Hadamard transform with E$_8$ lattice codebooks, and
+AQLM~\citep{egiazarian2024aqlm} adapted multi-codebook additive quantization. QTIP~\citep{tseng2024qtip} replaces
+vector quantization with trellis-coded quantization, whose stateful decoder separates codebook size from bitrate and
+effective dimension, and designs a bitshift trellis that is efficient in hardware. ExLlamaV3~\citep{turboderp2026exllamav3}
+describes its EXL3 format as a streamlined variant of QTIP, and the evaluated plugin dispatches EXL3 routed experts
+inside vLLM~\citep{vcruz2026vllmexl3}. For MoE models in particular, MoQE~\citep{kim2023moqe} reports that expert
+layers are much more robust to quantization than dense feed-forward layers, QMoE~\citep{frantar2024qmoe} compresses
+trillion-parameter MoE models below one bit per parameter with custom decoding kernels, MxMoE~\citep{duanmu2025mxmoe}
+allocates mixed precision using both quantization sensitivity and expert activation frequency, MiLo~\citep{huang2025milo}
+adds low-rank compensators to extremely quantized MoE models, and QuantMoE-Bench~\citep{li2024quantmoebench} studies
+quantization heuristics aware of MoE structure. Quantization reduces the bytes that host-resident experts move over
+PCIe, so it interacts directly with the offloading choices above.
+
+\paragraph{Speculative decoding.}
+Speculative decoding~\citep{leviathan2023speculative,chen2023accelerating} lets a cheap drafter propose tokens that the
+target model verifies in parallel, preserving the target distribution, and blockwise parallel
+decoding~\citep{stern2018blockwise} is an earlier form of draft and verify. Later work removes the separate draft model
+or improves the drafts. Medusa~\citep{cai2024medusa} adds decoding heads verified with tree attention,
+SpecInfer~\citep{miao2024specinfer} verifies token trees, and EAGLE~\citep{li2024eagle,li2024eagle2,li2025eagle3}
+drafts at the feature level, with dynamic draft trees and, in EAGLE-3, direct token prediction with fusion of features
+from several layers. \citet{gloeckle2024multitoken} train with multi-token prediction heads, and DeepSeek-V3 uses a
+multi-token prediction objective in training~\citep{deepseekai2024v3}. Under batching the benefit is not automatic.
+TurboSpec~\citep{liu2024turbospec} observes that naive speculation can degrade serving performance and adapts the
+speculation length to predicted goodput, while MagicDec~\citep{sadhukhan2025magicdec} shows speedups at large batch
+sizes for moderate to long sequences. \citet{xia2024unlocking} give a survey. DeepSeek-V4.1-Flash replaces the MTP
+module with DSpark~\citep{deepseekai2026v41flash}, a semi-autoregressive drafter with confidence-scheduled
+verification whose abstract reports per-user generation speedups of 60 to 85 percent at matched throughput over an
+MTP-1 production baseline in DeepSeek's own serving system~\citep{cheng2026dspark}. In the evaluated stack part of the
+drafter's experts are also host resident~\citep{diffbot2026dsv41exl3}, so drafting itself generates PCIe traffic.
+
+\paragraph{Prefix caching and long context.}
+Automatic prefix caching in vLLM~\citep{vllm2026prefixcaching} and RadixAttention in SGLang~\citep{zheng2024sglang}
+reuse the KV cache of shared prefixes, which matters for multi-turn agentic sessions where most of each prompt repeats.
+Chunked prefill~\citep{agrawal2024sarathi} bounds the latency impact of long prompts on concurrent decodes.
+Long-context capability is commonly assessed with LongBench~\citep{bai2024longbench}, a bilingual multitask benchmark,
+and RULER~\citep{hsieh2024ruler}, a synthetic benchmark with configurable length and task complexity.
+
+\paragraph{The DeepSeek architecture.}
+DeepSeekMoE~\citep{dai2024deepseekmoe} introduced fine-grained expert segmentation and shared expert isolation, and
+DeepSeek-V3 added load balancing without an auxiliary loss~\citep{wang2024auxlossfree,deepseekai2024v3}.
+DeepSeek-V2~\citep{deepseekai2024v2} introduced Multi-head Latent Attention (MLA), which compresses the KV cache into a
+latent vector. Sparse attention followed with Native Sparse Attention~\citep{yuan2025nsa} and DeepSeek Sparse Attention
+in DeepSeek-V3.2~\citep{deepseekai2025v32,deepseekai2025v32exp}, and DeepSeek-V4~\citep{deepseekai2026v4} combines
+Compressed Sparse Attention with Heavily Compressed Attention for contexts of one million tokens.
+DeepSeek-V4.1-Flash~\citep{deepseekai2026v41flash,deepseekai2026v41flashcard} has 552B backbone parameters, activates
+16B parameters per token during decode and 8B during prefill, and reduces its global KV cache with cross-layer reuse in
+Compressed Sparse Attention 2 and FP4 KV caching. Its model card lists 384 routed experts and one shared expert per MoE
+layer, six routed experts active per token, and 196B parameters of Engram conditional memory accessed by token-based
+lookup. Engram~\citep{cheng2026engram} (a conference version names the module Deep Sparse
+Embedding~\citep{cheng2026dse}) modernizes $N$-gram embeddings for constant-time lookup and notes that deterministic
+addressing allows prefetching from host memory, and the V4.1 report describes prefetching Engram embeddings from host
+memory through background RDMA. The evaluated stack instead keeps int4 Engram tables in pinned host memory and reads
+them over UVA inside CUDA graphs~\citep{diffbot2026dsv41exl3}.
+
+\paragraph{Evaluating quantized and offloaded models.}
+Common task suites for quality include GSM8K~\citep{cobbe2021gsm8k}, MATH~\citep{hendrycks2021math},
+HumanEval~\citep{chen2021humaneval}, MBPP~\citep{austin2021mbpp}, LiveCodeBench~\citep{jain2025livecodebench} and
+IFEval~\citep{zhou2023ifeval}, typically run through lm-evaluation-harness~\citep{sutawika2023lmeval}, whose
+maintainers document the pitfalls of reproducing language-model evaluations~\citep{biderman2024lessons}. Matching
+accuracy is not enough to show that a compressed model behaves like its reference. \citet{dutta2024accuracy} show that
+answers flip between correct and incorrect even when aggregate accuracy is unchanged, and propose KL divergence and
+flips as distance metrics. For DeepSeek-V4.1-Flash, AtomicChat published top-512 log-probability dumps and KL analyses
+for an NVFP4 quantization~\citep{atomicchat2026dsv41metrics}, and the EXL3 checkpoints we use report KL against the
+original model under that protocol~\citep{diffbot2026dsv41exl3,coolbho3k2026dsv41exl3}. On the performance side, MLPerf
+Inference~\citep{reddi2020mlperf} prescribes rules for comparability across systems, \citet{agrawal2024etalon} argue
+that TTFT and TPOT do not fully capture the latency users perceive, and the tools and statistics behind our
+measurements are NVIDIA Nsight Systems and NVML~\citep{nvidia2026nsight,nvidia2026nvml} and the
+bootstrap~\citep{efron1979bootstrap,efron1994bootstrap}.
+
+\paragraph{Where the measured stack sits.}
+The stack we evaluate is third-party software: the vllm-exl3 plugin by Victor Cruz (vcruz305)~\citep{vcruz2026vllmexl3},
+which serves EXL3 routed experts in vLLM and offers an experimental mode in which packed expert weights are pinned in
+host RAM while the GPU remains the compute device, and a host-expert patch with kernels by
+Diffbot~\citep{diffbot2026dsv41exl3}, built on vLLM~\citep{kwon2023vllm} and ExLlamaV3~\citep{turboderp2026exllamav3}.
+According to its documentation, the Diffbot configuration keeps a static set of cold experts in pinned host memory
+(\dv{static.gen30.host_target_experts} of \dv{static.target_experts} routed experts in the plans it publishes, chosen
+as those least used in long multi-turn agentic coding sessions), together with the int4 Engram tables and the
+embedding table. GPU kernels read these weights in place over PCIe, the cold experts run on a second CUDA stream with a
+bounded number of SMs while the experts in GPU memory run on the main stream, and there is neither computation of
+experts on the CPU nor prefetching. Measured against the four questions, the design shares static, profile-derived
+placement with Fiddler~\citep{kamahori2025fiddler} and KTransformers~\citep{chen2025ktransformers} but runs cold experts
+on the GPU rather than the CPU. It shares direct kernel access to host memory with DAK~\citep{lin2026dak}, which
+targets dense models, and with the zero-copy weight offload that upstream vLLM itself provides at the pinned commit,
+which offloads whole parameter tensors (for a fused MoE layer, all of its experts) until a per-GPU budget is reached
+(Section~\ref{sec:attribution}). And it differs from the cache and prefetch systems in that cold expert weights are read
+in place rather than copied into a cache on the device. Several recent papers argue that static placement is
+suboptimal~\citep{he2026expertflow,zhong2025hybrimoe,zhu2026dali}. Our controlled experiments measure one static
+zero-copy placement on one hardware configuration at two host shares, without comparing against those systems on equal
+terms and without testing other placement policies (Section~\ref{sec:not-run}). We claim no new algorithm or system.
+Our contribution is a reproducible measurement of what this existing stack makes possible on two RTX PRO 6000
+Blackwell GPUs, and at what cost in latency, throughput, memory, PCIe bandwidth and quality.

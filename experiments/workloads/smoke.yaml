@@ -1,0 +1,10 @@
+# Smoke test after a boot (E2): three requests, prints the answers' first characters into requests.jsonl metadata.
+seed: 1
+repetitions: 1
+scenarios:
+  - name: smoke
+    kind: chat
+    prompt: {corpus: code, tokens: 512, template: review, region: [0.0, 0.5]}
+    output: {max_tokens: 64}
+    sampling: {temperature: 0.0, seeded: false}
+    arrivals: {mode: closed, levels: [1], requests_per_user: 3, min_requests: 3}

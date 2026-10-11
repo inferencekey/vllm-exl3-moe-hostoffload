@@ -1,0 +1,15 @@
+\begin{abstract}
+DeepSeek-V4.1-Flash has \dv{hub.orig.params_b}B parameters, and even with its routed experts quantized to
+\dv{cfg.exl3_bits} bits its weights do not fit on two 96\,GB GPUs. A stack written by others (vLLM, Victor Cruz's
+vllm-exl3 plugin and a recipe by Diffbot) makes it fit by moving \dv{static.gen30.host_target_share_pct}\% of the routed
+experts to host memory, where GPU kernels read them over PCIe. We measured what this buys on rented cloud servers, with
+every number generated from its data file. The model serves. Reading a long prompt is slow (a fresh 128K-token prompt
+waits \dv{ctl.E12.long.prefill-long-131072.closed:1.ttft_p50}\,s for its first token), while a single request writes almost as fast after it as
+after a short one. On small subsets of GSM8K, IFEval and HumanEval the answers match DeepSeek's API within the uncertainty. For coding
+agents the limit is concurrency, not volume: by monthly output one server could supply
+\dv{agent.E13.agent.seats_volume_u100} developers of an observed usage profile, but only four streams at a time keep
+40 tokens/s each, enough for about \dv{agent.E13.agent.seats_conc_e1} intermittently active developers. Upstream
+vLLM's own offload cannot serve the model, and on a second host the same configuration took up to
+\dv{ctl.pod.cross.A.N32.tpot_ratio} times longer per token. Each experiment ran
+on a single boot, and the cost of the offload against the model held entirely in GPU memory remains to be measured.
+\end{abstract}

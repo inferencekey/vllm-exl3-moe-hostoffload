@@ -1,0 +1,98 @@
+# First lines of each license file at the pinned commit, plus declared SPDX/metadata
+## vLLM 36768d1 LICENSE  (/home/ubuntu/me/.cache/vllm-exl3-audit-src/vllm/LICENSE)
+  |                                  Apache License
+  |                            Version 2.0, January 2004
+  |                         http://www.apache.org/licenses/
+  | 
+  sha256 c71d239df91726fc...
+  SPDX headers in deepseek_v41 sources:  38 SPDX-License-Identifier: Apache-2.0
+## vllm-exl3 d3cfd394 LICENSE  (/home/ubuntu/me/.cache/vllm-exl3-audit-src/vllm-exl3/LICENSE)
+  |                     GNU AFFERO GENERAL PUBLIC LICENSE
+  |                        Version 3, 19 November 2007
+  | 
+  |  Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+  sha256 cf0b6664ce73f379...
+## vllm-exl3 d3cfd394 LICENSE.APACHE-2.0 (prior releases)  (/home/ubuntu/me/.cache/vllm-exl3-audit-src/vllm-exl3/LICENSE.APACHE-2.0)
+  |                                  Apache License
+  |                            Version 2.0, January 2004
+  |                         http://www.apache.org/licenses/
+  | 
+  sha256 230a88fc02af8381...
+  pyproject.toml: license = "AGPL-3.0-only" license-files = ["LICENSE", "LICENSE.APACHE-2.0", "NOTICE", "THIRD_PARTY_NOTICES.md"]
+  relicense commits: 432336d 2026-09-08 fix(license): use verbatim AGPL-3.0 text;ef0481d 2026-09-08 chore(license): relicense project forward under AGPL-3.0;c79a1dd 2026-08-31 vllm-exl3 0.2.0: standalone EXL3 quantization plugin for vLLM fork runtimes
+## vllm-exl3 NOTICE  (/home/ubuntu/me/.cache/vllm-exl3-audit-src/vllm-exl3/NOTICE)
+  | vllm-exl3
+  | Copyright 2026 Victor Cruz (vcruz305)
+  | 
+  | EXL3 (ExLlamaV3 trellis/MCG) quantization serving support for vLLM fork runtimes.
+  sha256 2a30702aef1ca3af...
+## ExLlamaV3 5be88657 LICENSE  (/home/ubuntu/me/.cache/vllm-exl3-audit-src/exllamav3/LICENSE)
+  | MIT License
+  | 
+  | Copyright (c) 2025 Turboderp
+  | 
+  sha256 27a32b6263fcd96c...
+## sfxnz 460ac89c LICENSE  (/home/ubuntu/me/.cache/vllm-exl3-audit-src/sfxnz-recipe/LICENSE)
+  | MIT License
+  | 
+  | Copyright (c) 2023 DeepSeek
+  | 
+  sha256 f2c6c602815669d2...
+  recipe docker/LICENSE.sfxnz-recipe identical to sfxnz LICENSE: yes
+  sfxnz LICENSE identical to deepseek-ai/DeepSeek-V4.1-Flash LICENSE: yes
+  sfxnz LICENSE history: 0495bf5 2026-09-10 sfxnz
+## Mia's AI Lab GLM-5.3 HEAD LICENSE  (/home/ubuntu/me/.cache/vllm-exl3-audit-src/mia-glm53/LICENSE)
+  |                     GNU AFFERO GENERAL PUBLIC LICENSE
+  |                        Version 3, 19 November 2007
+  | 
+  |  Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+  sha256 8d56b405468aad11...
+## Mia's AI Lab GLM-5.3 HEAD LICENSE.MIT  (/home/ubuntu/me/.cache/vllm-exl3-audit-src/mia-glm53/LICENSE.MIT)
+  | This project is licensed under the GNU Affero General Public License v3.0
+  | (see LICENSE). Before 2026-09-07 it was distributed under the MIT license
+  | reproduced below, which is retained for the contributions made under it.
+  | 
+  sha256 d48b01844af2aa68...
+  license history: cf0f430 2026-09-07 chore: relicense the repository under AGPL-3.0;b1d9fa9 2026-08-28 Add MIT license for the serve recipe; weights keep their own terms.
+## Diffbot recipe/LICENSE  (/home/ubuntu/me/.cache/vllm-exl3-audit-src/hf-diffbot-a1cf1bd227a754aa7e2ca5c21652bfaf256ee8a5/recipe/LICENSE)
+  | MIT License
+  | 
+  | Copyright (c) 2026 Diffbot
+  | 
+  sha256 72d0add5aad86c1a...
+## Diffbot recipe/patches/vllm-exl3/LICENSE  (/home/ubuntu/me/.cache/vllm-exl3-audit-src/hf-diffbot-a1cf1bd227a754aa7e2ca5c21652bfaf256ee8a5/recipe/patches/vllm-exl3/LICENSE)
+  |                     GNU AFFERO GENERAL PUBLIC LICENSE
+  |                        Version 3, 19 November 2007
+  | 
+  |  Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+  sha256 cf0b6664ce73f379...
+  recipe/patches/vllm-exl3/LICENSE identical to vllm-exl3 LICENSE: yes
+## Diffbot recipe/kernels/xmoe/LICENSE.exllamav3  (/home/ubuntu/me/.cache/vllm-exl3-audit-src/hf-diffbot-a1cf1bd227a754aa7e2ca5c21652bfaf256ee8a5/recipe/kernels/xmoe/LICENSE.exllamav3)
+  | MIT License
+  | 
+  | Copyright (c) 2025 Turboderp
+  | 
+  sha256 27a32b6263fcd96c...
+## Diffbot HF repo top-level LICENSE (weights)  (/home/ubuntu/me/.cache/vllm-exl3-audit-src/hf-diffbot-a1cf1bd227a754aa7e2ca5c21652bfaf256ee8a5/LICENSE)
+  | MIT License
+  | 
+  | Copyright (c) 2023 DeepSeek
+  | 
+  sha256 f2c6c602815669d2...
+## HF coolbho3k/DeepSeek-V4.1-Flash-EXL3-3bpw LICENSE  (/home/ubuntu/me/.cache/vllm-exl3-audit-src/hf-meta/coolbho3k__DeepSeek-V4.1-Flash-EXL3-3bpw/LICENSE)
+  | MIT License
+  | 
+  | Copyright (c) 2023 DeepSeek
+  | 
+  sha256 f2c6c602815669d2...
+## HF deepseek-ai/DeepSeek-V4.1-Flash LICENSE  (/home/ubuntu/me/.cache/vllm-exl3-audit-src/hf-meta/deepseek-ai__DeepSeek-V4.1-Flash/LICENSE)
+  | MIT License
+  | 
+  | Copyright (c) 2023 DeepSeek
+  | 
+  sha256 f2c6c602815669d2...
+## Hugging Face repo metadata (api/models/<repo>/revision/<rev>)
+  diffbot/DeepSeek-V4.1-Flash-EXL3-3bpw-2x-RTX-PRO-6000@a1cf1bd227a754aa7e2ca5c21652bfaf256ee8a5: gated=False private=False card license=mit license_name=None base_model=deepseek-ai/DeepSeek-V4.1-Flash lastModified=2026-10-05T16:38:40.000Z
+  coolbho3k/DeepSeek-V4.1-Flash-EXL3-3bpw@650cae2c13aaaec303871a35301503570889c0be: gated=False private=False card license=mit license_name=None base_model=deepseek-ai/DeepSeek-V4.1-Flash lastModified=2026-09-27T21:17:08.000Z
+  deepseek-ai/DeepSeek-V4.1-Flash@2cba9e42aa026125f3ed06c6d98c1db82f7ca027: gated=False private=False card license=mit license_name=None base_model=None lastModified=2026-10-01T05:56:24.000Z
+  model card license lines (Diffbot README.md): 2:license: mit|233:The weights keep the MIT license of DeepSeek and coolbho3k (`LICENSE`). The code in `recipe/` is MIT, except|234:`recipe/patches/vllm-exl3/`, which is AGPL-3.0-only like the plugin it patches. `recipe/THIRD_PARTY_NOTICES.md` lists

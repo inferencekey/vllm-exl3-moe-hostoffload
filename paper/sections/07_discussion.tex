@@ -1,0 +1,62 @@
+\section{What It Means, and What Is Still Open}\label{sec:discussion}
+
+\paragraph{What the offload makes possible.}
+On two 96\,GB GPUs neither the original checkpoint nor the \dv{cfg.exl3_bits}-bit pack can keep all its experts in GPU
+memory, and moving about a third of the experts to the host closes the last \dv{expl.noplan_over_per_gpu_gib}\,GiB per
+card. The result serves a model whose unquantized version ranks first on agentic coding on LiveBench, on two GPUs that
+can be rented by the hour. On the subsets we tested it matches the vendor's service within the uncertainty, and a long
+context stays interactive once it is cached.
+
+\paragraph{Practical guidance.}
+For someone deploying this stack, four rules follow from the measurements. Each comes from a single boot on a specific
+pod, so it is a starting point rather than a guarantee, and each names the check or the table to look at.
+\begin{enumerate}
+\item \emph{Check where the two GPUs sit before measuring or serving.} The same configuration had a median time per
+token \dv{ctl.pod.cross.A.N1.tpot_ratio} to \dv{ctl.pod.cross.A.N32.tpot_ratio} times higher on a host where
+\texttt{nvidia-smi topo -m} reports \texttt{\dv{ctl.pod.s2.gpu_link}} between the GPUs instead of
+\texttt{\dv{ctl.pod.s1.gpu_link}} (and whose CPU also differed). Run \texttt{nvidia-smi topo -m} on the pod and
+read the cell between GPU0 and GPU1. Our runners record it with the rest of the host (\datafile{experiments/lib.sh},
+Tables~\ref{tab:pod-hardware} and~\ref{tab:cross-pod}).
+\item \emph{Keep long contexts cached.} Once a 128K or 256K-token context is in the prefix cache, four streams keep a
+median of \dv{agent.E13.own128k.prov.rate_p50} and \dv{agent.E13.cached256k.prov.rate_p50} tokens/s with TTFT p95
+under two seconds, while a fresh 128K-token prompt costs \dv{ctl.E12.long.prefill-long-131072.closed:1.ttft_p50}\,s
+of reading before its first token. Route the requests of one repository to the same server so that its prefix stays
+in the cache (Figure~\ref{fig:read-write}, Tables~\ref{tab:ctl-E12} and~\ref{tab:agent-levels}).
+\item \emph{Size interactive capacity in simultaneous streams, not tokens per month.} About
+\dv{agent.E13.agent.Cprov} streams at 40 tokens/s per pod for agent turns, which under the observed usage profile
+serve about \dv{agent.E13.agent.seats_conc_e1} intermittently active developers. Measure the team's active hours
+and read the matching row of Table~\ref{tab:agent-duty}, and size the pods with Table~\ref{tab:agent-cost}.
+\item \emph{Do not expect upstream vLLM's zero-copy offload to replace the recipe's hooks} on these pins. It does not
+serve the model at all (Table~\ref{tab:ctl-E3}, with both KV block sizes).
+\end{enumerate}
+
+\paragraph{What we cannot yet explain.}
+Each stream slows down as users are added, and we do not know which resource is responsible. The candidates are the
+reads of cold experts over PCIe, the growing batch that speculative decoding must verify, interference from reading
+new prompts, and the eager execution of decode steps larger than the biggest CUDA graph. Memory capacity is not among
+them, since the pools are preallocated and did not move with load, and the KV cache was never the limit. The
+experiments designed to separate the candidates (DSpark off, other placement policies, another SM budget for the
+host-expert stream) did not run (Section~\ref{sec:not-run}). The same is true of placement. The plans are static and
+derived from usage profiles, the recipe's own notes report that a plan tuned on one kind of traffic does worse on
+another~\citep{diffbot2026dsv41exl3}, and recent systems argue that static placement is suboptimal in
+general~\citep{he2026expertflow,zhong2025hybrimoe,zhu2026dali}. Our two nested plans show that a larger share on the
+host costs throughput, and they say nothing about how much a better choice of experts would recover.
+Section~\ref{sec:limits} lists every question the campaign leaves open, and Table~\ref{tab:plan} the experiments
+written to answer them.
+
+\section{Conclusion}\label{sec:conclusion}
+
+A \dv{hub.orig.params_b}B-parameter model does not fit on two 96\,GB GPUs, even with its experts at
+\dv{cfg.exl3_bits} bits, and a stack built by others makes it fit by moving its least-used experts to a back room in
+host memory. The configuration boots and serves, matches the vendor's service within the uncertainty on the subsets we
+tested, and for a single request keeps writing at nearly the same pace after reading a 256K-token prompt. It pays in
+reading long prompts, in the speed of each stream as users are added, and in a sensitivity to the host as large as
+most settings we varied. For coding agents, one server pours enough for a large team but has four stools, which
+supports about \dv{agent.E13.agent.seats_conc_e1} developers who use the model now and then, close to the price of
+their subscriptions, with larger pooled deployments below it. All of this rests on one boot per experiment.
+
+The question in the introduction asked at what cost, and one part of the answer is still missing: how much speed the
+offload costs against the same model held entirely in GPU memory. Measuring it needs larger GPUs and the original
+checkpoint. The protocol is written, the variant is scripted to build from pinned sources, and the workload and the
+analysis are the ones used throughout this paper. It has not yet been run, and on a prepared pod with two B300 GPUs
+it is one command, \texttt{make bench-E9}.

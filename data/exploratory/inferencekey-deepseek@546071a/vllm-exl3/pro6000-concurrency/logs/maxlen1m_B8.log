@@ -1,0 +1,5 @@
+corpus 43,441,979 chars
+scenario B: 27 names, 108 distinct questions
+B prefix warm: {'ttft_s': 2.277, 'prompt_tokens': 16109, 'cached_tokens': 0, 'decode_tok_s': 132.17, 'error': None}
+{"N": 8, "requests_planned": 8, "requests_done": 8, "ok": 8, "errors": 0, "error_samples": [], "wall_s": 8.12, "capped": false, "ttft_p50_s": 1.193, "ttft_p95_s": 1.194, "ttft_max_s": 1.194, "decode_p50_tok_s": 38.51, "decode_p5_tok_s": 36.81, "decode_min_tok_s": 36.81, "aggregate_out_tok_s": 252.15, "out_tokens": 2048, "mean_completion_tokens": 256.0, "mean_prompt_tokens": 16109.2, "mean_cached_tokens": 16000, "server_running_max": 8.0, "server_waiting_max": 0.0, "server_kv_usage_max_pct": 2.7, "prefix_cache_hits_tokens": 128000.0, "prefix_cache_queries_tokens": 128874.0, "prefix_cache_hit_rate_pct": 99.3, "spec_mean_accept_len": 3.84, "vram_peak_mib_per_gpu": [93531.0, 93531.0]}
+LOADGEN DONE B

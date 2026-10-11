@@ -1,0 +1,46 @@
+# recipe kernels/xmoe/* vs ExLlamaV3 5be88657 exllamav3/exllamav3_ext/* (before and after the recipe's exl3_moe patch)
+# status: IDENTICAL-UPSTREAM = byte-identical to stock ExLlamaV3; MODIFIED = differs from stock (changed lines); NEW = no upstream file
+NEW                LICENSE.exllamav3  (!=patched-upstream)
+MODIFIED           bindings.cpp  changed_lines=261 (=patched-upstream)
+IDENTICAL-UPSTREAM compat.cuh
+IDENTICAL-UPSTREAM graph.cuh
+IDENTICAL-UPSTREAM ptx.cuh
+IDENTICAL-UPSTREAM quant/codebook.cuh
+MODIFIED           quant/comp_units/exl3_moe_inst_k2_cb1.cu  changed_lines=5 (=patched-upstream)
+MODIFIED           quant/comp_units/exl3_moe_inst_k3_cb1.cu  changed_lines=5 (=patched-upstream)
+MODIFIED           quant/comp_units/exl3_moe_inst_k3_cb2.cu  changed_lines=4 (=patched-upstream)
+MODIFIED           quant/comp_units/exl3_moe_instances.cuh  changed_lines=12 (=patched-upstream)
+MODIFIED           quant/exl3_devctx.cu  changed_lines=26 (=patched-upstream)
+MODIFIED           quant/exl3_devctx.cuh  changed_lines=2 (=patched-upstream)
+IDENTICAL-UPSTREAM quant/exl3_dq.cuh
+IDENTICAL-UPSTREAM quant/exl3_gemm.cuh
+MODIFIED           quant/exl3_gemm_inner.cuh  changed_lines=2 (=patched-upstream)
+NEW                quant/exl3_gemm_inner_flat.cuh  (=patched-upstream)
+NEW                quant/exl3_gemm_inner_mt.cuh  (=patched-upstream)
+IDENTICAL-UPSTREAM quant/exl3_kernel_map.cuh
+MODIFIED           quant/exl3_moe.cu  changed_lines=93 (=patched-upstream)
+MODIFIED           quant/exl3_moe.cuh  changed_lines=5 (=patched-upstream)
+MODIFIED           quant/exl3_moe_common.cuh  changed_lines=1 (=patched-upstream)
+NEW                quant/exl3_moe_flat_kernel.cuh  (=patched-upstream)
+MODIFIED           quant/exl3_moe_kernel.cuh  changed_lines=44 (=patched-upstream)
+IDENTICAL-UPSTREAM quant/hadamard_inner.cuh
+IDENTICAL-UPSTREAM util.cuh
+IDENTICAL-UPSTREAM util.h
+# kernels/xmoe_do/do_gemm.cu includes:
+  10:#include <cuda_fp16.h>
+  11:#include <torch/extension.h>
+  12:#include <c10/cuda/CUDAStream.h>
+  13:#include <c10/cuda/CUDAGuard.h>
+  14:#include "util.h"
+  15:#include "util.cuh"
+  16:#include "ptx.cuh"
+  17:#include "quant/exl3_dq.cuh"
+  18:#include "quant/exl3_moe_common.cuh"
+  19:#include "quant/hadamard_inner.cuh"
+# kernels/xmoe/LICENSE.exllamav3 vs upstream LICENSE: identical
+# ExLlamaV3 5be88657 already ships host/CPU-side MoE offload (different mechanism, experts computed on the CPU):
+  doc/env_vars.md:191:## CPU MoE offload
+  doc/env_vars.md:208:### `EXL3_MOE_CPU_OFFLOAD` (default: `0`)
+  doc/env_vars.md:393:### `EXL3_VISION_PINNED` (default: `0`)
+  doc/env_vars.md:397:a zero-copy device alias. Trades vision-tower speed for VRAM. Set before loading the vision
+  exllamav3/exllamav3_ext/cpu/moe_handoff.h:5:// Persistent-worker handoff for CPU-offloaded MoE experts (pattern follows the native TP

@@ -1,0 +1,19 @@
+{
+ "number": 58560,
+ "title": "[Bugfix][DSv4.1] Keep the compressor ring out of the null block",
+ "state": "MERGED",
+ "createdAt": "2026-09-24T13:37:27Z",
+ "mergedAt": "2026-10-05T01:49:42Z",
+ "url": "https://github.com/vllm-project/vllm/pull/58560",
+ "headRefOid": "4f96913cf8e71be40e9d64ec6ed62f8b70595129",
+ "author": "bluemelov1",
+ "mergeCommit": "49e0f4797853da0d1da7fdfe794f327fb5d5843d",
+ "commit_authors": [
+  "bluemelov",
+  "claude",
+  "cursoragent",
+  "ivanium"
+ ],
+ "n_commits": 3,
+ "last_commit_date": "2026-10-05T00:40:25Z"
+}

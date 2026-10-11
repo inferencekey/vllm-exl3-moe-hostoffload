@@ -1,0 +1,32 @@
+% Memory architecture of the measured stack. Every number is a \dv value from data/ (static file bytes or the
+% exploratory server log). Only the layout is hand-written.
+\begin{tikzpicture}[
+  font=\footnotesize, >=Stealth,
+  box/.style={draw=black!60, rounded corners=1.5pt, align=center, inner sep=3pt, line width=0.4pt},
+  vram/.style={box, fill=blue!8},
+  host/.style={box, fill=orange!14, text width=4.3cm},
+  link/.style={->, line width=0.7pt, draw=black!70}]
+  \foreach \g/\x in {0/0, 1/8} {
+    \draw[draw=black!60, rounded corners=2pt, fill=black!2] (\x, 0) rectangle (\x+7, 4.6);
+    \node[anchor=north west] at (\x+0.1, 4.55) {\textbf{GPU\g}: \dv{expl.gpu_total_gib} GiB, tensor-parallel rank \g};
+    \node[vram, text width=6.4cm] (hot\g) at (\x+3.5, 3.45) {hot routed experts (the VRAM part of the plan)\\
+      dense layers: attention, indexer, shared experts, routers, lm head};
+    \node[vram, text width=2.9cm] (kv\g) at (\x+1.85, 2.15) {fp8 KV cache shard\\ \scriptsize(pool: \dv{expl.kv_tokens} tokens)};
+    \node[vram, text width=2.9cm] (cg\g) at (\x+5.15, 2.15) {CUDA graphs\\ \dv{expl.cuda_graph_gib} GiB};
+    \node[box, fill=black!6, text width=6.4cm] (sm\g) at (\x+3.5, 0.75) {SMs: main stream runs VRAM experts;\\
+      side stream runs host experts on a bounded SM budget};
+  }
+  \draw[draw=black!60, rounded corners=2pt, fill=black!2] (0, -4.6) rectangle (15, -1.7);
+  \node[anchor=south west] at (0.1, -4.55) {\textbf{Host memory}: pinned, registered, mapped into the GPU address
+    space (UVA); \dv{expl.cgroup_max_gib} GiB cgroup limit};
+  \node[host] (cold) at (2.6, -2.75) {cold routed and drafter experts\\ \dv{static.gen30.host_experts} experts,
+    \dv{static.gen30.host_expert_gib} GiB (file)};
+  \node[host] (engram) at (7.5, -2.75) {Engram tables, int4\\ \dv{cfg.engram_tables} tables,
+    \dv{expl.engram_pinned_gib} GiB, rows sharded by rank};
+  \node[host] (emb) at (12.4, -2.75) {token embedding\\ \dv{static.pack.embedding_gib} GiB (file)};
+  \draw[link] (cold.north) -- node[pos=0.7, left, align=right, font=\scriptsize] {zero-copy reads\\ over PCIe} (sm0.south);
+  \draw[link] (cold.north) -- (sm1.south west);
+  \draw[link] (engram.north) -- node[pos=0.7, right, font=\scriptsize, align=left] {row gathers\\ over PCIe} (sm1.south);
+  \draw[link] (engram.north) -- (sm0.south east);
+  \draw[link, dashed] (emb.north) -- node[pos=0.7, right, font=\scriptsize] {lookups} (sm1.south east);
+\end{tikzpicture}

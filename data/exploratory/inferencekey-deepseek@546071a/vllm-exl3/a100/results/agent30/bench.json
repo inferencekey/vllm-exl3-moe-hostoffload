@@ -1,0 +1,171 @@
+{
+ "started": "2026-10-06 10:30:48",
+ "warmup": {
+  "s": 41.6
+ },
+ "smoke": {
+  "ttft_s": 1.85,
+  "total_s": 1.993,
+  "completion_tokens": 11,
+  "prompt_tokens": 16,
+  "cached_tokens": 0,
+  "decode_tok_s": 69.56,
+  "text": "The capital of Iceland is Reykjav\u00edk.",
+  "reasoning": ""
+ },
+ "decode_120": {
+  "ttft_s": 0.219,
+  "total_s": 4.265,
+  "completion_tokens": 120,
+  "prompt_tokens": 18,
+  "cached_tokens": 0,
+  "decode_tok_s": 29.42,
+  "text": "# The Arteries of an Empire: A History of the Roman Aqueducts\n\nFew monuments of antiquity convey the power and ingenuity of Rome as vividly as its aqueducts. Stretching across valleys on soaring arcades, tunneling through mountains, and threading for dozens of miles across the Campagna, these stone and concrete channels delivered hundreds of millions of liters of fresh water daily to the cities of the Roman world. They were, in the words of the scholar Frontinus, the \"chief evidence of the greatness of Rome.\" More than mere engineering works, the aqueducts were instruments of empire",
+  "reasoning": ""
+ },
+ "decode_480_0": {
+  "ttft_s": 0.171,
+  "total_s": 15.513,
+  "completion_tokens": 480,
+  "prompt_tokens": 18,
+  "cached_tokens": 0,
+  "decode_tok_s": 31.22,
+  "text": "# The Arteries of an Empire: A History of the Roman Aqueducts\n\nFew monuments of antiquity convey the power and ingenuity of Rome as vividly as the aqueduct. Striding across the Campagna on graceful arches, plunging through mountains in darkness, and terminating in the fountains and baths of the imperial capital, these conduits were the circulatory system of the Roman world. They supplied drinking water to crowded tenements, fed the great public baths, flushed the sewers, irrigated market gardens, and powered mills and fountains. In doing so, they made possible a standard of urban living that would not be equaled in Europe for more than a thousand years. The history of the Roman aqueducts is therefore not merely a history of engineering, but a history of how Rome governed, financed, built, and imagined its empire.\n\n## Origins: Water and the Early City\n\nRome's site was not naturally blessed with abundant water. The Tiber was muddy and prone to flooding, and the local springs of the Forum and Capitoline were modest. According to tradition, the city's first aqueduct, the Aqua Appia, was built in 312 BCE by the censor Appius Claudius Caecus\u2014the same magistrate who began the Via Appia. Its construction was bound up with Rome's earliest expansion: as the city grew and its population pressed against the old walls, the springs and wells that had served the archaic city could no longer suffice. The Appia was almost entirely underground, running some sixteen kilometers from springs near the Via Praenestina to the salinae, the salt warehouses by the Tiber, and it delivered water at a modest elevation, serving chiefly the lower city.\n\nForty years later, in 272 BCE, the Aqua Anio Vetus was completed, funded, according to the historian Frontinus, from the spoils of Pyrrhus's defeat. Its source lay in the Anio valley, and its length\u2014roughly sixty-four kilometers\u2014made it a far more ambitious undertaking. Like the Appia, it ran mostly beneath the ground, a reminder that the iconic arcades of later aqueducts were only one solution among several to the problem of carrying water across a landscape.\n\n## The Great Age of Construction\n\nThe true flowering of aqueduct building came in the late Republic and early Empire, when Rome's population swelled",
+  "reasoning": ""
+ },
+ "decode_480_1": {
+  "ttft_s": 0.146,
+  "total_s": 8.315,
+  "completion_tokens": 480,
+  "prompt_tokens": 23,
+  "cached_tokens": 0,
+  "decode_tok_s": 58.64,
+  "text": "# TCP Congestion Control: An In-Depth Look\n\nTCP congestion control is the set of algorithms that govern how fast a sender injects data into the network. Its purpose is to maximize throughput while avoiding **congestion collapse** \u2014 the pathological state where excessive retransmissions and queue buildup cause network throughput to plummet. The core tension is that a sender has no direct view of the network's capacity, so it must infer available bandwidth from indirect signals (loss, delay, or explicit feedback).\n\nBelow I cover the foundational loss-based approach (slow start + AIMD, i.e., Reno), then the modern delay/model-based approach (BBR).\n\n---\n\n## 1. The Congestion Window (cwnd)\n\nEvery TCP sender maintains a **congestion window** (`cwnd`), measured in bytes (or MSS units). The amount of unacknowledged data in flight is bounded by:\n\n```\ninflight \u2264 min(cwnd, rwnd)\n```\n\nwhere `rwnd` is the receiver's advertised window (flow control). Congestion control manipulates `cwnd`; flow control is separate and protects the receiver, not the network.\n\nThe **Bandwidth-Delay Product (BDP)** = bottleneck bandwidth \u00d7 RTT is the amount of data that must be in flight to fully utilize the path. A well-tuned `cwnd` hovers near the BDP.\n\n---\n\n## 2. Slow Start\n\nDespite the name, slow start is *exponential* growth. It runs at the beginning of a connection (and after certain loss events) when the sender has no idea of the path capacity.\n\n**Mechanics:**\n- `cwnd` starts at a small value \u2014 historically 1 MSS, modern default `IW10` = 10 MSS (RFC 6928).\n- For **each ACK received**, `cwnd` increases by roughly 1 MSS. Because one ACK acknowledges data that itself allowed more sends, this compounds: `cwnd` doubles every RTT.\n\n```\nRTT 0: cwnd = 1\nRTT 1: cwnd = 2\nRTT 2: cwnd = 4\nRTT 3: cwnd = 8\n...\n```\n\n**Why it's called \"slow\":** relative to blasting at line rate immediately, starting at 1",
+  "reasoning": ""
+ },
+ "decode_480_2": {
+  "ttft_s": 0.186,
+  "total_s": 11.24,
+  "completion_tokens": 480,
+  "prompt_tokens": 19,
+  "cached_tokens": 0,
+  "decode_tok_s": 43.33,
+  "text": "# The Life Cycle of a Star: From Nebula to Remnant\n\nA star's life is a continuous battle between two opposing forces: **gravity** (pulling inward) and **pressure** (pushing outward, generated by nuclear fusion). The entire life cycle is essentially the story of how a star balances these forces, and what happens when it can no longer do so. Crucially, a star's fate depends almost entirely on its **initial mass**.\n\n---\n\n## 1. The Nebular Stage (Birth)\n\nStars are born in **giant molecular clouds**\u2014vast, cold (10\u201320 K), diffuse regions of hydrogen, helium, and dust, often spanning hundreds of light-years.\n\n**Trigger for collapse:** Something disturbs the cloud's equilibrium\u2014a nearby supernova shockwave, a collision with another cloud, or gravitational instability. This causes a region to begin collapsing under its own gravity.\n\n**Fragmentation:** As the cloud collapses, it breaks into smaller clumps. Each clump continues to contract, converting gravitational potential energy into heat.\n\n**Protostar formation:** The densest clump forms a **protostar**\u2014a hot, rotating core surrounded by a swirling disk of gas and dust. It is not yet a true star because its core is not hot enough for sustained fusion. It shines only from gravitational energy.\n\n**T Tauri phase:** The young star enters a violent adolescence, ejecting powerful jets and stellar winds, clearing away surrounding material. Planets may form in the disk during this phase.\n\n**Ignition:** When the core reaches about **10 million K**, hydrogen fusion begins. The outward radiation pressure balances gravity, and the star reaches **hydrostatic equilibrium**. It is now a true star on the **main sequence**.\n\n---\n\n## 2. The Main Sequence (Adulthood)\n\nThis is the longest and most stable phase\u2014about **90% of a star's total life**.\n\n- **Core process:** Hydrogen fuses into helium via the proton-proton chain (low-mass stars) or the CNO cycle (high-mass stars).\n- **Equilibrium:** Gravity inward = radiation pressure outward. The star is stable.\n- **Lifespan depends on mass:**\n  - Massive stars burn hotter and faster \u2192 short lives (a few million years).\n  - Low-mass stars burn cooler and slower \u2192 long lives (t",
+  "reasoning": ""
+ },
+ "ttft_4k": {
+  "ttft_s": 1.069,
+  "total_s": 1.318,
+  "completion_tokens": 32,
+  "prompt_tokens": 3595,
+  "cached_tokens": 0,
+  "decode_tok_s": 124.45,
+  "text": "Based on the code provided, here is a summary in 3 bullet points:\n\n- **Package initialization and lazy loading (`vllm/__init__.py",
+  "reasoning": ""
+ },
+ "ttft_16k": {
+  "ttft_s": 3.092,
+  "total_s": 3.62,
+  "completion_tokens": 32,
+  "prompt_tokens": 14855,
+  "cached_tokens": 0,
+  "decode_tok_s": 58.65,
+  "text": "Here's a summary of what this code does in 3 bullet points:\n\n- **Quantization utilities**: Provides functions to quantize tensors to low-precision",
+  "reasoning": ""
+ },
+ "ttft_16k_second_turn": {
+  "ttft_s": 0.834,
+  "total_s": 1.148,
+  "completion_tokens": 32,
+  "prompt_tokens": 14901,
+  "cached_tokens": 14848,
+  "decode_tok_s": 98.9,
+  "text": "Based on the code provided, there are **no class definitions** in the snippet. The code consists entirely of:\n\n- **Module-level imports** (e.g",
+  "reasoning": ""
+ },
+ "prefix_metrics": {
+  "before": {
+   "spec_decode_num_drafts": 1791283248.2057676,
+   "spec_decode_num_draft_tokens": 1791285912.2057893,
+   "spec_decode_num_accepted_tokens": 10747697565.234964,
+   "prefix_cache_queries": 1791311881.2060196,
+   "prefix_cache_hits": 1791294998.2060316
+  },
+  "after_first": {
+   "spec_decode_num_drafts": 1791283260.2057676,
+   "spec_decode_num_draft_tokens": 1791285972.2057893,
+   "spec_decode_num_accepted_tokens": 10747697607.234964,
+   "prefix_cache_queries": 1791326736.2060196,
+   "prefix_cache_hits": 1791294998.2060316
+  },
+  "after_second": {
+   "spec_decode_num_drafts": 1791283270.2057676,
+   "spec_decode_num_draft_tokens": 1791286022.2057893,
+   "spec_decode_num_accepted_tokens": 10747697653.234964,
+   "prefix_cache_queries": 1791341637.2060196,
+   "prefix_cache_hits": 1791309846.2060316
+  }
+ },
+ "concurrent_4": {
+  "wall_s": 18.25,
+  "total_completion_tokens": 1024,
+  "aggregate_tok_s": 56.1,
+  "per_stream_decode": [
+   14.68,
+   16.95,
+   16.95,
+   14.23
+  ],
+  "ttft": [
+   0.327,
+   0.327,
+   0.326,
+   0.326
+  ]
+ },
+ "tool_call": {
+  "message": {
+   "role": "assistant",
+   "content": "I'll check the current weather in Reykjavik for you.\n\n",
+   "refusal": null,
+   "annotations": null,
+   "audio": null,
+   "function_call": null,
+   "tool_calls": [
+    {
+     "id": "chatcmpl-tool-a85f0d1764b90621",
+     "type": "function",
+     "function": {
+      "name": "get_weather",
+      "arguments": "{\"city\": \"Reykjavik\"}"
+     }
+    }
+   ],
+   "reasoning": null
+  },
+  "finish": "tool_calls"
+ },
+ "coding": {
+  "ttft_s": 0.27,
+  "total_s": 36.295,
+  "completion_tokens": 3569,
+  "prompt_tokens": 89,
+  "cached_tokens": 0,
+  "decode_tok_s": 99.04,
+  "text": "```python\ndef merge_intervals(intervals: list[tuple[int, int]]) -> list[tuple[int, int]]:\n    \"\"\"\n    Merge overlapping and touching closed intervals.\n\n    A closed interval [a, b] and [c, d] are merged when c <= b, which\n    includes both overlap and touching, e.g. [1, 2] and [2, 3] -> [1, 3].\n\n    Args:\n        intervals: List of (start, end) tuples. Assumes start <= end.\n\n    Returns:\n        A new list of merged intervals sorted by start.\n\n    Examples:\n        >>> merge_intervals([(1, 3), (2, 6), (8, 10), (10, 12)])\n        [(1, 6), (8, 12)]\n        >>> merge_intervals([])\n        []\n    \"\"\"\n    if not intervals:\n        return []\n\n    sorted_intervals = sorted(intervals, key=lambda interval: interval[0])\n    merged: list[tuple[int, int]] = []\n\n    current_start, current_end = sorted_intervals[0]\n\n    for start, end in sorted_intervals[1:]:\n        if start <= current_end:\n            # Overlap or touch: extend the current interval if needed.\n            current_end = max(current_end, end)\n        else:\n            merged.append((current_start, current_end))\n            current_start, current_end = start, end\n\n    merged.append((current_start, current_end))\n    return merged\n```\n\n```python\n# test_merge_intervals.py\nfrom solution import merge_intervals\n\n\ndef test_empty():\n    assert merge_intervals([]) == []\n\n\ndef test_single_interval():\n    assert merge_intervals([(1, 4)]) == [(1, 4)]\n\n\ndef test_overlapping_and_touching():\n    assert merge_intervals([(1, 3), (2, 6), (8, 10), (10, 12)]) == [\n        (1, 6),\n        (8, 12),\n    ]\n\n\ndef test_unsorted_and_nested():\n    assert merge_intervals([(5, 7), (1, 10), (2, 3), (12, 15)]) == [\n        (1, 10),\n        (12, 15),\n    ]\n\n\ndef test_disjoint_and_negative():\n    assert merge_intervals([(-5, -1), (-1, 2), (3, 4), (10, 11)]) == [\n        (-5, 2),\n        (3, 4),\n        (10, 11),\n    ]\n```\n\n**Time complexity:** `O(n log n)` due to sorting. The merge pass is `O(n)`, so sorting dominates. Space complexity is `O(n)` for the sorted copy and merged output. If the input is already sorted, the time complexity is `O(n)`.",
+  "reasoning": "We need answer. Need write Python function merge_intervals, type hints, docstring, edge cases, 5 pytest tests, state time complexity. Need likely provide code and tests. Need ensure merges overlapping and touching closed intervals. Closed intervals [a,b], touching if next.start <= current.end? Since closed, if one ends at 2 and next starts at 2, they touch and should merge. Overlap if start <= current_end. So condition if start <= last_end merge. Need sort by start. Edge cases: empty list, single interval, unsorted, nested, touching, disjoint, negative, maybe invalid? Should we handle intervals where start > end? Usually assume valid. Could mention assumes start <= end. Could optionally normalize? But type says intervals. Edge cases handled: empty returns []. Single returns same. If invalid? Maybe not. Need 5 pytest tests. Could include import pytest? Tests can be functions. Need maybe from module import merge_intervals. We can present code block. Then tests. Then complexity O(n log n) due sorting, O(n) merge, O(n) extra space for output. If intervals sorted? Function sorts. Time O(n log n). Space O(n) for output (or O(n) due sorted copy). Need maybe mention if input sorted, O(n), but general O(n log n).\n\nNeed be careful with type hints: list[tuple[int,int]] requires Python 3.9+. Could use List/Tuple for older. User specified list[tuple[int,int]], so use that. Docstring. Function:\n\ndef merge_intervals(intervals: list[tuple[int, int]]) -> list[tuple[int, int]]:\n    \"\"\"\n    Merge overlapping and touching closed intervals.\n\n    Intervals are closed: [start, end]. Two intervals merge if the next\n    interval's start is <= the current merged interval's end, which covers\n    both overlap and touching (e.g., [1, 2] and [2, 3] -> [1, 3]).\n\n    Args:\n        intervals: A list of (start, end) tuples. Assumes start <= end.\n\n    Returns:\n        A new list of merged intervals sorted by start.\n\n    Examples:\n        >>> merge_intervals([(1, 3), (2, 6), (8, 10), (10, 12)])\n        [(1, 6), (8, 12)]\n        >>> merge_intervals([])\n        []\n    \"\"\"\n    if not intervals:\n        return []\n\n    sorted_intervals = sorted(intervals, key=lambda x: x[0])\n    merged: list[tuple[int, int]] = []\n    current_start, current_end = sorted_intervals[0]\n\n    for start, end in sorted_intervals[1:]:\n        if start <= current_end:\n            # Overlap or touch; extend if needed.\n            if end > current_end:\n                current_end = end\n        else:\n            merged.append((current_start, current_end))\n            current_start, current_end = start, end\n\n    merged.append((current_start, current_end))\n    return merged\n\nNeed maybe handle if intervals contain invalid start > end? Could raise ValueError? Edge cases handled maybe. But if invalid, sorting and merging weird. Could add validation? The prompt says edge cases handled. Could include validation? But then tests? Might be overkill. If we validate, time still O(n log n). But type hints. Maybe mention assumes valid. Edge cases: empty, single, unsorted, nested, touching, disjoint. That's enough.\n\nTests: 5 pytest tests. Need import pytest? Not necessary unless using pytest.raises. We can write:\n\nfrom merge_intervals import merge_intervals  # if in module? In answer, maybe assume function defined above. For tests, can just call merge_intervals. But if separate file, import. We can include `from your_module import merge_intervals`? Better to write tests assuming function in same file? In pytest, tests can import from solution. We can write:\n\nimport pytest\nfrom solution import merge_intervals\n\ndef test_empty():\n    assert merge_intervals([]) == []\n\ndef test_single_interval():\n    assert merge_intervals([(1, 4)]) == [(1, 4)]\n\ndef test_overlapping_and_touching():\n    assert merge_intervals([(1, 3), (2, 6), (8, 10), (10, 12)]) == [(1, 6), (8, 12)]\n\ndef test_unsorted_and_nested():\n    assert merge_intervals([(5, 7), (1, 10), (2, 3), (12, 15)]) == [(1, 10), (12, 15)]\n\ndef test_disjoint_and_negative():\n    assert merge_intervals([(-5, -1), (0, 2), (3, 4), (10, 11)]) == [(-5, -1), (0, 4), (10, 11)]? Wait (0,2) and (3,4) are disjoint because 3 > 2. So should be [(-5,-1), (0,2), (3,4), (10,11)]. Need test touching negative maybe. Let's design 5 tests.\n\nTest 1 empty.\nTest 2 single.\nTest 3 overlapping and touching: [(1,3),(2,6),(8,10),(10,12)] -> [(1,6),(8,12)].\nTest 4 unsorted and nested: [(5,7),(1,10),(2,3),(12,15)] -> [(1,10),(12,15)].\nTest 5 disjoint and negative: [(-5,-1),(0,2),(3,4),(10,11)] -> [(-5,-1),(0,2),(3,4),(10,11)].\nBut maybe include touching negative: [(-5,-1),(-1,2)] -> [(-5,2)]. Could combine. Need exactly 5 tests. Could have test_touching_negative. Let's do:\n\ndef test_empty():\n    assert merge_intervals([]) == []\n\ndef test_single_interval():\n    assert merge_intervals([(1, 4)]) == [(1, 4)]\n\ndef test_overlapping_and_touching():\n    assert merge_intervals([(1, 3), (2, 6), (8, 10), (10, 12)]) == [(1, 6), (8, 12)]\n\ndef test_unsorted_and_nested():\n    assert merge_intervals([(5, 7), (1, 10), (2, 3), (12, 15)]) == [(1, 10), (12, 15)]\n\ndef test_disjoint_and_negative():\n    assert merge_intervals([(-5, -1), (0, 2), (3, 4), (10, 11)]) == [(-5, -1), (0, 2), (3, 4), (10, 11)]\n\nBut this doesn't test touching negative. Could modify test_disjoint_and_negative to include touching: [(-5, -1), (-1, 2), (3, 4), (10, 11)] -> [(-5, 2), (3, 4), (10, 11)]. That tests negative and touching. But then disjoint? (3,4) and (10,11) disjoint. Good. Let's use that.\n\nNeed maybe test invalid? Not necessary.\n\nNeed state time complexity. O(n log n) time due sorting, O(n) space. If input already sorted, O(n) time. But general O(n log n). Could mention sorting dominates. Space O(n) for sorted copy and output. Actually sorted returns new list O(n). merged O(n). So O(n) auxiliary. If in-place? no.\n\nNeed maybe include \"closed intervals\" condition. Need ensure touching: if start <= current_end. For closed intervals, [1,2] and [2,3] merge. If open intervals, would be start < current_end. We use <=.\n\nPotential issue: If intervals are not sorted by start, sorting by start only. If same start, order by end? Python sorts tuple by first then second if key only first? Actually key=lambda x: x[0] sorts only by start, stable. If same start, original order. But merging handles nested. If same start, first might have smaller end, then next same start with larger end, start <= current_end (same start <= current_end) and end > current_end extends. If first larger end, next smaller end, start <= current_end, end not >, so remains larger. Good. If same start and disjoint? impossible. So fine.\n\nCould also use `sorted(intervals)` which sorts by start then end. That's fine. But key only start is okay. Maybe use `sorted(intervals)` simpler. But if same start, sorted by end. Either works. Use `sorted(intervals, key=lambda x: x[0])` to emphasize start. But if same start, stable. Fine.\n\nNeed maybe include `from typing import List, Tuple`? User specified list[tuple[int,int]], so use built-in generics. Python 3.9+. If want compatibility, could use `from __future__ import annotations`? Not needed. But if Python 3.8, list[tuple] not supported. The prompt uses that syntax, so assume 3.9+.\n\nNeed final answer likely with code and tests. Should we include a single code block with function and tests? Could separate. The user asks \"Write a Python function ... Then state its time complexity.\" So final can include function, tests, complexity. Need maybe mention \"Assumes each interval has start <= end.\" Edge cases handled. Could include docstring examples.\n\nLet's craft final. Desired oververbosity 5. So concise but complete.\n\nPotential nuance: \"merges overlapping and touching closed intervals\" means if intervals are [1,2] and [2,3], they touch at point 2. Since closed, union is [1,3]. Our condition start <= current_end merges. Good.\n\nLet's write:\n\n```python\ndef merge_intervals(intervals: list[tuple[int, int]]) -> list[tuple[int, int]]:\n    \"\"\"\n    Merge overlapping and touching closed intervals.\n\n    A closed interval [a, b] and [c, d] are merged when c <= b, which\n    includes both overlap and touching (e.g., [1, 2] and [2, 3]).\n\n    Args:\n        intervals: List of (start, end) tuples. Assumes start <= end.\n\n    Returns:\n        List of merged intervals sorted by start.\n\n    Examples:\n        >>> merge_intervals([(1, 3), (2, 6), (8, 10), (10, 12)])\n        [(1, 6), (8, 12)]\n        >>> merge_intervals([])\n        []\n    \"\"\"\n    if not intervals:\n        return []\n\n    sorted_intervals = sorted(intervals, key=lambda interval: interval[0])\n    merged: list[tuple[int, int]] = []\n    current_start, current_end = sorted_intervals[0]\n\n    for start, end in sorted_intervals[1:]:\n        if start <= current_end:\n            current_end = max(current_end, end)\n        else:\n            merged.append((current_start, current_end))\n            current_start, current_end = start, end\n\n    merged.append((current_start, current_end))\n    return merged\n```\n\nTests:\n\n```python\nimport pytest\nfrom solution import merge_intervals  # adjust import as needed\n\ndef test_empty():\n    assert merge_intervals([]) == []\n\ndef test_single_interval():\n    assert merge_intervals([(1, 4)]) == [(1, 4)]\n\ndef test_overlapping_and_touching():\n    assert merge_intervals([(1, 3), (2, 6), (8, 10), (10, 12)]) == [(1, 6), (8, 12)]\n\ndef test_unsorted_and_nested():\n    assert merge_intervals([(5, 7), (1, 10), (2, 3), (12, 15)]) == [(1, 10), (12, 15)]\n\ndef test_disjoint_and_negative():\n    assert merge_intervals([(-5, -1), (-1, 2), (3, 4), (10, 11)]) == [(-5, 2), (3, 4), (10, 11)]\n```\n\nMaybe `import pytest` unused. Could omit. But if they want pytest tests, no need import pytest unless using fixtures. We can omit `import pytest`. But if we include `from solution import merge_intervals`, that's fine. If they run in same file, import might fail. Could write tests without import, assuming function defined above. But in a separate test file, need import. I can say \"Assuming the function is in `solution.py`\". Or just write tests as functions and no import. The prompt likely expects code. I'll include `from solution import merge_intervals` with comment. Or maybe use `from merge_intervals import merge_intervals`? The function name same as module? Could be confusing. I'll write:\n\n```python\n# test_merge_intervals.py\nfrom solution import merge_intervals\n```\n\nThen tests. That's fine.\n\nTime complexity: Sorting O(n log n), merging O(n), total O(n log n). Space O(n) for sorted copy and output. If input already sorted, O(n) time. Mention.\n\nNeed maybe mention edge cases: empty, single, unsorted, nested, touching, negative. Good.\n\nLet's final. Ensure no markdown issues. Use code blocks. State complexity after tests. Done."
+ },
+ "spec_metrics_end": {
+  "spec_decode_num_drafts": 1791284610.2057676,
+  "spec_decode_num_draft_tokens": 1791292722.2057893,
+  "spec_decode_num_accepted_tokens": 10747704267.234964,
+  "prefix_cache_queries": 1791342118.2060196,
+  "prefix_cache_hits": 1791309846.2060316
+ },
+ "system": {
+  "nvidia_smi": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 90471 MiB, 97887 MiB\nNVIDIA RTX PRO 6000 Blackwell Server Edition, 90471 MiB, 97887 MiB\n",
+  "cgroup_memory_max": "376999997440",
+  "cgroup_memory_current": "375908675584",
+  "cgroup_memory_peak": "376999997440"
+ }
+}

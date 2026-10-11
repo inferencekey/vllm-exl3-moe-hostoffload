@@ -1,0 +1,43 @@
+{
+ "torch": "2.13.0+cu130",
+ "gpus": {
+  "0": {
+   "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+   "copy": {
+    "bytes": 173946175488,
+    "seconds": 3.0102753089740872,
+    "true_GBps": 57.784141858865894,
+    "nvml_rx_GBps_mean": 63.860264832,
+    "n_samples": 32,
+    "nvml_over_true": 1.1051520845974427
+   },
+   "zerocopy": {
+    "bytes": 150323855360,
+    "seconds": 3.029500547796488,
+    "true_GBps": 49.620012602188936,
+    "nvml_rx_GBps_mean": 60.46953712,
+    "n_samples": 32,
+    "nvml_over_true": 1.2186521919047728
+   }
+  },
+  "1": {
+   "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+   "copy": {
+    "bytes": 173946175488,
+    "seconds": 3.009467168711126,
+    "true_GBps": 57.79965878893322,
+    "nvml_rx_GBps_mean": 63.834810656,
+    "n_samples": 32,
+    "nvml_over_true": 1.1044150085574955
+   },
+   "zerocopy": {
+    "bytes": 882615779328,
+    "seconds": 3.0060931467451155,
+    "true_GBps": 293.60892568603975,
+    "nvml_rx_GBps_mean": 0.0035579375483870967,
+    "n_samples": 31,
+    "nvml_over_true": 1.2117947504741905e-05
+   }
+  }
+ }
+}

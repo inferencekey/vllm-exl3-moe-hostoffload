@@ -1,0 +1,9 @@
+{
+ "status": "complete",
+ "server": {
+  "model": "feasibility",
+  "variant": "exl3-uva"
+ },
+ "boot": "boot_failed",
+ "note": "boot failed with a configuration error, not memory: ValueError 'No common block size for 64 (FLASHINFER_MLA_SPARSE_DSV41: [128]; DEEPSEEK_V41_INDEXER: [128])'; the exl3-uva variant starts with KV block size 64, which DeepSeek V4.1 sparse attention does not support. Not a UVA result."
+}

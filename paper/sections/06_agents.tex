@@ -1,0 +1,172 @@
+\section{How Many Developers Can Share One Server?}\label{sec:agent}
+
+Measured by monthly output, one pod covers \dv{agent.E13.agent.seats_volume_u100} developers of the usage profile we
+observed at full utilization and \dv{agent.E13.agent.seats_volume_u50} at half. Measured by how many can see the model
+write at 40 tokens/s or more at the same moment, it covers about \dv{agent.E13.agent.seats_conc_e1}, and that is the
+number to plan with. The pod is the bar of the introduction, able to pour for a whole office every night but with four
+stools at the counter. When more than four regulars want a drink at once, everyone is served more slowly, so the
+number of stools decides how many regulars the bar can take. This section measures the stools and counts the
+regulars.
+
+The comparison is about serving capacity and infrastructure cost. It does not claim that DeepSeek-V4.1-Flash is
+equivalent in quality or capability to the models behind a commercial coding agent. A subscription such as Claude
+Code buys a complete product (the agent, its tools, model access, reliability and support), while the self-hosted
+figures below are GPU rental only unless stated otherwise.
+
+\paragraph{What a developer consumes.}
+We started from one developer's Claude Code usage screen for seven days (\datafile{experiments/agent_workload.yaml}).
+It reports \dv{agent.sample.total_week} tokens over \dv{agent.sample.sessions} sessions on
+\dv{agent.sample.active_days} active days. Of those, the model wrote \dv{agent.sample.output_week}, or
+\dv{agent.sample.output_share_pct}\%. Another \dv{agent.sample.cache_read_week} were cached context read again,
+\dv{agent.sample.cache_write_week} were new context written to the cache and \dv{agent.sample.input_week} were
+uncached input. A coding agent mostly re-reads. Per token it writes, this profile reads
+\dv{agent.ratio.read_per_output} tokens of cached context and adds \dv{agent.ratio.write_per_output} new ones. With
+replies of \dv{agent.turn.output} tokens (our assumption), a turn reads about \dv{agent.turn.context_read} tokens of
+context and adds about \dv{agent.turn.new_tokens}. These are the provider's billing categories, not vLLM's accounting
+of its prefix cache, so the profile shapes our synthetic workload without claiming token-for-token equivalence. One
+developer of this profile receives \dv{agent.dev.output_month} million output tokens a month.
+
+\paragraph{Two capacities.}
+The two answers differ because two capacities are at work. The \emph{simultaneous-stream capacity} $C$ is the largest
+number of streams for which that level and every smaller one keep a median rate per stream of at least 40 tokens/s
+(25\,ms per token) and stay within the harness's error rule. Total throughput never counts as success here, since ten
+streams at 20 tokens/s are not five at 40. The \emph{volume capacity} divides the output a pod produces in a month, at
+the total rate measured at $C$ and a stated utilization, by one developer's monthly output. In the bar picture, $C$ is
+the number of stools and the volume capacity is how much the bar can pour.
+
+\paragraph{Four stools.}
+Every context regime we ran to four streams keeps at least 40 tokens/s per stream up to four and loses it between
+five and eight (Figure~\ref{fig:agent}, Table~\ref{tab:agent-capacity}). Independent 256K-token contexts were run only
+up to three streams, all above the objective. We provision with a 10\% margin (44 tokens/s), because levels measured
+once and within a few tokens/s of 40 pass or fail by noise. The shared 128K prefix passed at five and the agent turns
+at six by less than one token/s each, and the shared 256K prefix failed at five just below the line and passed at six.
+With the margin the capacity is \dv{agent.E13.short.Cprov} for short sessions, \dv{agent.E13.cached128k.Cprov} and
+\dv{agent.E13.cached256k.Cprov} for shared 128K and 256K prefixes, \dv{agent.E13.own128k.Cprov} for independent 128K
+contexts, \dv{agent.E13.own256k.Cprov_text} for independent 256K contexts and \dv{agent.E13.agent.Cprov} for agent
+turns. At four agent-turn streams each one gets a median of \dv{agent.E13.agent.prov.rate_p50} tokens/s (p5
+\dv{agent.E13.agent.prov.rate_p5}), TTFT p95 is \dv{agent.E13.agent.prov.ttft_p95}\,s and the pod writes
+\dv{agent.E13.agent.prov.agg} tokens/s in total. At eight streams the median falls to
+\dv{agent.E13.agent.fail.rate_p50}.
+
+These capacities come from experiment E13 (\datafile{experiments/workloads/agent.yaml}, runner
+\datafile{experiments/runs/agent.sh}), one boot of the \texttt{gen30} stack in \dv{lean.session3.minutes} minutes with
+400-token replies. Its regimes cover how coding agents use context, and the tables use their names. In
+\emph{short} sessions each stream has a unique 4K-token prompt. With a \emph{shared prefix} all streams branch from one
+cached prefix of 128K or 256K tokens, like several agents on the same codebase. With an \emph{own context} each stream
+owns an independent cached context of 128K or 256K tokens, extended by 512 new tokens per turn. \emph{Agent turns}
+follow the observed ratios, each stream owning a context of 88,000 tokens that grows by 3,500 tokens per turn. In the
+short and shared-prefix regimes the number of streams grew through 1, 2, 3, 4, 5, 6, 8 and 12 and stopped after two
+levels below the objective, while the own-context regimes and agent turns ran fixed lists because of KV-cache and time
+limits (own 128K up to five, own 256K up to three, agent turns at 1, 2, 3, 4, 6 and 8). The rate per stream is the reply's tokens over the
+time from its first token to the end of the stream, which stays valid for the \dv{agent.E13.all.bursts} of
+\dv{agent.E13.all.requests} requests whose reply arrived mostly in one late chunk. No request failed.
+
+The length of the context barely matters once it is cached. The 256K-token regimes are no slower than the short one at
+the same number of streams, because the time to write is dominated by the size of the batch, not by attention over the
+cached context. Memory was not the limit either. Five independent 128K contexts and three of 256K ran with at most
+\dv{agent.E13.own.kv_max_pct}\% of the KV cache in use (the session's maximum, \dv{agent.E13.all.kv_max_pct}\%, came
+from eight agent-turn streams), and no request was paused to free memory (\dv{agent.E13.all.preemptions}
+preemptions). vLLM's own estimate was \dv{ctl.kv.max_concurrency} full-length requests, so for this model's compressed
+attention it is conservative. GPU memory stayed between \dv{agent.E13.all.gpu_mem_min} and
+\dv{agent.E13.all.gpu_mem_max}\,GiB per GPU, host memory peaked at \dv{agent.E13.all.host_max}\,GiB, and PCIe reads
+grew with load (Table~\ref{tab:agent-resources}).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.49\linewidth]{figures/generated/agent_stream_rate.pdf}\hfill
+\includegraphics[width=0.49\linewidth]{figures/generated/agent_cost_seats.pdf}
+\caption{Coding-agent case study, E13 (one boot). Left: median output rate per stream against simultaneous streams
+(bands: p5 to p95 of requests), with the 40 tokens/s objective. Dashed lines are independent contexts. Right: monthly
+cost of subscriptions and of the pods needed for $M$ provisioned seats, the larger of the volume and the concurrency
+requirement (capacity with a 10\% margin, 50\% utilization, duty cycle for an 8-hour window, overflow probability 1\%),
+infrastructure only. The four pod curves coincide because every regime has the same provisioning capacity.}
+\label{fig:agent}
+\end{figure}
+
+\input{generated/agent_capacity}
+\input{generated/agent_levels}
+
+\paragraph{From stools to regulars.}
+Developers do not keep the model writing all day. Of a whole week, the model was busy for this developer about
+\dv{agent.dev.busy_h_week} hours, \dv{agent.q.week}\% of the week. We count each output token at 40 tokens/s and each
+new context token at the reading rate E12 measured for a 128K-token prompt (\dv{agent.prefill_tok_s} tokens/s), which
+makes this an upper bound, since faster service shortens it. Spread over an 8-hour working window on each active day,
+the chance that the developer needs a stream at a random moment of that window is $q=\dv{agent.q.h8}\%$
+(\dv{agent.q.h4}\% for a 4-hour window, \dv{agent.q.h24}\% for 24).
+
+If $M$ developers work independently with the same $q$, the number who need a stream at once follows approximately a
+Binomial$(M,q)$ distribution. A pod with $C$ stools can take the largest $M$ for which more than $C$ need one at once
+only rarely. For agent turns ($C=\dv{agent.E13.agent.Cprov}$) that is \dv{agent.E13.agent.seats_conc_e1} developers if
+the overflow may happen in fewer than one moment in a hundred, and \dv{agent.E13.agent.seats_conc_e5} at five in a
+hundred (Tables~\ref{tab:agent-seats} and~\ref{tab:agent-duty}). An overflow does not fail requests. It means that the
+streams of that moment fall below 40 tokens/s. The model ignores correlation between developers (shared working
+hours, deadlines) and bursts within a session, both of which make overflows more frequent, so these numbers are
+optimistic for a team on one schedule.
+
+By volume the same pod looks much larger. At the total rate measured at four agent-turn streams, its monthly output
+equals \dv{agent.E13.agent.seats_volume_u100} developers of this profile at full utilization and
+\dv{agent.E13.agent.seats_volume_u50} at 50\%. The pod has the volume for \dv{agent.E13.agent.volume_over_conc_u50} to
+\dv{agent.E13.agent.volume_over_conc_u100} times more intermittent developers than it can serve at 40 tokens/s at the
+same moment, so the stools set the limit (Figure~\ref{fig:two-capacities}).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.62\linewidth]{figures/generated/agent_two_capacities.pdf}
+\caption{The two capacities of one pod for agent turns (E13, one boot). Blue: developers whose monthly output the
+pod can produce at the stated utilization. Orange: developers it can serve at 40 tokens/s or more each, with four
+provisioned streams, an 8-hour active window and the stated probability that more than four want a stream at once.
+Values from Table~\ref{tab:agent-seats}.}
+\label{fig:two-capacities}
+\end{figure}
+
+To apply Table~\ref{tab:agent-duty} to another team, estimate how many hours a day its developers keep the agent
+working, pick the row with that active window, and read the number of developers under the regime closest to how they
+use context. A team that works in a narrower window concentrates its demand, so the same four stools take fewer
+regulars.
+
+\input{generated/agent_seats}
+\input{generated/agent_duty}
+
+\paragraph{What it costs against subscriptions.}
+At \dv{agent.pod.eur_h}\,EUR an hour, a pod running all month costs \dv{agent.pod.eur_month}\,EUR, as much as
+\dv{agent.break_even_seats} subscriptions of \dv{agent.seat_eur}\,EUR. One pod provisioned within its four stools
+(\dv{agent.E13.agent.seats_conc_e1} developers) therefore lands just above break-even, and the next developer needs a
+second pod, so 20 developers cost \dv{agent.E13.agent.cost.m20.extra}\,EUR a month more than subscriptions. Pooling
+changes the picture, because the sum of many independent demands fluctuates less than each one. With load balanced
+across pods, 100 developers need \dv{agent.E13.agent.cost.m100.pods} pods, \dv{agent.E13.agent.cost.m100.saving_pct}\%
+below the cost of their subscriptions, and 250 need \dv{agent.E13.agent.cost.m250.pods},
+\dv{agent.E13.agent.cost.m250.saving_pct}\% below, before engineering and operations (Table~\ref{tab:agent-cost},
+Figure~\ref{fig:agent} right). Volume is never the constraint, since the pod breaks even at
+\dv{agent.E13.agent.break_even_util}\% of its volume capacity. Stopping the pod outside a working window of
+\dv{agent.pod.sched_hours} hours a month lowers its cost to \dv{agent.pod.sched_eur_month}\,EUR
+(\dv{agent.break_even_seats_sched} subscriptions), but every start pays \dv{ctl.boot.min_minutes} to
+\dv{ctl.boot.max_minutes} minutes of boot and weight loading and needs the \dv{static.pack.total_gib}\,GiB pack on
+persistent storage. Engineering and operations move break-even substantially (Table~\ref{tab:agent-ops}), and those
+amounts are assumptions, not measurements.
+
+\input{generated/agent_cost}
+\input{generated/agent_ops}
+
+\paragraph{Control of code and data.}
+Price is not the only reason to run a coding agent's model in-house. With open weights the organization decides which
+model and version run, when they change and how long prompts and outputs are kept. The source code, secrets and
+internal documents that a coding agent reads by design (this profile re-reads \dv{agent.ratio.read_per_output} tokens
+of context per token written) are not sent to a model provider, and the deployment can sit in a jurisdiction the
+organization chooses, on its own hardware or with a provider bound by contract. These benefits of digital sovereignty,
+privacy and data protection do not appear in the cost tables, and they come with two qualifications. They hold fully
+only on hardware the organization controls. On a rented pod, as in our measurements, the data still reside on a third
+party's machines, and their protection rests on that provider's isolation and contract. And self-hosting moves
+responsibility rather than removing it, because security operations become the operator's work, part of the
+operations overhead of Table~\ref{tab:agent-ops}. We measured no security property, so this paragraph describes what
+the deployment model allows.
+
+\paragraph{What the data support.}
+Measured on one boot of one pod: four simultaneous coding-agent streams at 40 tokens/s or more each, whether the
+context is short, a shared cached prefix of up to 256K tokens, an independent cached 128K-token context or agent turns
+with the observed ratios, and a monthly volume for many times more developers of the observed profile. Derived under
+stated assumptions (independent developers, an 8-hour window, 400-token replies): about
+\dv{agent.E13.agent.seats_conc_e1} developers per pod at 1\% overflow, at the break-even of subscriptions for one pod
+and below their cost for large pooled deployments. Not supported: any number transferred to another pod
+(Section~\ref{sec:results-controlled} found a large difference between hosts), a real team's arrival pattern, or
+replacing a commercial product. The workload, the usage profile and the cost model are specified in
+Section~\ref{sec:method}, and the assumptions behind the seat counts are revisited in Section~\ref{sec:limits}.

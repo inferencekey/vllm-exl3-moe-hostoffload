@@ -1,0 +1,234 @@
+{
+ "workload_file": "/root/hob/experiments/workloads/agent.yaml",
+ "workload": {
+  "seed": 20261013,
+  "repetitions": 1,
+  "slo_stream_tok_s": 40,
+  "stop_after_slo_failures": 2,
+  "stop_min_errors": 2,
+  "stop_error_rate": 0.05,
+  "stop_ttft_p95_s": 900,
+  "scenarios": [
+   {
+    "name": "A-short-4k",
+    "kind": "chat",
+    "prompt": {
+     "corpus": "code",
+     "tokens": 4096,
+     "template": "review",
+     "region": [
+      0.0,
+      0.5
+     ]
+    },
+    "output": {
+     "max_tokens": 400,
+     "ignore_eos": true
+    },
+    "sampling": {
+     "temperature": 0.6,
+     "top_p": 0.95
+    },
+    "arrivals": {
+     "mode": "closed",
+     "levels": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      12,
+      16,
+      24,
+      32
+     ],
+     "requests_per_user": 2,
+     "min_requests": 4,
+     "stagger_s": 5
+    }
+   },
+   {
+    "name": "B-cached-128k",
+    "kind": "chat",
+    "prompt": {
+     "corpus": "code",
+     "tokens": 131200,
+     "shared_prefix_tokens": 131072,
+     "template": "qa_prefix",
+     "region": [
+      0.0,
+      0.5
+     ]
+    },
+    "output": {
+     "max_tokens": 400,
+     "ignore_eos": true
+    },
+    "sampling": {
+     "temperature": 0.6,
+     "top_p": 0.95
+    },
+    "arrivals": {
+     "mode": "closed",
+     "levels": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      12,
+      16
+     ],
+     "requests_per_user": 2,
+     "min_requests": 4,
+     "stagger_s": 5
+    }
+   },
+   {
+    "name": "B-cached-256k",
+    "kind": "chat",
+    "prompt": {
+     "corpus": "code",
+     "tokens": 258128,
+     "shared_prefix_tokens": 258000,
+     "template": "qa_prefix",
+     "region": [
+      0.0,
+      0.5
+     ]
+    },
+    "output": {
+     "max_tokens": 400,
+     "ignore_eos": true
+    },
+    "sampling": {
+     "temperature": 0.6,
+     "top_p": 0.95
+    },
+    "arrivals": {
+     "mode": "closed",
+     "levels": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      12,
+      16
+     ],
+     "requests_per_user": 2,
+     "min_requests": 4,
+     "stagger_s": 5
+    }
+   },
+   {
+    "name": "C-own-128k",
+    "kind": "agent",
+    "agent": {
+     "base_tokens": 131072,
+     "append_tokens": 512,
+     "turns": 2
+    },
+    "prompt": {
+     "corpus": "code",
+     "region": [
+      0.0,
+      0.5
+     ]
+    },
+    "output_tokens": 400,
+    "sampling": {
+     "temperature": 0.6,
+     "top_p": 0.95
+    },
+    "arrivals": {
+     "mode": "closed",
+     "levels": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    }
+   },
+   {
+    "name": "C-own-256k",
+    "kind": "agent",
+    "agent": {
+     "base_tokens": 258000,
+     "append_tokens": 512,
+     "turns": 2
+    },
+    "prompt": {
+     "corpus": "code",
+     "region": [
+      0.0,
+      0.5
+     ]
+    },
+    "output_tokens": 400,
+    "sampling": {
+     "temperature": 0.6,
+     "top_p": 0.95
+    },
+    "arrivals": {
+     "mode": "closed",
+     "levels": [
+      1,
+      2,
+      3
+     ]
+    }
+   },
+   {
+    "name": "D-agent-turns",
+    "kind": "agent",
+    "agent": {
+     "base_tokens": 88000,
+     "append_tokens": 3500,
+     "turns": 3
+    },
+    "prompt": {
+     "corpus": "code",
+     "region": [
+      0.0,
+      0.5
+     ]
+    },
+    "output_tokens": 400,
+    "sampling": {
+     "temperature": 0.6,
+     "top_p": 0.95
+    },
+    "arrivals": {
+     "mode": "closed",
+     "levels": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      8
+     ]
+    }
+   }
+  ]
+ },
+ "base_seed": 20261013,
+ "repetitions": 1,
+ "harness_git": "dcd6134b31b5d5d9e9fbaaa62bc9bd5eaf6901c7",
+ "started_utc": "2026-10-07T12:08:00Z",
+ "status": "complete",
+ "server": {
+  "base_url": "http://127.0.0.1:8000",
+  "model": "deepseek-v4.1-flash"
+ },
+ "finished_utc": "2026-10-07T12:38:09Z"
+}

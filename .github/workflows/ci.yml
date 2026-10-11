@@ -1,0 +1,40 @@
+# CI for the artifact: tests, analysis, paper build, release scan. No GPU, no secrets, no network writes.
+# Not run while preparing the artifact (no remote exists yet).
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test-and-paper:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Python environment (hash-pinned)
+        run: |
+          uv venv -p 3.12 .venv
+          uv pip install -p .venv/bin/python -r requirements.lock
+          uv pip install -p .venv/bin/python --no-deps -e .
+      - name: TeX and graphviz
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends latexmk texlive-latex-base texlive-latex-recommended \
+            texlive-latex-extra texlive-pictures texlive-fonts-recommended texlive-science lmodern graphviz
+      - name: Fetch pinned third-party inputs (recipe, sfxnz, vllm-exl3, ExLlamaV3; no weights)
+        run: bash stack/fetch_stack.sh
+      - name: Patch dry run
+        run: make stack-check
+      - name: Tests
+        run: make test
+      - name: Analysis, figures and paper (placeholders allowed)
+        run: make paper
+      - name: Release scan
+        run: make release-check
+      - uses: actions/upload-artifact@v4
+        with:
+          name: paper
+          path: paper/build/main.pdf

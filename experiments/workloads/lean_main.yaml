@@ -1,0 +1,20 @@
+# Lean plan, E8: the exploratory sweep's shapes (A: unique 4K-token code prompts; B: 16K shared prefix) with the
+# exploratory request counts (2 per user, at least 8), so one repetition of A and B takes about 10 to 12 minutes,
+# plus staggered starts, per-token timing, raw records and 2 repetitions (two-hour session). Prefill and decode probes run once.
+seed: 20261006
+repetitions: 2
+stop_ttft_p95_s: 120
+stop_error_rate: 0.05
+scenarios:
+  - name: A-code-4k
+    kind: chat
+    prompt: {corpus: code, tokens: 4096, template: review, region: [0.0, 0.5]}
+    output: {max_tokens: 256}
+    sampling: {temperature: 0.6, top_p: 0.95}
+    arrivals: {mode: closed, levels: [1, 2, 4, 8, 16, 32, 64], requests_per_user: 2, min_requests: 8, stagger_s: 5}
+  - name: B-prefix-16k
+    kind: chat
+    prompt: {corpus: code, tokens: 16128, shared_prefix_tokens: 16000, template: qa_prefix, region: [0.0, 0.5]}
+    output: {max_tokens: 256}
+    sampling: {temperature: 0.6, top_p: 0.95}
+    arrivals: {mode: closed, levels: [1, 2, 4, 8, 16, 32, 64], requests_per_user: 2, min_requests: 8, stagger_s: 5}
