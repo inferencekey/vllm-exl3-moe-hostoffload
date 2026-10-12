@@ -23,4 +23,5 @@ abstract: >-
   plugin and Diffbot's host-memory expert offload recipe on two 96 GB RTX PRO 6000 GPUs: attribution audit, static
   byte accounting, controlled experiments on fit, speed, long context, quality and coding-agent concurrency, and the
   LaTeX paper, with every number generated from its data file. Code Apache-2.0; text and data CC-BY-4.0.
-# date-released and doi are added at release time (RELEASE_CHECKLIST.md)
+date-released: "2026-10-12"
+# doi is added once Zenodo archives the release (RELEASE_CHECKLIST.md)

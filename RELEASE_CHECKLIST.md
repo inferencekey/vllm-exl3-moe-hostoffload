@@ -1,6 +1,6 @@
 # Release checklist
 
-Outward-facing steps need the owner's explicit approval. Nothing below the line "needs approval" has been done.
+Outward-facing steps need the owner's explicit approval. Items are ticked as they are done.
 
 ## Prepared (done)
 
@@ -12,15 +12,15 @@ Outward-facing steps need the owner's explicit approval. Nothing below the line 
 
 ## Before any public release (needs approval)
 
-- [ ] Owner confirms the license of the imported exploratory data (the source repository has no license file;
+- [x] Owner confirms the license of the imported exploratory data (the source repository has no license file;
       `data/exploratory/README.md` proposes CC-BY-4.0)
 - [x] Identifiers in `data/exploratory/.../b300/logs/created*.txt` (a RunPod account user id and an SSH public key)
       redacted in place, recorded in `data/exploratory/import_spec.json` and `MANIFEST.tsv` (mode `redacted`)
-- [ ] Decide whether to quote Diffbot's model-card quality claims with numbers (currently cited without numbers)
-- [ ] Create the GitHub repository `inferencekey/vllm-exl3-moe-hostoffload` (private first) with a single initial
+- [x] Diffbot's model-card quality claims stay cited without numbers
+- [x] Create the GitHub repository `inferencekey/vllm-exl3-moe-hostoffload` (private first) with a single initial
       commit, review it, then make it public (needs approval)
-- [ ] At the tag, pin `\repoblob` in `paper/main.tex` from `tree/main` to `tree/v0.1.0`
-- [ ] Tag `v0.1.0` and create a GitHub release with `dist/*.tar.gz` and its sha256 (not done)
+- [x] At the tag, pin `\repoblob` in `paper/main.tex` from `tree/main` to `tree/v0.1.0`
+- [x] Tag `v0.1.0` and create a GitHub release with `dist/*.tar.gz`, its sha256 and the PDF
 - [ ] Connect Zenodo and archive the release; add the DOI to `CITATION.cff`, `.zenodo.json` and the paper (not done)
 - [ ] Run `make paper STRICT=1` only once all controlled experiments exist; until then the paper is a protocol paper
       with NOT RUN placeholders and must be described as such
